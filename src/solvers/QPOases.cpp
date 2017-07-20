@@ -43,17 +43,17 @@ void QPOases_sot::computeCostFunction(const TaskPtr& task, Eigen::MatrixXd& H, E
 //    H = task->getA().transpose() * task->getWeight() * task->getA();
 //    g = -1.0 * task->getA().transpose() * task->getWeight() * task->getb();
 
-    if(task->getWeight().isIdentity())
-    {
-        H = task->getA().transpose() * task->getA();
-        g = -1.0 * task->getA().transpose() * task->getb();
-    }
-    else
-    {
-        tmp_JtW = task->getA().transpose() * task->getWeight();
-        H =  tmp_JtW * task->getA();
-        g = -1.0 * tmp_JtW * task->getb();
-    }
+//    if(task->getWeight().isIdentity())
+//    {
+//        H = task->getA().transpose() * task->getA();
+//        g = -1.0 * task->getA().transpose() * task->getb();
+//    }
+//    else
+//    {
+
+        H.noalias() =  task->getA().transpose() * task->getWeight() * task->getA();
+        g.noalias() = -1.0 * task->getA().transpose() * task->getWeight() * task->getb();
+    //}
 }
 
 void QPOases_sot::computeOptimalityConstraint(  const TaskPtr& task, QPOasesProblem& problem,
