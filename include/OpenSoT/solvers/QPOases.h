@@ -177,7 +177,7 @@ namespace OpenSoT{
         Vector tmp_lA;
         Vector tmp_uA;
 
-
+        Matrix tmp_JtW;
 
     };
 
