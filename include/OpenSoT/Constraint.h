@@ -38,41 +38,41 @@
         
         Constraint(const std::string constraint_id,
                    const unsigned int x_size) :
-            _constraint_id(constraint_id), _x_size(x_size) 
+            __constraint_id(constraint_id), __x_size(x_size) 
         {}
             
             
         virtual ~Constraint() {}
 
-        const unsigned int getXSize() { return _x_size; }
-        virtual const Eigen::VectorXd& getLowerBound() { return _lowerBound; }
-        virtual const Eigen::VectorXd& getUpperBound() { return _upperBound; }
+        const unsigned int getXSize() { return __x_size; }
+        virtual const Eigen::VectorXd& getLowerBound() { return __lowerBound; }
+        virtual const Eigen::VectorXd& getUpperBound() { return __upperBound; }
 
-        virtual const Eigen::MatrixXd& getAeq() { return _Aeq; }
-        virtual const Eigen::VectorXd& getbeq() { return _beq; }
+        virtual const Eigen::MatrixXd& getAeq() { return __Aeq; }
+        virtual const Eigen::VectorXd& getbeq() { return __beq; }
 
-        virtual const Eigen::MatrixXd& getAineq() { return _Aineq; }
-        virtual const Eigen::VectorXd& getbLowerBound() { return _bLowerBound; }
-        virtual const Eigen::VectorXd& getbUpperBound() { return _bUpperBound; }
+        virtual const Eigen::MatrixXd& getAineq() { return __Aineq; }
+        virtual const Eigen::VectorXd& getbLowerBound() { return __bLowerBound; }
+        virtual const Eigen::VectorXd& getbUpperBound() { return __bUpperBound; }
 
         /**
          * @brief isEqualityConstraint
          * @return true if Constraint enforces an equality constraint
          */
-        virtual bool isEqualityConstraint() { return _Aeq.rows() > 0; }
+        virtual bool isEqualityConstraint() { return __Aeq.rows() > 0; }
 
         /**
          * @brief isEqualityConstraint
          * @return true if Constraint enforces an inequality constraint
          */
-        virtual bool isInequalityConstraint() { return _Aineq.rows() > 0; }
+        virtual bool isInequalityConstraint() { return __Aineq.rows() > 0; }
 
         /**
          * @brief isUnilateralConstraint
          * @return true if the Constraint is an unilateral inequality
          */
         virtual bool isUnilateralConstraint() { return isInequalityConstraint() &&
-                                                       (_bLowerBound.size() == 0 || _bUpperBound.size() == 0); }
+                                                       (__bLowerBound.size() == 0 || __bUpperBound.size() == 0); }
         /**
          * @brief isBilateralConstraint
          * @return true if the Constraint is a bilateral inequality
@@ -84,7 +84,7 @@
          *                  meaning the constraint matrix $A^T=\left(I \quad \tilde{A}^T\right)$
          * @return true if Constraint if this constraint contains a bound
          */
-        virtual bool hasBounds() { return (_upperBound.size() > 0 || _lowerBound.size() > 0); }
+        virtual bool hasBounds() { return (__upperBound.size() > 0 || __lowerBound.size() > 0); }
 
         /**
          * @brief isBound checks whether this Constraint is a bound in the form lowerBound <= x <= upperBound,
@@ -105,7 +105,7 @@
          * @brief getTaskID return the task id
          * @return a string with the task id
          */
-        std::string getConstraintID(){ return _constraint_id; }
+        std::string getConstraintID(){ return __constraint_id; }
 
         /** Updates the A, b, Aeq, beq, Aineq, b*Bound matrices 
             @param x variable state at the current step (input) */
@@ -117,20 +117,20 @@
          */
         virtual void log(XBot::MatLogger::Ptr logger)
         {
-            if(_Aeq.rows() > 0 && _Aeq.cols() > 0)
-                logger->add(_constraint_id + "_Aeq", _Aeq);
-            if(_Aineq.rows() > 0 && _Aineq.cols() > 0)
-                logger->add(_constraint_id + "_Aineq", _Aineq);
-            if(_beq.size() > 0)
-                logger->add(_constraint_id + "_beq", _beq);
-            if(_bLowerBound.size() > 0)
-                logger->add(_constraint_id + "_bLowerBound", _bLowerBound);
-            if(_bUpperBound.size() > 0)
-                logger->add(_constraint_id + "_bUpperBound", _bUpperBound);
-            if(_upperBound.size() > 0)
-                logger->add(_constraint_id + "_upperBound",  _upperBound);
-            if(_lowerBound.size() > 0)
-                logger->add(_constraint_id + "_lowerBound", _lowerBound);
+            if(__Aeq.rows() > 0 && __Aeq.cols() > 0)
+                logger->add(__constraint_id + "_Aeq", __Aeq);
+            if(__Aineq.rows() > 0 && __Aineq.cols() > 0)
+                logger->add(__constraint_id + "_Aineq", __Aineq);
+            if(__beq.size() > 0)
+                logger->add(__constraint_id + "_beq", __beq);
+            if(__bLowerBound.size() > 0)
+                logger->add(__constraint_id + "_bLowerBound", __bLowerBound);
+            if(__bUpperBound.size() > 0)
+                logger->add(__constraint_id + "_bUpperBound", __bUpperBound);
+            if(__upperBound.size() > 0)
+                logger->add(__constraint_id + "_upperBound",  __upperBound);
+            if(__lowerBound.size() > 0)
+                logger->add(__constraint_id + "_lowerBound", __lowerBound);
             _log(logger);
         }
         
@@ -155,61 +155,61 @@
         /**
          * @brief _constraint_id unique name of the constraint
          */
-        std::string _constraint_id;
+        std::string __constraint_id;
 
         /**
          * @brief _x_size size of the controlled variables
          */
-        unsigned int _x_size;
+        unsigned int __x_size;
 
         /**
          * @brief _lowerBound lower bounds on controlled variables
          * e.g.:
          *              _lowerBound <= x
          */
-        Eigen::VectorXd _lowerBound;
+        Eigen::VectorXd __lowerBound;
 
         /**
          * @brief _upperBound upper bounds on controlled variables
          * e.g.:
          *              x <= _upperBound
          */
-        Eigen::VectorXd _upperBound;
+        Eigen::VectorXd __upperBound;
 
         /**
          * @brief _Aeq Matrix for equality constraint
          * e.g.:
          *              _Aeq*x = _beq
          */
-        Eigen::MatrixXd _Aeq;
+        Eigen::MatrixXd __Aeq;
 
         /**
          * @brief _beq constraint vector for equality constraint
          * e.g.:
          *              _Aeq*x = _beq
          */
-        Eigen::VectorXd _beq;
+        Eigen::VectorXd __beq;
 
         /**
          * @brief _Aineq Matrix for inequality constraint
          * e.g.:
          *              _bLowerBound <= _Aineq*x <= _bUpperBound
          */
-        Eigen::MatrixXd _Aineq;
+        Eigen::MatrixXd __Aineq;
 
         /**
          * @brief _bLowerBound lower bounds in generic inequality constraints
          * e.g.:
          *              _bLowerBound <= _Aineq*x
          */
-        Eigen::VectorXd _bLowerBound;
+        Eigen::VectorXd __bLowerBound;
 
         /**
          * @brief _bUpperBound upper bounds in generic inequality constraints
          * e.g.:
          *              _Aineq*x <= _bUpperBound
          */
-        Eigen::VectorXd _bUpperBound;
+        Eigen::VectorXd __bUpperBound;
 
         /**
          * @brief _log can be used to log internal Constraint variables

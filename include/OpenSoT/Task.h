@@ -56,12 +56,12 @@
          */
         Task(const std::string task_id,
              const unsigned int x_size) :
-            _task_id(task_id), _x_size(x_size), _active_joints_mask(x_size), _is_active(true)
+            __task_id(task_id), __x_size(x_size), __active_joints_mask(x_size), __is_active(true)
         {
-            _lambda = 1.0;
-            _hessianType = HST_UNKNOWN;
+            __lambda = 1.0;
+            __hessianType = HST_UNKNOWN;
             for(unsigned int i = 0; i < x_size; ++i)
-                _active_joints_mask[i] = true;
+                __active_joints_mask[i] = true;
         }
 
         virtual ~Task(){}
@@ -73,11 +73,11 @@
          */
         void setActive(const bool active_flag){
             
-            if(!_is_active && active_flag){
-                _A = _A_last_active;
+            if(!__is_active && active_flag){
+                __A = __A_last_active;
             }
             
-            _is_active = active_flag;
+            __is_active = active_flag;
         }
         
         
@@ -85,7 +85,7 @@
          * @brief Returns a boolean which specifies if the task is active.
          */
         bool isActive() const {
-            return _is_active;
+            return __is_active;
         }
         
         /**
@@ -93,28 +93,28 @@
          * @return the A matrix of the task
          */
         const Eigen::MatrixXd& getA() const {
-            return _A;
+            return __A;
         }
 
         /**
          * @brief getHessianAtype
          * @return the Hessian type
          */
-        const HessianType getHessianAtype() { return _hessianType; }
+        const HessianType getHessianAtype() { return __hessianType; }
 
         /**
          * @brief getb
          * @return the b matrix of the task
          */
-        const Eigen::VectorXd& getb() const { return _b; }
+        const Eigen::VectorXd& getb() const { return __b; }
 
         /**
          * @brief getWA
          * @return the product between W and A
          */
         const Eigen::MatrixXd& getWA() const {
-            _WA.noalias() = _W*_A;
-            return _WA;
+            __WA.noalias() = __W*__A;
+            return __WA;
         }
 
         /**
@@ -122,8 +122,8 @@
          * @return A transposed
          */
         const Eigen::MatrixXd& getATranspose() const {
-            _Atranspose = _A.transpose(); //This brakes the use of the template!
-            return _Atranspose;
+            __Atranspose = __A.transpose(); //This brakes the use of the template!
+            return __Atranspose;
         }
 
         /**
@@ -131,15 +131,15 @@
          * @return the product between W and b
          */
         const Eigen::VectorXd& getWb() const {
-            _Wb = _W*_b;
-            return _Wb;
+            __Wb = __W*__b;
+            return __Wb;
         }
 
         /**
          * @brief getWeight
          * @return the weight of the norm of the task error
          */
-        const Eigen::MatrixXd& getWeight() const { return _W; }
+        const Eigen::MatrixXd& getWeight() const { return __W; }
 
         /**
          * @brief setWeight sets the task weight.
@@ -152,19 +152,19 @@
         virtual void setWeight(const Eigen::MatrixXd& W) {
             assert(W.rows() == this->getTaskSize());
             assert(W.cols() == W.rows());
-            _W = W;
+            __W = W;
         }
 
         /**
          * @brief getLambda
          * @return the lambda weight of the task
          */
-        const double getLambda() const { return _lambda; }
+        const double getLambda() const { return __lambda; }
 
         virtual void setLambda(double lambda)
         {
             if(lambda >= 0.0){
-                _lambda = lambda;
+                __lambda = lambda;
             }
         }
         
@@ -176,15 +176,15 @@
          *              task.getConstraints().push_back(new_constraint)
          * @return
          */
-        virtual std::list< ConstraintPtr >& getConstraints() { return _constraints; }
+        virtual std::list< ConstraintPtr >& getConstraints() { return __constraints; }
 
         /** Gets the number of variables for the task.
             @return the number of columns of A */
-        const unsigned int getXSize() const { return _x_size; }
+        const unsigned int getXSize() const { return __x_size; }
 
         /** Gets the task size.
             @return the number of rows of A */
-        virtual const unsigned int getTaskSize() const { return _A.rows(); }
+        virtual const unsigned int getTaskSize() const { return __A.rows(); }
 
         /** Updates the A, b, Aeq, beq, Aineq, b*Bound matrices 
             @param x variable state at the current step (input) */
@@ -195,22 +195,22 @@
                 i != this->getConstraints().end(); ++i) (*i)->update(x);
             this->_update(x);
             
-            if(!_is_active){
-                _A_last_active = _A;
-                _A.setZero(_A.rows(), _A.cols());
+            if(!__is_active){
+                __A_last_active = __A;
+                __A.setZero(__A.rows(), __A.cols());
                 return;
             }
 
             typedef std::vector<bool>::const_iterator it_m;
             bool all_true = true;
-            for( it_m active_joint = _active_joints_mask.begin();
-                 active_joint != _active_joints_mask.end();
+            for( it_m active_joint = __active_joints_mask.begin();
+                 active_joint != __active_joints_mask.end();
                  ++active_joint)
             {
                 if(*active_joint == false) all_true = false;
             }
 
-            if(!all_true) applyActiveJointsMask(_A);
+            if(!all_true) applyActiveJointsMask(__A);
             
             
         }
@@ -219,14 +219,14 @@
          * @brief getTaskID return the task id
          * @return a string with the task id
          */
-        std::string getTaskID(){ return _task_id; }
+        std::string getTaskID(){ return __task_id; }
 
         /**
          * @brief getActiveJointsMask return a vector of length NumberOfDOFs.
          * If an element is false the corresponding column of the task jacobian is set to 0.
          * @return a vector of bool
          */
-        virtual std::vector<bool> getActiveJointsMask(){return _active_joints_mask;}
+        virtual std::vector<bool> getActiveJointsMask(){return __active_joints_mask;}
 
         /**
          * @brief setActiveJointsMask set a mask on the Jacobian. The changes take effect immediately.
@@ -235,11 +235,11 @@
          */
         virtual bool setActiveJointsMask(const std::vector<bool>& active_joints_mask)
         {
-            if(active_joints_mask.size() == _active_joints_mask.size())
+            if(active_joints_mask.size() == __active_joints_mask.size())
             {
-                _active_joints_mask = active_joints_mask;
+                __active_joints_mask = active_joints_mask;
 
-                applyActiveJointsMask(_A);
+                applyActiveJointsMask(__A);
 
                 return true;
             }
@@ -252,13 +252,13 @@
          */
         virtual void log(XBot::MatLogger::Ptr logger)
         {
-            logger->add(_task_id + "_A", _A);
-            logger->add(_task_id + "_b", _b);
-            logger->add(_task_id + "_W", _W);
-            logger->add(_task_id + "_lambda", _lambda);
+            logger->add(__task_id + "_A", __A);
+            logger->add(__task_id + "_b", __b);
+            logger->add(__task_id + "_W", __W);
+            logger->add(__task_id + "_lambda", __lambda);
             _log(logger);
 
-            for(auto constraint : _constraints)
+            for(auto constraint : __constraints)
                 constraint->log(logger);
 
         }
@@ -275,50 +275,50 @@
         /**
          * @brief _task_id unique name of the task
          */
-        std::string _task_id;
+        std::string __task_id;
 
         /**
          * @brief _x_size size of the controlled variables
          */
-        unsigned int _x_size;
+        unsigned int __x_size;
 
         /**
          * @brief _hessianType Type of Hessian associated to the Task
          */
-        HessianType _hessianType;
+        HessianType __hessianType;
 
         /**
          * @brief _A Jacobian of the Task
          */
-        Eigen::MatrixXd _A;
+        Eigen::MatrixXd __A;
 
         /**
          * @brief _b error associated to the Task
          */
-        Eigen::VectorXd _b;
+        Eigen::VectorXd __b;
 
         /**
          * @brief _W Weight multiplied to the task Jacobian
          */
-        Eigen::MatrixXd _W;
+        Eigen::MatrixXd __W;
 
         /**
          * @brief _lambda error scaling,
          * NOTE:
          *          _lambda >= 0.0
          */
-        double _lambda;
+        double __lambda;
 
         /**
          * @brief _bounds related to the Task
          */
-        std::list< ConstraintPtr > _constraints;
+        std::list< ConstraintPtr > __constraints;
 
         /**
          * @brief _active_joint_mask is vector of bool that represent the active joints of the task.
          * If false the corresponding column of the task jacobian is set to 0.
          */
-        std::vector<bool> _active_joints_mask;
+        std::vector<bool> __active_joints_mask;
 
         /** Updates the A, b, Aeq, beq, Aineq, b*Bound matrices
             @param x variable state at the current step (input) */
@@ -338,9 +338,9 @@
         virtual void applyActiveJointsMask(Eigen::MatrixXd& A)
         {
             int rows = A.rows();
-            for(unsigned int i = 0; i < _x_size; ++i)
+            for(unsigned int i = 0; i < __x_size; ++i)
             {
-                if(!_active_joints_mask[i])
+                if(!__active_joints_mask[i])
                     for(unsigned int j = 0; j < rows; ++j)
                         A(j,i) = 0.0;
             }
@@ -361,29 +361,29 @@
         /**
          * @brief _WA Jacobian of the Task times the Weight
          */
-        mutable Eigen::MatrixXd _WA;
+        mutable Eigen::MatrixXd __WA;
 
         /**
          * @brief _Wb error associated to the Task times the Weight
          */
-        mutable Eigen::VectorXd _Wb;
+        mutable Eigen::VectorXd __Wb;
 
         /**
          * @brief _Atranspose Jacobian of the task transposed
          */
-        mutable Eigen::MatrixXd _Atranspose;
+        mutable Eigen::MatrixXd __Atranspose;
         
         /**
          * @brief ...
          * 
          */
-        bool _is_active;
+        bool __is_active;
         
         /**
          * @brief ...
          * 
          */
-        Eigen::MatrixXd _A_last_active;
+        Eigen::MatrixXd __A_last_active;
 
     public:
         
