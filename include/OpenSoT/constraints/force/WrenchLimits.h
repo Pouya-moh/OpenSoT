@@ -25,20 +25,24 @@
     namespace constraints {
         namespace force {
             class WrenchLimits: public Constraint {
+                
             public:
+                
                 typedef boost::shared_ptr<WrenchLimits> Ptr;
-            private:
-                double _WrenchLimit;
-            public:
+                
                 WrenchLimits(const double wrenchLimit,
                              const unsigned int x_size);
 
                 double getWrenchLimits();
 
                 void setWrenchLimits(const double wrenchLimit);
-
-
+                
             private:
+                
+                double _WrenchLimit;
+                
+                Eigen::VectorXd _lowerBound, _upperBound;
+
                 void generateBounds();
             };
         }

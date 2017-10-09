@@ -6,8 +6,8 @@ WrenchLimits::WrenchLimits(const double wrenchLimit,
                                const unsigned int x_size) :
     Constraint("wrench_limits", x_size){
 
-    _lowerBound.setZero(_x_size);
-    _upperBound.setZero(_x_size);
+    _lowerBound.setZero(getXSize());
+    _upperBound.setZero(getXSize());
 
    this->setWrenchLimits(wrenchLimit);
 
@@ -29,8 +29,11 @@ void WrenchLimits::setWrenchLimits(const double wrenchLimit)
 void WrenchLimits::generateBounds()
 {
     /************************ COMPUTING BOUNDS ****************************/
-        _lowerBound<<_lowerBound.setOnes(_x_size)*-1.0*_WrenchLimit;
-        _upperBound<<_upperBound.setOnes(_x_size)*1.0*_WrenchLimit;
+        _lowerBound<<_lowerBound.setOnes(getXSize())*-1.0*_WrenchLimit;
+        _upperBound<<_upperBound.setOnes(getXSize())*1.0*_WrenchLimit;
+        
+        setUpperBound(_upperBound);
+        setLowerBound(_lowerBound);
 
     /**********************************************************************/
 }
