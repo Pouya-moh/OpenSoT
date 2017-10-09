@@ -25,10 +25,10 @@ VelocityLimits::VelocityLimits(const double qDotLimit,
                                const unsigned int x_size) :
     Constraint("velocity_limits", x_size), _dT(dT) {
 
-    _lowerBound.setZero(_x_size);
-    _upperBound.setZero(_x_size);
+    _lowerBound.setZero(getXSize());
+    _upperBound.setZero(getXSize());
 
-   this->setVelocityLimits(qDotLimit);
+    this->setVelocityLimits(qDotLimit);
 
     this->generateBounds(qDotLimit);
 }
@@ -37,8 +37,8 @@ VelocityLimits::VelocityLimits(const Eigen::VectorXd& qDotLimit,
                                const double dT) :
     Constraint("velocity_limits", qDotLimit.size()), _dT(dT) {
 
-    _lowerBound.setZero(_x_size);
-    _upperBound.setZero(_x_size);
+    _lowerBound.setZero(getXSize());
+    _upperBound.setZero(getXSize());
 
    this->setVelocityLimits(qDotLimit);
 
@@ -70,18 +70,22 @@ double OpenSoT::constraints::velocity::VelocityLimits::getDT()
 void VelocityLimits::generateBounds(const double qDotLimit)
 {
     /************************ COMPUTING BOUNDS ****************************/
-        _lowerBound<<_lowerBound.setOnes(_x_size)*-1.0*_qDotLimit*_dT;
-        _upperBound<<_upperBound.setOnes(_x_size)*1.0*_qDotLimit*_dT;
+        _lowerBound<<_lowerBound.setOnes(getXSize())*-1.0*_qDotLimit*_dT;
+        _upperBound<<_upperBound.setOnes(getXSize())*1.0*_qDotLimit*_dT;
 
     /**********************************************************************/
 }
 
 void VelocityLimits::generateBounds(const Eigen::VectorXd& qDotLimit)
 {
-    assert(qDotLimit.size() == _x_size);
+    assert(qDotLimit.size() == getXSize());
     for(unsigned int i = 0; i < qDotLimit.size(); ++i)
     {
         _lowerBound[i] = -1.0*std::fabs(qDotLimit[i])*_dT;
         _upperBound[i] = 1.0*std::fabs(qDotLimit[i])*_dT;
     }
+    
+    setLowerBound(_lowerBound);
+    setUpperBound(_upperBound);
+    
 }

@@ -28,12 +28,11 @@
              * @brief The VelocityLimits class implements a bound on joint velocities
              */
             class VelocityLimits: public Constraint {
+                
             public:
+                
                 typedef boost::shared_ptr<VelocityLimits> Ptr;
-            private:
-                double _qDotLimit;
-                double _dT;
-            public:
+                
                 /**
                  * @brief VelocityLimits constructor
                  * @param qDotLimit the joint velocity limit. It is always a positive number [rad/s]
@@ -64,8 +63,14 @@
                  * @return the system sample time in [s]
                  */
                 double getDT();
-
+                
             private:
+                
+                double _qDotLimit;
+                double _dT;
+                
+                Eigen::VectorXd _lowerBound, _upperBound;
+
                 void generateBounds(const double qDotLimit);
                 void generateBounds(const Eigen::VectorXd& qDotLimit);
             };
