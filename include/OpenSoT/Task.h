@@ -268,6 +268,7 @@
         
         bool setA(const Eigen::MatrixXd& A);
         bool setb(const Eigen::VectorXd& b);
+        void setHessianType(HessianType hessian_type);
         
         
     private:
