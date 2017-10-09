@@ -49,6 +49,9 @@ void JointLimits::update(const Eigen::VectorXd& x)
     _model.getJointVelocity(_qdot);
     _upperBound = _k.array() * (_jointLimitsMax - _q).array() - _d.array() * _qdot.array();
     _lowerBound = _k.array() * (_jointLimitsMin - _q).array() - _d.array() * _qdot.array();
+    
+    setUpperBound(_upperBound);
+    setLowerBound(_lowerBound);
 
 /**********************************************************************/
 

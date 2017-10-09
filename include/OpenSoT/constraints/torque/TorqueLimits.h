@@ -27,11 +27,11 @@
         namespace torque {
 
             class TorqueLimits: public Constraint {
+                
             public:
+                
                 typedef boost::shared_ptr<TorqueLimits> Ptr;
-            private:
-
-            public:
+                
                 TorqueLimits(const Eigen::VectorXd& torque_max,
                              const Eigen::VectorXd& torque_min);
 
@@ -41,6 +41,9 @@
 
                 void setTorqueLimits(const Eigen::VectorXd& torque_max,
                                      const Eigen::VectorXd& torque_min);
+                
+            private:
+
 
             };
         }
