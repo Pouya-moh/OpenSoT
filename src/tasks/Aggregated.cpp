@@ -93,7 +93,7 @@ void Aggregated::checkSizes() {
 
 
 void Aggregated::generateAll() {
-    _tmpA.resize(0, _x_size);
+    _tmpA.resize(0, getXSize());
     _tmpb.resize(0);
 
     for(std::list< TaskPtr >::iterator i = _tasks.begin();
@@ -105,19 +105,22 @@ void Aggregated::generateAll() {
 
     _A = _tmpA;
     _b = _tmpb;
+    
+    setA(_A);
+    setb(_b);
 
     generateConstraints();
 }
 
 void OpenSoT::tasks::Aggregated::generateConstraints()
 {
-    int constraintsSize = this->_constraints.size();
+    int constraintsSize = getConstraints().size();
     int expectedConstraintsSize = this->_aggregatedConstraints.size() + this->_ownConstraints.size();
     if(constraintsSize >= expectedConstraintsSize)
     {
         if(constraintsSize > expectedConstraintsSize) // checking whether the user really added only constraints
         {
-            std::list < ConstraintPtr > orderedConstraints = this->_constraints;
+            std::list < ConstraintPtr > orderedConstraints = getConstraints();
             orderedConstraints.sort();
             this->_aggregatedConstraints.sort();
 
@@ -140,7 +143,7 @@ void OpenSoT::tasks::Aggregated::generateConstraints()
                                          "constraints.\n");
             else // saving the added constraints to the ownConstraints list, in the original order
             {
-                for (std::list<ConstraintPtr>::iterator j = _constraints.begin(); j!=_constraints.end(); ++j)
+                for (auto j = getConstraints().begin(); j != getConstraints().end(); ++j)
                     for( std::vector< ConstraintPtr >::iterator i = diffs.begin() ; i != diffs.end() ; ++i)
                         if(*i==*j)
                             _ownConstraints.push_back(*i);
@@ -159,9 +162,9 @@ void OpenSoT::tasks::Aggregated::generateConstraints()
 
     this->generateAggregatedConstraints();
 
-    this->_constraints.clear();
-    _constraints.insert(_constraints.end(), _aggregatedConstraints.begin(), _aggregatedConstraints.end());
-    _constraints.insert(_constraints.end(), _ownConstraints.begin(), _ownConstraints.end());
+    getConstraints().clear();
+    getConstraints().insert(getConstraints().end(), _aggregatedConstraints.begin(), _aggregatedConstraints.end());
+    getConstraints().insert(getConstraints().end(), _ownConstraints.begin(), _ownConstraints.end());
 
 }
 
@@ -216,11 +219,11 @@ void Aggregated::setLambda(double lambda)
 {
     if(lambda >= 0.0)
     {
-        _lambda = lambda;
+        setLambda(lambda);
         for(std::list<TaskPtr>::const_iterator i = _tasks.begin(); i != _tasks.end(); ++i)
         {
             TaskPtr t = *i;
-            t->setLambda(_lambda);
+            t->setLambda(lambda);
         }
     }
 }

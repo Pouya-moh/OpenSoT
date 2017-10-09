@@ -201,6 +201,13 @@
             void setLambda(double lambda);
               
             static bool isAggregated(OpenSoT::Task::TaskPtr task);
+            
+        private:
+            
+            Eigen::MatrixXd _W, _A;
+            Eigen::VectorXd _b;
+            
+            HessianType _hessianType;
         };
 
     }
