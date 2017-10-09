@@ -42,130 +42,13 @@
     /**
      * @brief Task represents a task in the form \f$T(A,b)\f$ where \f$A\f$ is the task error jacobian and \f$b\f$ is the task error
     */
-    template <class Matrix_type, class Vector_type>
     class Task {
 
     public:
-        typedef Task< Matrix_type, Vector_type > TaskType;
-        typedef boost::shared_ptr<TaskType> TaskPtr;
-        typedef Constraint< Matrix_type, Vector_type > ConstraintType;
-        typedef boost::shared_ptr<ConstraintType> ConstraintPtr;
-    protected:
-
-        /**
-         * @brief _task_id unique name of the task
-         */
-        std::string _task_id;
-
-        /**
-         * @brief _x_size size of the controlled variables
-         */
-        unsigned int _x_size;
-
-        /**
-         * @brief _hessianType Type of Hessian associated to the Task
-         */
-        HessianType _hessianType;
-
-        /**
-         * @brief _A Jacobian of the Task
-         */
-        Matrix_type _A;
-
-        /**
-         * @brief _b error associated to the Task
-         */
-        Vector_type _b;
-
-        /**
-         * @brief _W Weight multiplied to the task Jacobian
-         */
-        Matrix_type _W;
-
-        /**
-         * @brief _lambda error scaling,
-         * NOTE:
-         *          _lambda >= 0.0
-         */
-        double _lambda;
-
-        /**
-         * @brief _bounds related to the Task
-         */
-        std::list< ConstraintPtr > _constraints;
-
-        /**
-         * @brief _active_joint_mask is vector of bool that represent the active joints of the task.
-         * If false the corresponding column of the task jacobian is set to 0.
-         */
-        std::vector<bool> _active_joints_mask;
-
-        /** Updates the A, b, Aeq, beq, Aineq, b*Bound matrices
-            @param x variable state at the current step (input) */
-        virtual void _update(const Vector_type &x) = 0;
-
-        struct istrue //predicate
-        {
-           bool operator()(int val) const {return val == true;}
-        };
-
-        /**
-         * @brief applyActiveJointsMask apply the active joint mask to the A matrix:
-         * in tasks in which b does not depend on A, this is done setting to 0 the columns
-         * of A corresponding to the index set to false of the _active_joint_mask vector
-         * @param A matrix of the Task
-         */
-        virtual void applyActiveJointsMask(Matrix_type& A)
-        {
-            int rows = A.rows();
-            for(unsigned int i = 0; i < _x_size; ++i)
-            {
-                if(!_active_joints_mask[i])
-                    for(unsigned int j = 0; j < rows; ++j)
-                        A(j,i) = 0.0;
-            }
-            //TODO: is necessary here to call update()?
-        }
-
-        /**
-         * @brief _log can be used to log internal Task variables
-         * @param logger a shared pointer to a MatLogger
-         */
-        virtual void _log(XBot::MatLogger::Ptr logger)
-        {
-
-        }
-
-    private:
-
-        /**
-         * @brief _WA Jacobian of the Task times the Weight
-         */
-        mutable Matrix_type _WA;
-
-        /**
-         * @brief _Wb error associated to the Task times the Weight
-         */
-        mutable Vector_type _Wb;
-
-        /**
-         * @brief _Atranspose Jacobian of the task transposed
-         */
-        mutable Matrix_type _Atranspose;
         
-        /**
-         * @brief ...
-         * 
-         */
-        bool _is_active;
+        typedef boost::shared_ptr<Task> TaskPtr;
+        typedef boost::shared_ptr<Constraint> ConstraintPtr;
         
-        /**
-         * @brief ...
-         * 
-         */
-        Matrix_type _A_last_active;
-
-    public:
         /**
          * @brief Task define a task in terms of Ax = b
          * @param task_id is a unique id
@@ -209,7 +92,7 @@
          * @brief getA
          * @return the A matrix of the task
          */
-        const Matrix_type& getA() const {
+        const Eigen::MatrixXd& getA() const {
             return _A;
         }
 
@@ -223,13 +106,13 @@
          * @brief getb
          * @return the b matrix of the task
          */
-        const Vector_type& getb() const { return _b; }
+        const Eigen::VectorXd& getb() const { return _b; }
 
         /**
          * @brief getWA
          * @return the product between W and A
          */
-        const Matrix_type& getWA() const {
+        const Eigen::MatrixXd& getWA() const {
             _WA.noalias() = _W*_A;
             return _WA;
         }
@@ -238,7 +121,7 @@
          * @brief getATranspose()
          * @return A transposed
          */
-        const Matrix_type& getATranspose() const {
+        const Eigen::MatrixXd& getATranspose() const {
             _Atranspose = _A.transpose(); //This brakes the use of the template!
             return _Atranspose;
         }
@@ -247,7 +130,7 @@
          * @brief getWb
          * @return the product between W and b
          */
-        const Vector_type& getWb() const {
+        const Eigen::VectorXd& getWb() const {
             _Wb = _W*_b;
             return _Wb;
         }
@@ -256,7 +139,7 @@
          * @brief getWeight
          * @return the weight of the norm of the task error
          */
-        const Matrix_type& getWeight() const { return _W; }
+        const Eigen::MatrixXd& getWeight() const { return _W; }
 
         /**
          * @brief setWeight sets the task weight.
@@ -266,7 +149,7 @@
          * please use the class SubTask
          * @param W matrix weight
          */
-        virtual void setWeight(const Matrix_type& W) {
+        virtual void setWeight(const Eigen::MatrixXd& W) {
             assert(W.rows() == this->getTaskSize());
             assert(W.cols() == W.rows());
             _W = W;
@@ -284,6 +167,7 @@
                 _lambda = lambda;
             }
         }
+        
         
         /**
          * @brief getConstraints return a reference to the constraint list. Use the standard list methods
@@ -304,7 +188,7 @@
 
         /** Updates the A, b, Aeq, beq, Aineq, b*Bound matrices 
             @param x variable state at the current step (input) */
-        void update(const Vector_type &x) {
+        void update(const Eigen::VectorXd &x) {
            
             
             for(typename std::list< ConstraintPtr >::iterator i = this->getConstraints().begin();
@@ -378,6 +262,131 @@
                 constraint->log(logger);
 
         }
+        
+        
+    protected:
+        
+        bool setA(const Eigen::MatrixXd& A);
+        bool setb(const Eigen::VectorXd& b);
+        
+        
+    private:
+
+        /**
+         * @brief _task_id unique name of the task
+         */
+        std::string _task_id;
+
+        /**
+         * @brief _x_size size of the controlled variables
+         */
+        unsigned int _x_size;
+
+        /**
+         * @brief _hessianType Type of Hessian associated to the Task
+         */
+        HessianType _hessianType;
+
+        /**
+         * @brief _A Jacobian of the Task
+         */
+        Eigen::MatrixXd _A;
+
+        /**
+         * @brief _b error associated to the Task
+         */
+        Eigen::VectorXd _b;
+
+        /**
+         * @brief _W Weight multiplied to the task Jacobian
+         */
+        Eigen::MatrixXd _W;
+
+        /**
+         * @brief _lambda error scaling,
+         * NOTE:
+         *          _lambda >= 0.0
+         */
+        double _lambda;
+
+        /**
+         * @brief _bounds related to the Task
+         */
+        std::list< ConstraintPtr > _constraints;
+
+        /**
+         * @brief _active_joint_mask is vector of bool that represent the active joints of the task.
+         * If false the corresponding column of the task jacobian is set to 0.
+         */
+        std::vector<bool> _active_joints_mask;
+
+        /** Updates the A, b, Aeq, beq, Aineq, b*Bound matrices
+            @param x variable state at the current step (input) */
+        virtual void _update(const Eigen::VectorXd &x) = 0;
+
+        struct istrue //predicate
+        {
+           bool operator()(int val) const {return val == true;}
+        };
+
+        /**
+         * @brief applyActiveJointsMask apply the active joint mask to the A matrix:
+         * in tasks in which b does not depend on A, this is done setting to 0 the columns
+         * of A corresponding to the index set to false of the _active_joint_mask vector
+         * @param A matrix of the Task
+         */
+        virtual void applyActiveJointsMask(Eigen::MatrixXd& A)
+        {
+            int rows = A.rows();
+            for(unsigned int i = 0; i < _x_size; ++i)
+            {
+                if(!_active_joints_mask[i])
+                    for(unsigned int j = 0; j < rows; ++j)
+                        A(j,i) = 0.0;
+            }
+            //TODO: is necessary here to call update()?
+        }
+
+        /**
+         * @brief _log can be used to log internal Task variables
+         * @param logger a shared pointer to a MatLogger
+         */
+        virtual void _log(XBot::MatLogger::Ptr logger)
+        {
+
+        }
+
+    private:
+
+        /**
+         * @brief _WA Jacobian of the Task times the Weight
+         */
+        mutable Eigen::MatrixXd _WA;
+
+        /**
+         * @brief _Wb error associated to the Task times the Weight
+         */
+        mutable Eigen::VectorXd _Wb;
+
+        /**
+         * @brief _Atranspose Jacobian of the task transposed
+         */
+        mutable Eigen::MatrixXd _Atranspose;
+        
+        /**
+         * @brief ...
+         * 
+         */
+        bool _is_active;
+        
+        /**
+         * @brief ...
+         * 
+         */
+        Eigen::MatrixXd _A_last_active;
+
+    public:
+        
     };
 
 

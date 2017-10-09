@@ -30,97 +30,30 @@
   * 2. equalities
   * 3. unilateral
   */
- template <class Matrix_type, class Vector_type>
     class Constraint {
+        
     public:
-        typedef Constraint< Matrix_type, Vector_type > ConstraintType;
-        typedef boost::shared_ptr<ConstraintType> ConstraintPtr;
-    protected:
-
-        /**
-         * @brief _constraint_id unique name of the constraint
-         */
-        std::string _constraint_id;
-
-        /**
-         * @brief _x_size size of the controlled variables
-         */
-        unsigned int _x_size;
-
-        /**
-         * @brief _lowerBound lower bounds on controlled variables
-         * e.g.:
-         *              _lowerBound <= x
-         */
-        Vector_type _lowerBound;
-
-        /**
-         * @brief _upperBound upper bounds on controlled variables
-         * e.g.:
-         *              x <= _upperBound
-         */
-        Vector_type _upperBound;
-
-        /**
-         * @brief _Aeq Matrix for equality constraint
-         * e.g.:
-         *              _Aeq*x = _beq
-         */
-        Matrix_type _Aeq;
-
-        /**
-         * @brief _beq constraint vector for equality constraint
-         * e.g.:
-         *              _Aeq*x = _beq
-         */
-        Vector_type _beq;
-
-        /**
-         * @brief _Aineq Matrix for inequality constraint
-         * e.g.:
-         *              _bLowerBound <= _Aineq*x <= _bUpperBound
-         */
-        Matrix_type _Aineq;
-
-        /**
-         * @brief _bLowerBound lower bounds in generic inequality constraints
-         * e.g.:
-         *              _bLowerBound <= _Aineq*x
-         */
-        Vector_type _bLowerBound;
-
-        /**
-         * @brief _bUpperBound upper bounds in generic inequality constraints
-         * e.g.:
-         *              _Aineq*x <= _bUpperBound
-         */
-        Vector_type _bUpperBound;
-
-        /**
-         * @brief _log can be used to log internal Constraint variables
-         * @param logger a shared pointer to a MatLogger
-         */
-        virtual void _log(XBot::MatLogger::Ptr logger)
-        {
-
-        }
-
-    public:
+        
+        typedef boost::shared_ptr<Constraint> ConstraintPtr;
+        
         Constraint(const std::string constraint_id,
                    const unsigned int x_size) :
-            _constraint_id(constraint_id), _x_size(x_size) {}
+            _constraint_id(constraint_id), _x_size(x_size) 
+        {}
+            
+            
         virtual ~Constraint() {}
 
         const unsigned int getXSize() { return _x_size; }
-        virtual const Vector_type& getLowerBound() { return _lowerBound; }
-        virtual const Vector_type& getUpperBound() { return _upperBound; }
+        virtual const Eigen::VectorXd& getLowerBound() { return _lowerBound; }
+        virtual const Eigen::VectorXd& getUpperBound() { return _upperBound; }
 
-        virtual const Matrix_type& getAeq() { return _Aeq; }
-        virtual const Vector_type& getbeq() { return _beq; }
+        virtual const Eigen::MatrixXd& getAeq() { return _Aeq; }
+        virtual const Eigen::VectorXd& getbeq() { return _beq; }
 
-        virtual const Matrix_type& getAineq() { return _Aineq; }
-        virtual const Vector_type& getbLowerBound() { return _bLowerBound; }
-        virtual const Vector_type& getbUpperBound() { return _bUpperBound; }
+        virtual const Eigen::MatrixXd& getAineq() { return _Aineq; }
+        virtual const Eigen::VectorXd& getbLowerBound() { return _bLowerBound; }
+        virtual const Eigen::VectorXd& getbUpperBound() { return _bUpperBound; }
 
         /**
          * @brief isEqualityConstraint
@@ -176,7 +109,7 @@
 
         /** Updates the A, b, Aeq, beq, Aineq, b*Bound matrices 
             @param x variable state at the current step (input) */
-        virtual void update(const Vector_type& x) {}
+        virtual void update(const Eigen::VectorXd& x) {}
 
         /**
          * @brief log logs common Constraint internal variables
@@ -200,6 +133,93 @@
                 logger->add(_constraint_id + "_lowerBound", _lowerBound);
             _log(logger);
         }
+        
+    protected:
+        
+        bool setLowerBound(const Eigen::VectorXd& lb);
+        
+        bool setUpperBound(const Eigen::VectorXd& ub);
+        
+        bool setAineq(const Eigen::MatrixXd& Aineq);
+        
+        bool setLowerBoundIneq(const Eigen::VectorXd& lb);
+        
+        bool setUpperBoundIneq(const Eigen::VectorXd& ub);
+        
+        bool setAeq(const Eigen::MatrixXd& Aeq);
+        
+        bool setbeq(const Eigen::VectorXd& beq);
+        
+    private:
+
+        /**
+         * @brief _constraint_id unique name of the constraint
+         */
+        std::string _constraint_id;
+
+        /**
+         * @brief _x_size size of the controlled variables
+         */
+        unsigned int _x_size;
+
+        /**
+         * @brief _lowerBound lower bounds on controlled variables
+         * e.g.:
+         *              _lowerBound <= x
+         */
+        Eigen::VectorXd _lowerBound;
+
+        /**
+         * @brief _upperBound upper bounds on controlled variables
+         * e.g.:
+         *              x <= _upperBound
+         */
+        Eigen::VectorXd _upperBound;
+
+        /**
+         * @brief _Aeq Matrix for equality constraint
+         * e.g.:
+         *              _Aeq*x = _beq
+         */
+        Eigen::MatrixXd _Aeq;
+
+        /**
+         * @brief _beq constraint vector for equality constraint
+         * e.g.:
+         *              _Aeq*x = _beq
+         */
+        Eigen::VectorXd _beq;
+
+        /**
+         * @brief _Aineq Matrix for inequality constraint
+         * e.g.:
+         *              _bLowerBound <= _Aineq*x <= _bUpperBound
+         */
+        Eigen::MatrixXd _Aineq;
+
+        /**
+         * @brief _bLowerBound lower bounds in generic inequality constraints
+         * e.g.:
+         *              _bLowerBound <= _Aineq*x
+         */
+        Eigen::VectorXd _bLowerBound;
+
+        /**
+         * @brief _bUpperBound upper bounds in generic inequality constraints
+         * e.g.:
+         *              _Aineq*x <= _bUpperBound
+         */
+        Eigen::VectorXd _bUpperBound;
+
+        /**
+         * @brief _log can be used to log internal Constraint variables
+         * @param logger a shared pointer to a MatLogger
+         */
+        virtual void _log(XBot::MatLogger::Ptr logger)
+        {
+
+        }
+        
     };
  }
 
