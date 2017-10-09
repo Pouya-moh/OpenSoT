@@ -29,9 +29,13 @@
             public:
                 typedef boost::shared_ptr<CoMVelocity> Ptr;
             private:
+                
                 XBot::ModelInterface& _robot;
                 Eigen::VectorXd _velocityLimits;
                 double _dT;
+                
+                Eigen::MatrixXd _Aineq;
+                Eigen::VectorXd _bLowerBound, _bUpperBound;
 
                 void generatebBounds();
 

@@ -44,6 +44,10 @@ void CoMVelocity::update(const Eigen::VectorXd &x) {
 
     _robot.getCOMJacobian(_Aineq);
     this->generatebBounds();
+    
+    setAineq(_Aineq);
+    setUpperBoundIneq(_bUpperBound);
+    setLowerBoundIneq(_bLowerBound);
 }
 
 Eigen::VectorXd OpenSoT::constraints::velocity::CoMVelocity::getVelocityLimits()
