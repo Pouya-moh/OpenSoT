@@ -37,7 +37,7 @@
                 MinimumCartesianVelocity
              * You can see an example of it in @ref example_MinimumVelocity.cpp
              */
-            class MinimumVelocity : public Task < Eigen::MatrixXd, Eigen::VectorXd > {
+            class MinimumVelocity : public Task {
             public:
                 typedef boost::shared_ptr<MinimumVelocity> Ptr;
             protected:

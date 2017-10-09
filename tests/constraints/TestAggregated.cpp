@@ -156,11 +156,11 @@ TEST_F(testAggregated, UnilateralToBilateralWorks) {
     _links_in_contact.push_back("r_foot_upper_left_link");
     _links_in_contact.push_back("r_foot_upper_right_link");
 
-    OpenSoT::Constraint<Eigen::MatrixXd, Eigen::VectorXd>::ConstraintPtr convexHull(
+    OpenSoT::Constraint::ConstraintPtr convexHull(
                 new OpenSoT::constraints::velocity::ConvexHull(q,*(_model_ptr.get()), _links_in_contact));
-    std::list<OpenSoT::Constraint<Eigen::MatrixXd, Eigen::VectorXd>::ConstraintPtr> constraints;
+    std::list<OpenSoT::Constraint::ConstraintPtr> constraints;
     constraints.push_back(convexHull);
-    OpenSoT::Constraint<Eigen::MatrixXd, Eigen::VectorXd>::ConstraintPtr aggregated(
+    OpenSoT::Constraint::ConstraintPtr aggregated(
                 new OpenSoT::constraints::Aggregated(constraints,
                                                      _model_ptr->getJointNum()));
 

@@ -27,7 +27,7 @@
 
 namespace OpenSoT { namespace tasks { namespace velocity {
     
-    class PureRolling : public Task<Eigen::MatrixXd, Eigen::VectorXd> {
+    class PureRolling : public Task {
         
     public:
         

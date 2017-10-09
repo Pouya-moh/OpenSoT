@@ -27,7 +27,7 @@
             /**
              * @brief The VelocityLimits class implements a bound on joint velocities
              */
-            class VelocityLimits: public Constraint<Eigen::MatrixXd, Eigen::VectorXd> {
+            class VelocityLimits: public Constraint {
             public:
                 typedef boost::shared_ptr<VelocityLimits> Ptr;
             private:

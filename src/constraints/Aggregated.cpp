@@ -77,22 +77,24 @@ void Aggregated::update(const Eigen::VectorXd& x) {
 
 void Aggregated::generateAll() {
     /* resetting all internal data */
-    _upperBound.resize(0);
-    _lowerBound.resize(0);
+//     _upperBound.resize(0);
+//     _lowerBound.resize(0);
 
-    _Aeq.resize(0,_x_size);
-    _beq.resize(0);
+//     _Aeq.resize(0,_x_size);
+//     _beq.resize(0);
 
-    _Aineq.resize(0,_x_size);
-    _bUpperBound.resize(0);
-    _bLowerBound.resize(0);
+//     _Aineq.resize(0,_x_size);
+//     _bUpperBound.resize(0);
+//     _bLowerBound.resize(0);
 
-    if(_constraint_id.empty())
-        _constraint_id = concatenateConstraintsIds(getConstraintsList());
+    Eigen::MatrixXd Aeq(0, getXSize()), 
+                    Aineq(0, getXSize());
+                    
+    Eigen::VectorXd upperBound, lowerBound, bUpperBound, bLowerBound, beq;
+
 
     /* iterating on all bounds.. */
-    for(typename std::list< ConstraintPtr >::iterator i = _bounds.begin();
-        i != _bounds.end(); i++) {
+    for(auto i = _bounds.begin(); i != _bounds.end(); i++) {
 
         ConstraintPtr &b = *i;
 
@@ -109,52 +111,66 @@ void Aggregated::generateAll() {
         /* copying lowerBound, upperBound */
         if(boundUpperBound.rows() != 0 ||
            boundLowerBound.rows() != 0) {
-            assert(boundUpperBound.rows() == _x_size);
-            assert(boundLowerBound.rows() == _x_size);
+            assert(boundUpperBound.rows() == getXSize());
+            assert(boundLowerBound.rows() == getXSize());
 
-            if(_upperBound.rows() == 0 ||
-               _lowerBound.rows() == 0) { // first valid bounds found
-                assert(_upperBound.rows() == _lowerBound.rows());
-                _upperBound = boundUpperBound;
-                _lowerBound = boundLowerBound;
+            if(upperBound.rows() == 0 ||
+               lowerBound.rows() == 0) { // first valid bounds found
+                assert(upperBound.rows() == lowerBound.rows());
+                upperBound = boundUpperBound;
+                lowerBound = boundLowerBound;
             } else {
-                for(unsigned int i = 0; i < _x_size; ++i) {
+                for(unsigned int i = 0; i < getXSize(); ++i) {
                     // compute the minimum between current and new upper bounds
-                    _upperBound[i] = std::min(  _upperBound[i],
-                                                boundUpperBound[i]);
+                    upperBound[i] = std::min( upperBound[i],
+                                              boundUpperBound[i]);
                     // compute the maximum between current and new lower bounds
-                    _lowerBound[i] = std::max(  _lowerBound[i],
-                                                boundLowerBound[i]);
+                    lowerBound[i] = std::max( lowerBound[i],
+                                              boundLowerBound[i]);
                 }
             }
+            
+            setUpperBound(boundUpperBound);
+            setLowerBound(boundLowerBound);
         }
 
         /* copying Aeq, beq */
-        if( boundAeq.rows() != 0 ||
-            boundbeq.rows() != 0) {
+        if( boundAeq.rows() != 0 || boundbeq.rows() != 0) {
+            
             assert(boundAeq.rows() == boundbeq.rows());
+            
             /* when transforming equalities to inequalities,
                 Aeq*x = beq becomes
                 beq <= Aeq*x <= beq */
+            
             if(_aggregationPolicy & EQUALITIES_TO_INEQUALITIES) {
-                assert(_Aineq.cols() == boundAeq.cols());
-                pile(_Aineq,boundAeq);
-                pile(_bUpperBound,boundbeq);
+                
+                assert(Aineq.cols() == boundAeq.cols());
+                pile(Aineq,boundAeq);
+                pile(bUpperBound,boundbeq);
+                
                 if(_aggregationPolicy & UNILATERAL_TO_BILATERAL) {
-                    pile(_bLowerBound,boundbeq);
+                    
+                    pile(bLowerBound,boundbeq);
+                    
                 /* we want to have only unilateral constraints, so
                    beq <= Aeq*x <= beq becomes
                    -Aeq*x <= -beq && Aeq*x <= beq */
+                
                 } else {
-                    assert(_Aineq.cols() == boundAeq.cols());
-                    pile(_Aineq,-1.0*boundAeq);
-                    pile(_bUpperBound, -1.0 * boundbeq);
+                    assert(Aineq.cols() == boundAeq.cols());
+                    pile(Aineq,-1.0*boundAeq);
+                    pile(bUpperBound, -1.0 * boundbeq);
                 }
             } else {
-                assert(_Aeq.cols() == boundAeq.cols());
-                pile(_Aeq,boundAeq);
-                pile(_beq,boundbeq);
+                assert(Aeq.cols() == boundAeq.cols());
+                pile(Aeq,boundAeq);
+                pile(beq,boundbeq);
             }
+            
+            setAeq(Aeq);
+            setbeq(beq);
+    
         }
 
         /* copying Aineq, bUpperBound, bLowerBound*/
@@ -165,7 +181,7 @@ void Aggregated::generateAll() {
             assert(boundAineq.rows() > 0);
             assert(boundbLowerBound.rows() > 0 ||
                    boundbUpperBound.rows() > 0);
-            assert(boundAineq.cols() == _x_size);
+            assert(boundAineq.cols() == getXSize());
 
             /* if we need to transform all unilateral bounds to bilateral.. */
             if(_aggregationPolicy & UNILATERAL_TO_BILATERAL) {
@@ -196,31 +212,43 @@ void Aggregated::generateAll() {
                     pile(boundAineq,-1.0 * boundAineq);
                     pile(boundbUpperBound,-1.0 * boundbLowerBound);
                 }
+                
             }
 
-            assert(_Aineq.cols() == boundAineq.cols());
-            pile(_Aineq,boundAineq);
-            pile(_bUpperBound,boundbUpperBound);
+            assert(Aineq.cols() == boundAineq.cols());
+            pile(Aineq,boundAineq);
+            pile(bUpperBound,boundbUpperBound);
+            
             /*  if using UNILATERAL_TO_BILATERAL we always have lower bounds,
                 otherwise, we never have them */
             if(_aggregationPolicy & UNILATERAL_TO_BILATERAL)
-                pile(_bLowerBound, boundbLowerBound);
+                pile(bLowerBound, boundbLowerBound);
         }
+        
+            setAineq(Aineq);
+            setUpperBoundIneq(bUpperBound);
+            setLowerBoundIneq(bLowerBound);
     }
+    
+    
+    
+
+    
+    
 
     /* checking everything went fine */
-    assert(_lowerBound.rows() == 0 || _lowerBound.rows() == _x_size);
-    assert(_upperBound.rows() == 0 || _upperBound.rows() == _x_size);
+    assert(getLowerBound().rows() == 0 || getLowerBound().rows() == getXSize());
+    assert(getUpperBound().rows() == 0 || getUpperBound().rows() == getXSize());
 
-    assert(_Aeq.rows() == _beq.rows());
-    if(_Aeq.rows() > 0)
-        assert(_Aeq.cols() == _x_size);
+    assert(getAeq().rows() == getbeq().rows());
+    if(getAeq().rows() > 0)
+        assert(getAeq().cols() == getXSize());
 
-    assert(_Aineq.rows() == _bUpperBound.rows());
+    assert(getAineq().rows() == getbUpperBound().rows());
     if(!(_aggregationPolicy & UNILATERAL_TO_BILATERAL))
-        assert(_Aineq.rows() == _bLowerBound.rows());
-    if(_Aineq.rows() > 0)
-        assert(_Aineq.cols() == _x_size);
+        assert(getAineq().rows() == getbLowerBound().rows());
+    if(getAineq().rows() > 0)
+        assert(getAineq().cols() == getXSize());
 }
 
 void Aggregated::checkSizes()

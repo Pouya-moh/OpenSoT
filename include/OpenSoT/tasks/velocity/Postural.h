@@ -35,7 +35,7 @@
              * @brief The Postural class implements a task that tries to bring the robust posture to a reference posture.
              * You can see an example of it in @ref example_postural.cpp
              */
-            class Postural : public Task < Eigen::MatrixXd, Eigen::VectorXd > {
+            class Postural : public Task {
             public:
                 typedef boost::shared_ptr<Postural> Ptr;
             protected:

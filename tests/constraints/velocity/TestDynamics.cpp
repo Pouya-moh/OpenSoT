@@ -374,7 +374,7 @@ for(unsigned int j = 0; j < 2; ++j){
     //Set Up SoT
     sleep(5);
     // BOUNDS
-    Constraint<Eigen::MatrixXd, Eigen::VectorXd>::ConstraintPtr boundsJointLimits =
+    Constraint::ConstraintPtr boundsJointLimits =
             constraints::velocity::JointLimits::ConstraintPtr(
                 new constraints::velocity::JointLimits(
                     cartesian_utils::toEigen(q),
@@ -382,7 +382,7 @@ for(unsigned int j = 0; j < 2; ++j){
                     coman_robot.idynutils.getJointBoundMin()));
 
 
-    Constraint<Eigen::MatrixXd, Eigen::VectorXd>::ConstraintPtr boundsJointVelocity =
+    Constraint::ConstraintPtr boundsJointVelocity =
             constraints::velocity::VelocityLimits::ConstraintPtr(
                 new constraints::velocity::VelocityLimits(joint_velocity_limits, dT,q.size()));
 
@@ -409,7 +409,7 @@ for(unsigned int j = 0; j < 2; ++j){
     std::list<tasks::velocity::Cartesian::TaskPtr> cartesianTasks;
     cartesianTasks.push_back(cartesian_task_l_wrist);
     cartesianTasks.push_back(cartesian_task_r_wrist);
-    Task<Eigen::MatrixXd, Eigen::VectorXd>::TaskPtr taskCartesianAggregated =
+    Task::TaskPtr taskCartesianAggregated =
             tasks::Aggregated::TaskPtr(
        new tasks::Aggregated(cartesianTasks,q.size()));
 
@@ -419,7 +419,7 @@ for(unsigned int j = 0; j < 2; ++j){
 
     std::list<tasks::velocity::Cartesian::TaskPtr> jointTasks;
     jointTasks.push_back(postural_task);
-    Task<Eigen::MatrixXd, Eigen::VectorXd>::TaskPtr taskJointAggregated =
+    Task::TaskPtr taskJointAggregated =
             tasks::Aggregated::TaskPtr(
        new tasks::Aggregated(jointTasks,q.size()));
 
@@ -704,7 +704,7 @@ for(unsigned int j = 0; j < 2; ++j){
     //Set Up SoT
     sleep(5);
     // BOUNDS
-    Constraint<Eigen::MatrixXd, Eigen::VectorXd>::ConstraintPtr boundsJointLimits =
+    Constraint::ConstraintPtr boundsJointLimits =
             constraints::velocity::JointLimits::ConstraintPtr(
                 new constraints::velocity::JointLimits(
                     cartesian_utils::toEigen(q),
@@ -712,7 +712,7 @@ for(unsigned int j = 0; j < 2; ++j){
                     coman_robot.idynutils.getJointBoundMin()));
 
 
-    Constraint<Eigen::MatrixXd, Eigen::VectorXd>::ConstraintPtr boundsJointVelocity =
+    Constraint::ConstraintPtr boundsJointVelocity =
             constraints::velocity::VelocityLimits::ConstraintPtr(
                 new constraints::velocity::VelocityLimits(joint_velocity_limits, dT,q.size()));
 
@@ -741,7 +741,7 @@ for(unsigned int j = 0; j < 2; ++j){
     std::list<tasks::velocity::Cartesian::TaskPtr> cartesianTasks;
     cartesianTasks.push_back(cartesian_task_l_wrist);
     cartesianTasks.push_back(cartesian_task_r_wrist);
-    Task<Eigen::MatrixXd, Eigen::VectorXd>::TaskPtr taskCartesianAggregated =
+    Task::TaskPtr taskCartesianAggregated =
             tasks::Aggregated::TaskPtr(
        new tasks::Aggregated(cartesianTasks,q.size()));
 
@@ -751,7 +751,7 @@ for(unsigned int j = 0; j < 2; ++j){
 
     std::list<tasks::velocity::Cartesian::TaskPtr> jointTasks;
     jointTasks.push_back(postural_task);
-    Task<Eigen::MatrixXd, Eigen::VectorXd>::TaskPtr taskJointAggregated =
+    Task::TaskPtr taskJointAggregated =
             tasks::Aggregated::TaskPtr(
        new tasks::Aggregated(jointTasks,q.size()));
 
@@ -1074,7 +1074,7 @@ for(unsigned int j = 0; j < 2; ++j){
 
 
     // BOUNDS
-    Constraint<Eigen::MatrixXd, Eigen::VectorXd>::ConstraintPtr boundsJointLimits =
+    Constraint::ConstraintPtr boundsJointLimits =
             constraints::velocity::JointLimits::ConstraintPtr(
                 new constraints::velocity::JointLimits(
                     cartesian_utils::toEigen(q),
@@ -1082,7 +1082,7 @@ for(unsigned int j = 0; j < 2; ++j){
                     coman_robot.idynutils.getJointBoundMin()));
 
 
-    Constraint<Eigen::MatrixXd, Eigen::VectorXd>::ConstraintPtr boundsJointVelocity =
+    Constraint::ConstraintPtr boundsJointVelocity =
             constraints::velocity::VelocityLimits::ConstraintPtr(
                 new constraints::velocity::VelocityLimits(joint_velocity_limits, dT,q.size()));
 
@@ -1138,7 +1138,7 @@ for(unsigned int j = 0; j < 2; ++j){
     std::list<OpenSoT::tasks::velocity::Cartesian::TaskPtr> jointTasks;
     jointTasks.push_back(postural_task);
     jointTasks.push_back(min_acc_task);
-     OpenSoT::Task<Eigen::MatrixXd, Eigen::VectorXd>::TaskPtr taskJointAggregated =
+     OpenSoT::Task::TaskPtr taskJointAggregated =
              OpenSoT::tasks::Aggregated::TaskPtr(
         new OpenSoT::tasks::Aggregated(jointTasks,q.size()));
 
@@ -1158,7 +1158,7 @@ for(unsigned int j = 0; j < 2; ++j){
 
     std::list<tasks::velocity::Cartesian::TaskPtr> cartesianTasksHighest;
     cartesianTasksHighest.push_back(right_foot);
-    Task<Eigen::MatrixXd, Eigen::VectorXd>::TaskPtr taskCartesianAggregatedHighest =
+    Task::TaskPtr taskCartesianAggregatedHighest =
             tasks::Aggregated::TaskPtr(
        new tasks::Aggregated(cartesianTasksHighest,q.size()));
 
@@ -1168,7 +1168,7 @@ for(unsigned int j = 0; j < 2; ++j){
     cartesianTasks.push_back(cartesian_task_waist);
     cartesianTasks.push_back(torso);
     cartesianTasks.push_back(com_task);
-    Task<Eigen::MatrixXd, Eigen::VectorXd>::TaskPtr taskCartesianAggregated =
+    Task::TaskPtr taskCartesianAggregated =
             tasks::Aggregated::TaskPtr(
        new tasks::Aggregated(cartesianTasks,q.size()));
 
@@ -1552,14 +1552,14 @@ TEST_F(testDynamicsConstr, DISABLED_testConstraintWithContacts_externalForces) {
         std::cout<<RED<<"Dyn Constraint is NOT active"<<DEFAULT<<std::endl;
 
     // BOUNDS
-    Constraint<Eigen::MatrixXd, Eigen::VectorXd>::ConstraintPtr boundsJointLimits =
+    Constraint::ConstraintPtr boundsJointLimits =
             constraints::velocity::JointLimits::ConstraintPtr(
                 new constraints::velocity::JointLimits(
                     cartesian_utils::toEigen(q),
                     coman_robot.idynutils.getJointBoundMax(),
                     coman_robot.idynutils.getJointBoundMin()));
 
-    Constraint<Eigen::MatrixXd, Eigen::VectorXd>::ConstraintPtr boundsJointVelocity =
+    Constraint::ConstraintPtr boundsJointVelocity =
             constraints::velocity::VelocityLimits::ConstraintPtr(
                 new constraints::velocity::VelocityLimits(joint_vel_limits, dT,q.size()));
 
@@ -1612,7 +1612,7 @@ TEST_F(testDynamicsConstr, DISABLED_testConstraintWithContacts_externalForces) {
     std::list<OpenSoT::tasks::velocity::Cartesian::TaskPtr> jointTasks;
     jointTasks.push_back(postural_task);
     jointTasks.push_back(min_acc_task);
-     OpenSoT::Task<Eigen::MatrixXd, Eigen::VectorXd>::TaskPtr taskJointAggregated =
+     OpenSoT::Task::TaskPtr taskJointAggregated =
              OpenSoT::tasks::Aggregated::TaskPtr(
         new OpenSoT::tasks::Aggregated(jointTasks,q.size()));
 
@@ -1632,7 +1632,7 @@ TEST_F(testDynamicsConstr, DISABLED_testConstraintWithContacts_externalForces) {
 
     std::list<tasks::velocity::Cartesian::TaskPtr> cartesianTasksHighest;
     cartesianTasksHighest.push_back(right_foot);
-    Task<Eigen::MatrixXd, Eigen::VectorXd>::TaskPtr taskCartesianAggregatedHighest =
+    Task::TaskPtr taskCartesianAggregatedHighest =
             tasks::Aggregated::TaskPtr(
        new tasks::Aggregated(cartesianTasksHighest,q.size()));
 
@@ -1642,7 +1642,7 @@ TEST_F(testDynamicsConstr, DISABLED_testConstraintWithContacts_externalForces) {
     cartesianTasks.push_back(cartesian_task_waist);
     cartesianTasks.push_back(torso);
     cartesianTasks.push_back(com_task);
-    Task<Eigen::MatrixXd, Eigen::VectorXd>::TaskPtr taskCartesianAggregated =
+    Task::TaskPtr taskCartesianAggregated =
             tasks::Aggregated::TaskPtr(
        new tasks::Aggregated(cartesianTasks,q.size()));
 

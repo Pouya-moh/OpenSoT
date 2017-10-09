@@ -27,7 +27,7 @@
 
 namespace OpenSoT { namespace tasks { namespace velocity {
     
-    class RigidRotation : public Task<Eigen::MatrixXd, Eigen::VectorXd> {
+    class RigidRotation : public Task {
         
     public:
         

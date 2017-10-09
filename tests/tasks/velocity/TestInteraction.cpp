@@ -233,11 +233,11 @@ TEST_F(testInteractionTask, testInteractionTask_wrench)
                                                 _robot.getJointBoundMin()));
 
     //Create the SoT
-    std::vector< OpenSoT::Task<Eigen::MatrixXd, Eigen::VectorXd>::TaskPtr > stack_of_tasks;
+    std::vector< OpenSoT::Task::TaskPtr > stack_of_tasks;
     stack_of_tasks.push_back(interactionTask);
     stack_of_tasks.push_back(posturalTask);
 
-    std::list< OpenSoT::Constraint<Eigen::MatrixXd, Eigen::VectorXd>::ConstraintPtr > joint_constraints_list;
+    std::list< OpenSoT::Constraint::ConstraintPtr > joint_constraints_list;
     joint_constraints_list.push_back(joint_limits);
     joint_constraints_list.push_back(joint_velocity_limits);
 
@@ -379,7 +379,7 @@ TEST_F(testInteractionTask, testInteractionTask_wrenchSimulation) {
 //    wrench_d_l_wrist[3] = 2.0; wrench_d_l_wrist[4] = -2.0; wrench_d_l_wrist[5] = -2.0;
 
     // BOUNDS
-    Constraint<Eigen::MatrixXd, Eigen::VectorXd>::ConstraintPtr boundsJointLimits =
+    Constraint::ConstraintPtr boundsJointLimits =
             constraints::velocity::JointLimits::ConstraintPtr(
                 new constraints::velocity::JointLimits(
                     cartesian_utils::toEigen(q),
@@ -387,7 +387,7 @@ TEST_F(testInteractionTask, testInteractionTask_wrenchSimulation) {
                     coman_robot.idynutils.getJointBoundMin()));
 
     double dT = 0.005;
-    Constraint<Eigen::MatrixXd, Eigen::VectorXd>::ConstraintPtr boundsJointVelocity =
+    Constraint::ConstraintPtr boundsJointVelocity =
             constraints::velocity::VelocityLimits::ConstraintPtr(
                 new constraints::velocity::VelocityLimits(0.3, dT,q.size()));
 
@@ -438,7 +438,7 @@ TEST_F(testInteractionTask, testInteractionTask_wrenchSimulation) {
     std::list<tasks::velocity::Cartesian::TaskPtr> aggregated_list;
     aggregated_list.push_back(interaction_rwrist_task);
     //aggregated_list.push_back(interaction_lwrist_task);
-    Task<Eigen::MatrixXd, Eigen::VectorXd>::TaskPtr taskAggregatedHighest =
+    Task::TaskPtr taskAggregatedHighest =
             tasks::Aggregated::TaskPtr(
        new tasks::Aggregated(aggregated_list,q.size()));
 

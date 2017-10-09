@@ -154,13 +154,13 @@ Eigen::Vector3d OpenSoT::tasks::velocity::CoM::getError()
     return _positionError;
 }
 
-OpenSoT::tasks::velocity::CoM::Ptr OpenSoT::tasks::velocity::CoM::asCoM(OpenSoT::Task<Eigen::MatrixXd, Eigen::VectorXd>::TaskPtr task)
+OpenSoT::tasks::velocity::CoM::Ptr OpenSoT::tasks::velocity::CoM::asCoM(OpenSoT::Task::TaskPtr task)
 {
     return boost::dynamic_pointer_cast<OpenSoT::tasks::velocity::CoM>(task);
 }
 
 
-bool OpenSoT::tasks::velocity::CoM::isCoM(OpenSoT::Task<Eigen::MatrixXd, Eigen::VectorXd>::TaskPtr task)
+bool OpenSoT::tasks::velocity::CoM::isCoM(OpenSoT::Task::TaskPtr task)
 {
     return (bool)boost::dynamic_pointer_cast<OpenSoT::tasks::velocity::CoM>(task);
 }

@@ -204,7 +204,7 @@ TEST_F(testAggregatedTask, testConstraintsUpdate)
 
         std::list<OpenSoT::tasks::Aggregated::TaskPtr> taskList;
         taskList.push_back(taskPostural);
-        OpenSoT::Task<Eigen::MatrixXd, Eigen::VectorXd>::TaskPtr _task0(
+        OpenSoT::Task::TaskPtr _task0(
                 new OpenSoT::tasks::Aggregated(taskList, q.size()));
         _task0->getConstraints().push_back(constraintConvexHull);
         EXPECT_EQ(_task0->getConstraints().size(), 1)<<"1"<<std::endl;
@@ -228,7 +228,7 @@ TEST_F(testAggregatedTask, testConstraintsUpdate)
 
         Eigen::MatrixXd A0 = _task0->getA();
         Eigen::VectorXd b0 = _task0->getb();
-        std::list<OpenSoT::Constraint<Eigen::MatrixXd, Eigen::VectorXd>::ConstraintPtr> constraints0 =
+        std::list<OpenSoT::Constraint::ConstraintPtr> constraints0 =
                 _task0->getConstraints();
         ASSERT_EQ(constraints0.size(), 2);
         Eigen::MatrixXd Aineq0_ch = constraints0.front()->getAineq();
@@ -240,7 +240,7 @@ TEST_F(testAggregatedTask, testConstraintsUpdate)
 
         Eigen::MatrixXd A1 = _task1->getA();
         Eigen::VectorXd b1 = _task1->getb();
-        std::list<OpenSoT::Constraint<Eigen::MatrixXd, Eigen::VectorXd>::ConstraintPtr> constraints1 =
+        std::list<OpenSoT::Constraint::ConstraintPtr> constraints1 =
                 _task1->getConstraints();
         Eigen::MatrixXd Aineq1_ch = constraints1.front()->getAineq();
         Eigen::VectorXd lA1_ch = constraints1.front()->getbLowerBound();

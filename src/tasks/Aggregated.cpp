@@ -225,7 +225,7 @@ void Aggregated::setLambda(double lambda)
     }
 }
 
-bool OpenSoT::tasks::Aggregated::isAggregated(OpenSoT::Task<Eigen::MatrixXd, Eigen::VectorXd>::TaskPtr task)
+bool OpenSoT::tasks::Aggregated::isAggregated(OpenSoT::Task::TaskPtr task)
 {
     return (bool)boost::dynamic_pointer_cast<OpenSoT::tasks::Aggregated>(task);
 }

@@ -41,7 +41,7 @@
      * as well as the weight matrix W (the \f$W_\text{subtask}\f$ is a submatrix of \f$W\f$)
      * On the other side, the \f$\lambda\f$ for the SubTask is unique to the SubTask.
     */
-    class SubTask : public Task<Eigen::MatrixXd, Eigen::VectorXd> {
+    class SubTask : public Task {
 
     public:
 

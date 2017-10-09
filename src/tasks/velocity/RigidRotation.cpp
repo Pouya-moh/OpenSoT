@@ -7,7 +7,7 @@ OpenSoT::tasks::velocity::RigidRotation::RigidRotation(std::string wheel_link_na
                                                    const XBot::ModelInterface& model,
                                                    double dt
                                                       ): 
-    Task<Eigen::MatrixXd, Eigen::VectorXd>("RIGID_ROTATION_" + wheel_link_name, model.getJointNum()),
+    Task("RIGID_ROTATION_" + wheel_link_name, model.getJointNum()),
     _model(model),
     _wheel_link_name(wheel_link_name),
     _waist_link_name(waist_link_name),

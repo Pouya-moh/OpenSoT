@@ -28,17 +28,15 @@ int BilateralConstraint::_constr_count = 0;
 BilateralConstraint::BilateralConstraint(const Eigen::MatrixXd &Aineq,
                                          const Eigen::VectorXd &bLowerBound,
                                          const Eigen::VectorXd &bUpperBound) :
-    Constraint("bilateral_constr_", Aineq.cols())
+    Constraint("bilateral_constr_" + std::to_string(BilateralConstraint::_constr_count++), Aineq.cols())
 {
-    std::stringstream tmp; tmp << BilateralConstraint::_constr_count++;
-    this->_constraint_id += tmp.str();
 
-    _Aineq = Aineq;
-    _bLowerBound = bLowerBound;
-    _bUpperBound = bUpperBound;
+    setAineq(Aineq);
+    setLowerBoundIneq(bLowerBound);
+    setUpperBoundIneq(bUpperBound);
 
-    assert( (_Aineq.rows() == _bLowerBound.size()) &&
-            (_Aineq.rows() == _bUpperBound.size()));
+    assert( (Aineq.rows() == bLowerBound.size()) &&
+            (Aineq.rows() == bUpperBound.size()));
 }
 
 
@@ -48,11 +46,11 @@ BilateralConstraint::BilateralConstraint(const std::string constraintName,
                                          const Eigen::VectorXd &bUpperBound) :
     Constraint(constraintName, Aineq.cols())
 {
-    _Aineq = Aineq;
-    _bLowerBound = bLowerBound;
-    _bUpperBound = bUpperBound;
+    setAineq(Aineq);
+    setLowerBoundIneq(bLowerBound);
+    setUpperBoundIneq(bUpperBound);
 
-    assert( (_Aineq.rows() == _bLowerBound.rows()) &&
-            (_Aineq.rows() == _bUpperBound.rows()));
+    assert( (Aineq.rows() == bLowerBound.size()) &&
+            (Aineq.rows() == bUpperBound.size()));
 }
 

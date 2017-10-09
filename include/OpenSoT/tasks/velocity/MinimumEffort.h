@@ -42,7 +42,7 @@
              * through the OpenSoT::tasks::velocity::Cartesian class.
              * You can take a look at an implementation example in @ref example_minimum_effort.cpp
              */
-            class MinimumEffort : public Task < Eigen::MatrixXd, Eigen::VectorXd > {
+            class MinimumEffort : public Task {
             public:
                 typedef boost::shared_ptr<MinimumEffort> Ptr;
             protected:

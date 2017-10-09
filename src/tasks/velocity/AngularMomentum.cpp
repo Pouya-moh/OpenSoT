@@ -81,13 +81,13 @@ std::string AngularMomentum::getDistalLink()
     return DISTAL_LINK_COM;
 }
 
-AngularMomentum::Ptr AngularMomentum::asAngularMomentum(OpenSoT::Task<Eigen::MatrixXd, Eigen::VectorXd>::TaskPtr task)
+AngularMomentum::Ptr AngularMomentum::asAngularMomentum(OpenSoT::Task::TaskPtr task)
 {
     return boost::dynamic_pointer_cast<AngularMomentum>(task);
 }
 
 
-bool AngularMomentum::isAngularMomentum(OpenSoT::Task<Eigen::MatrixXd, Eigen::VectorXd>::TaskPtr task)
+bool AngularMomentum::isAngularMomentum(OpenSoT::Task::TaskPtr task)
 {
     return (bool)boost::dynamic_pointer_cast<AngularMomentum>(task);
 }

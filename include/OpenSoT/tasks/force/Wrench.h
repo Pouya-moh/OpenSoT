@@ -28,7 +28,7 @@
         /**
              * @brief The Wrench class implements a task that tries to generate a wrench near to the one desired
              */
-            class Wrench : public Task < Eigen::MatrixXd, Eigen::VectorXd > {
+            class Wrench : public Task {
             public:
                 typedef boost::shared_ptr<Wrench> Ptr;
             protected:

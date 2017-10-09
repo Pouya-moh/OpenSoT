@@ -33,7 +33,7 @@
              * NOTE: if used in the null-space, it realizes the NULL-SPACE Stiffness as in:
              * "Cartesian Impedance Control of Redundant and Flexible-Joint Robots", by. Christian Ott
              */
-            class JointImpedanceCtrl : public Task < Eigen::MatrixXd, Eigen::VectorXd > {
+            class JointImpedanceCtrl : public Task {
             public:
                 typedef boost::shared_ptr<JointImpedanceCtrl> Ptr;
             protected:

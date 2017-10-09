@@ -68,25 +68,27 @@ void CartesianPositionConstraint::update(const Eigen::VectorXd &x) {
 
     if(_is_Cartesian){
         /************************ COMPUTING BOUNDS ****************************/
-        J = _cartesianTask->getA().block(0,0,3,_x_size);
+        J = _cartesianTask->getA().block(0, 0, 3,getXSize());
         assert(J.rows() == 3 && "Jacobian doesn't have 3 rows. Something went wrong.");
 
-        _Aineq = _A_Cartesian * J;
+        setAineq(_A_Cartesian * J);
 
         currentPosition(0) = _cartesianTask->getActualPose()(0,3);
         currentPosition(1) = _cartesianTask->getActualPose()(1,3);
         currentPosition(2) = _cartesianTask->getActualPose()(2,3);
+        
         assert(currentPosition.size() == 3 && "Current position doesn't have size 3. Something went wrong.");
 
         /**********************************************************************/
     }else{
         J = _comTask->getA();
 
-        _Aineq = _A_Cartesian * J;
+        setAineq(_A_Cartesian * J);
 
         currentPosition = _comTask->getActualPosition();
     }
-    _bUpperBound = ( _b_Cartesian - _A_Cartesian*currentPosition)*_boundScaling;
-    _bLowerBound = -1.0e20*_bLowerBound.setOnes(_bUpperBound.size());
+    
+    setUpperBoundIneq( ( _b_Cartesian - _A_Cartesian*currentPosition)*_boundScaling );
+    setLowerBoundIneq( -1.0e20*Eigen::VectorXd::Ones(getbUpperBound().size()) );
 
 }

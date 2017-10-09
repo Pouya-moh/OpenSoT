@@ -5,7 +5,7 @@ OpenSoT::tasks::velocity::Contact::Contact(std::string task_id,
                                         std::string link_name,
                                         const Eigen::MatrixXd& contact_matrix
                                     ):
-    Task<Eigen::MatrixXd, Eigen::VectorXd>(task_id, model.getJointNum()),
+    Task(task_id, model.getJointNum()),
     _distal_link(link_name),
     _model(model),
     _K(contact_matrix)

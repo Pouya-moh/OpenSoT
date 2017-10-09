@@ -40,7 +40,7 @@
              *  the bUpperBound is the minimum distance vector of all the Link pairs, the dimension of which is n * 1.
              *  the element in bUpperBound is the minimum distance between the corresponding Link pair with taking the Link pair threshold into account.
              */
-            class SelfCollisionAvoidance: public Constraint<Eigen::MatrixXd, Eigen::VectorXd> {
+            class SelfCollisionAvoidance: public Constraint {
             public:
                 typedef boost::shared_ptr<SelfCollisionAvoidance> Ptr;
             protected:

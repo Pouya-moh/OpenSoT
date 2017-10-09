@@ -27,7 +27,7 @@
             /**
              * @brief The Minimize Acceleration class implements a task that tries to minimize the change in velocity.
              */
-            class MinimizeAcceleration : public Task < Eigen::MatrixXd, Eigen::VectorXd > {
+            class MinimizeAcceleration : public Task {
             public:
                 typedef boost::shared_ptr<MinimizeAcceleration> Ptr;
             protected:

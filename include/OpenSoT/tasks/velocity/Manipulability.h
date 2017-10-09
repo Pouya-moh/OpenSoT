@@ -37,7 +37,7 @@ namespace OpenSoT {
              * The gradient of w is then computed and projected using the gardient projection method.
              * W is a CONSTANT weight matrix.
              */
-            class Manipulability : public Task < Eigen::MatrixXd, Eigen::VectorXd > {
+            class Manipulability : public Task {
             public:
                 typedef boost::shared_ptr<Manipulability> Ptr;
 
@@ -91,7 +91,7 @@ namespace OpenSoT {
                     const XBot::ModelInterface& _model;
                     Eigen::MatrixXd _W;
                     Eigen::VectorXd _zeros;
-                    OpenSoT::Task<Eigen::MatrixXd, Eigen::VectorXd>::TaskPtr _CartesianTask;
+                    OpenSoT::Task::TaskPtr _CartesianTask;
 
                     ComputeManipulabilityIndexGradient(const Eigen::VectorXd& q, const XBot::ModelInterface& robot_model,
                                                        const Cartesian::Ptr CartesianTask) :

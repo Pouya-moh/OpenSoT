@@ -40,7 +40,7 @@
              * \f$A_{\text{CH}}J_{\text{CoM}}\dot{q} \leq b_{\text{CH}}\f$, where every row in
              * \f$\left[ A_{\text{CH}} , -b_{\text{CH}}\right]\f$
             */
-            class ConvexHull: public Constraint<Eigen::MatrixXd, Eigen::VectorXd> {
+            class ConvexHull: public Constraint {
             public:
                 typedef boost::shared_ptr<ConvexHull> Ptr;
             private:

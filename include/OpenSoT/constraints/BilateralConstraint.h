@@ -31,7 +31,7 @@
          * @brief The BilateralConstraint class implements a constraint of the form
          *        bLowerBound <= Aineq*x <= bUpperbound
          */
-        class BilateralConstraint: public Constraint<Eigen::MatrixXd, Eigen::VectorXd> {
+        class BilateralConstraint: public Constraint {
             static int _constr_count;
         public:
             typedef boost::shared_ptr<BilateralConstraint> Ptr;

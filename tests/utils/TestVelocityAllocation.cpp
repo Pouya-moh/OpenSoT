@@ -94,7 +94,7 @@ TEST_F(testVelocityAllocation, testConstructorStack)
 
 
         unsigned int i = 0;
-        typedef std::vector<OpenSoT::Task<Eigen::MatrixXd, Eigen::VectorXd>::TaskPtr >::iterator it_t;
+        typedef std::vector<OpenSoT::Task::TaskPtr >::iterator it_t;
         for(it_t task = autoStack->getStack().begin();
             task != autoStack->getStack().end();
             ++task)
@@ -146,7 +146,7 @@ TEST_F(testVelocityAllocation, testConstructorStack)
 
         const double high_velocity = 0.8;
 
-        DHS.postural->getConstraints().push_back(OpenSoT::Constraint<Eigen::MatrixXd, Eigen::VectorXd>::ConstraintPtr(
+        DHS.postural->getConstraints().push_back(OpenSoT::Constraint::ConstraintPtr(
             new OpenSoT::constraints::velocity::VelocityLimits(high_velocity,
                                                                3e-3,
                                                                DHS.postural->getXSize())));
@@ -209,7 +209,7 @@ TEST_F(testVelocityAllocation, testConstructorAutoStack)
 
 
         unsigned int i = 0;
-        typedef std::vector<OpenSoT::Task<Eigen::MatrixXd, Eigen::VectorXd>::TaskPtr >::iterator it_t;
+        typedef std::vector<OpenSoT::Task::TaskPtr >::iterator it_t;
         for(it_t task = stack.begin();
             task != stack.end();
             ++task)
@@ -241,7 +241,7 @@ TEST_F(testVelocityAllocation, testConstructorAutoStack)
 
         const double high_velocity = 0.8;
 
-        DHS.postural->getConstraints().push_back(OpenSoT::Constraint<Eigen::MatrixXd, Eigen::VectorXd>::ConstraintPtr(
+        DHS.postural->getConstraints().push_back(OpenSoT::Constraint::ConstraintPtr(
             new OpenSoT::constraints::velocity::VelocityLimits(high_velocity,
                                                                3e-3,
                                                                DHS.postural->getXSize())));

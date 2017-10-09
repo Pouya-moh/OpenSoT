@@ -62,11 +62,8 @@ void TaskToConstraint::update(const Eigen::VectorXd &q)
 
 void TaskToConstraint::generateAll() {
     
-    _Aineq = _task->getA();
-    _bLowerBound = _task->getb() + _err_lb;
-    _bUpperBound = _task->getb() + _err_ub;
-    
+    setAineq(_task->getA());
+    setLowerBoundIneq(_task->getb() + _err_lb);
+    setUpperBoundIneq(_task->getb() + _err_ub);
 
-    assert( (_Aineq.rows() == _bLowerBound.rows()) &&
-            (_Aineq.rows() == _bUpperBound.rows()));
 }

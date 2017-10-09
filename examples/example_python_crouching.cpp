@@ -125,8 +125,8 @@ int main(int argc, char **argv) {
 
     // setting higher velocity limit to last stack --
     // TODO next feature of VelocityAllocation is a last_stack_speed ;)
-    typedef std::list<OpenSoT::Constraint<Eigen::MatrixXd, Eigen::VectorXd>::ConstraintPtr>::iterator it_constraint;
-    OpenSoT::Task<Eigen::MatrixXd, Eigen::VectorXd>::TaskPtr lastTask = autoStack->getStack()[2];
+    typedef std::list<OpenSoT::Constraint::ConstraintPtr>::iterator it_constraint;
+    OpenSoT::Task::TaskPtr lastTask = autoStack->getStack()[2];
     for(it_constraint i_c = lastTask->getConstraints().begin() ;
         i_c != lastTask->getConstraints().end() ; ++i_c) {
         if( boost::dynamic_pointer_cast<

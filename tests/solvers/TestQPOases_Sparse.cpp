@@ -878,7 +878,7 @@ namespace
 
     struct ik_problem
     {
-        std::vector<OpenSoT::Task<Eigen::MatrixXd, Eigen::VectorXd>::TaskPtr> stack_of_tasks;
+        std::vector<OpenSoT::Task::TaskPtr> stack_of_tasks;
         OpenSoT::constraints::Aggregated::Ptr bounds;
         double damped_least_square_eps;
     };

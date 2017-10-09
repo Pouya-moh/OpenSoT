@@ -28,7 +28,7 @@
             /**
              * @brief The JointLimits class implements bounds on joints positions
              */
-            class JointLimits: public Constraint<Eigen::MatrixXd, Eigen::VectorXd> {
+            class JointLimits: public Constraint {
             public:
                 typedef boost::shared_ptr<JointLimits> Ptr;
             private:

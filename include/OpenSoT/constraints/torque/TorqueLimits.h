@@ -26,7 +26,7 @@
     namespace constraints {
         namespace torque {
 
-            class TorqueLimits: public Constraint<Eigen::MatrixXd, Eigen::VectorXd> {
+            class TorqueLimits: public Constraint {
             public:
                 typedef boost::shared_ptr<TorqueLimits> Ptr;
             private:

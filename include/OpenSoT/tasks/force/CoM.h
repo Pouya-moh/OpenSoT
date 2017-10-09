@@ -38,7 +38,7 @@
              * Note: variables are wrenches: w = [f tau]'
              *
              */
-            class CoM : public Task < Eigen::MatrixXd, Eigen::VectorXd > {
+            class CoM : public Task {
             public:
                 typedef boost::shared_ptr<CoM> Ptr;
             private:

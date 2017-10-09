@@ -36,7 +36,7 @@ namespace velocity {
  * Notice that the controlled distal link is always "gaze" in a certain base_link set
  * by the user.
  */
-class Gaze: public OpenSoT::Task<Eigen::MatrixXd, Eigen::VectorXd>
+class Gaze: public OpenSoT::Task
 {
 public:
     typedef boost::shared_ptr<Gaze> Ptr;

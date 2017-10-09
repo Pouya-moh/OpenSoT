@@ -24,7 +24,7 @@
  namespace OpenSoT {
     namespace constraints {
         namespace force {
-            class WrenchLimits: public Constraint<Eigen::MatrixXd, Eigen::VectorXd> {
+            class WrenchLimits: public Constraint {
             public:
                 typedef boost::shared_ptr<WrenchLimits> Ptr;
             private:

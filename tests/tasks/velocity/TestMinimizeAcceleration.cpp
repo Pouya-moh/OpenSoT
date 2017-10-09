@@ -140,11 +140,11 @@ TEST_F(testMinimizeAcceleration, testMinimizeAccelerationInCartesianTask)
     OpenSoT::constraints::velocity::VelocityLimits::Ptr joint_velocity_limits2(
                 new OpenSoT::constraints::velocity::VelocityLimits(M_PI/2.0, (double)(1.0/t), q.size()));
 
-    std::list< OpenSoT::Constraint<Eigen::MatrixXd, Eigen::VectorXd>::ConstraintPtr > joint_constraints_list;
+    std::list< OpenSoT::Constraint::ConstraintPtr > joint_constraints_list;
     joint_constraints_list.push_back(joint_limits);
     joint_constraints_list.push_back(joint_velocity_limits);
 
-    std::list< OpenSoT::Constraint<Eigen::MatrixXd, Eigen::VectorXd>::ConstraintPtr > joint_constraints_list2;
+    std::list< OpenSoT::Constraint::ConstraintPtr > joint_constraints_list2;
     joint_constraints_list2.push_back(joint_limits2);
     joint_constraints_list2.push_back(joint_velocity_limits2);
 
@@ -155,11 +155,11 @@ TEST_F(testMinimizeAcceleration, testMinimizeAccelerationInCartesianTask)
                 new OpenSoT::constraints::Aggregated(joint_constraints_list2, q.size()));
 
     //Create the SoT
-    std::vector< OpenSoT::Task<Eigen::MatrixXd, Eigen::VectorXd>::TaskPtr > stack_of_tasks;
+    std::vector< OpenSoT::Task::TaskPtr > stack_of_tasks;
     stack_of_tasks.push_back(cartesian_task);
     stack_of_tasks.push_back(postural_task);
 
-    std::vector< OpenSoT::Task<Eigen::MatrixXd, Eigen::VectorXd>::TaskPtr > stack_of_tasks2;
+    std::vector< OpenSoT::Task::TaskPtr > stack_of_tasks2;
     stack_of_tasks2.push_back(cartesian_task2);
     stack_of_tasks2.push_back(minacc_task);
 

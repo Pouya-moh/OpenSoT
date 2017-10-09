@@ -28,7 +28,7 @@
              * frames transformed in the base_link).
              *
              */
-            class Dynamics: public Constraint<Eigen::MatrixXd, Eigen::VectorXd> {
+            class Dynamics: public Constraint {
             public:
                 typedef boost::shared_ptr<Dynamics> Ptr;
             private:

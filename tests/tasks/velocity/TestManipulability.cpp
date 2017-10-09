@@ -76,7 +76,7 @@ TEST_F(testManipolability, testManipolabilityTask)
         q, *(_model_ptr.get()),"l_wrist", "Waist"));
     Cartesian::Ptr cartesian_task_R(new Cartesian("cartesian::right_wrist",
         q, *(_model_ptr.get()),"r_wrist", "Waist"));
-    std::list< OpenSoT::Task<Eigen::MatrixXd, Eigen::VectorXd>::TaskPtr > task_list;
+    std::list< OpenSoT::Task::TaskPtr > task_list;
     task_list.push_back(cartesian_task_L);
     task_list.push_back(cartesian_task_R);
     OpenSoT::tasks::Aggregated::Ptr cartesian_task(
@@ -91,7 +91,7 @@ TEST_F(testManipolability, testManipolabilityTask)
                                                   q, *(_model_ptr.get()), cartesian_task_L));
     Manipulability::Ptr manipulability_task_R(new Manipulability(
                                                   q, *(_model_ptr.get()), cartesian_task_R));
-    std::list< OpenSoT::Task<Eigen::MatrixXd, Eigen::VectorXd>::TaskPtr > manip_list;
+    std::list< OpenSoT::Task::TaskPtr > manip_list;
     manip_list.push_back(manipulability_task_L);
     manip_list.push_back(manipulability_task_R);
     OpenSoT::tasks::Aggregated::Ptr manipulability_task(
@@ -107,13 +107,13 @@ TEST_F(testManipolability, testManipolabilityTask)
     VelocityLimits::Ptr joint_velocity_limits(
                 new VelocityLimits(M_PI/2.0, (double)(1.0/t), q.size()));
 
-    std::list< OpenSoT::Constraint<Eigen::MatrixXd, Eigen::VectorXd>::ConstraintPtr > joint_constraints_list;
+    std::list< OpenSoT::Constraint::ConstraintPtr > joint_constraints_list;
     joint_constraints_list.push_back(joint_limits);
     joint_constraints_list.push_back(joint_velocity_limits);
     OpenSoT::constraints::Aggregated::Ptr joint_constraints(
                 new OpenSoT::constraints::Aggregated(joint_constraints_list, q.size()));
 
-    std::vector< OpenSoT::Task<Eigen::MatrixXd, Eigen::VectorXd>::TaskPtr > stack_of_tasks;
+    std::vector< OpenSoT::Task::TaskPtr > stack_of_tasks;
     stack_of_tasks.push_back(cartesian_task);
     stack_of_tasks.push_back(postural_task);
 

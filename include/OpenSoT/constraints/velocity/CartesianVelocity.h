@@ -25,7 +25,7 @@
  namespace OpenSoT {
     namespace constraints {
         namespace velocity {
-            class CartesianVelocity: public Constraint<Eigen::MatrixXd, Eigen::VectorXd> {
+            class CartesianVelocity: public Constraint {
             public:
                 typedef boost::shared_ptr<CartesianVelocity> Ptr;
             private:

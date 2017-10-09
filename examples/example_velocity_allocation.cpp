@@ -28,7 +28,7 @@ int main(int argc, char **argv) {
                                 0.1,
                                 0.3);
     unsigned int i = 0;
-    typedef std::vector< OpenSoT::Task<Eigen::MatrixXd, Eigen::VectorXd>::TaskPtr >::iterator it_t;
+    typedef std::vector< OpenSoT::Task::TaskPtr >::iterator it_t;
     for(it_t task = autoStack->getStack().begin();
         task != autoStack->getStack().end();
         ++task)

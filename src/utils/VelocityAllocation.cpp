@@ -143,7 +143,7 @@ void VelocityAllocation::processStack(OpenSoT::Solver<Eigen::MatrixXd, Eigen::Ve
     for(unsigned int i = 0; i < stack.size(); ++i)
     {
         const double velocityLimit = this->computeVelocityLimit(i, stack.size());
-        OpenSoT::Task<Eigen::MatrixXd, Eigen::VectorXd>::TaskPtr task = stack[i];
+        OpenSoT::Task::TaskPtr task = stack[i];
         OpenSoT::constraints::velocity::VelocityLimits::Ptr velocityLimits;
 
         // TODO notice this does not work if every stack has already a VelocityLimits

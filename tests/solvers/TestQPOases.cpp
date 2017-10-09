@@ -533,7 +533,7 @@ TEST_F(testQPOasesTask, testProblemWithConstraint)
 
         OpenSoT::solvers::QPOasesProblem qp_postural_problem(postural_task->getXSize(), 0,
                                                              postural_task->getHessianAtype());
-        std::list< OpenSoT::Constraint<Eigen::MatrixXd, Eigen::VectorXd>::ConstraintPtr> constraint_list =
+        std::list< OpenSoT::Constraint::ConstraintPtr> constraint_list =
                 postural_task->getConstraints();
         OpenSoT::Constraint< Eigen::MatrixXd, Eigen::VectorXd>::ConstraintPtr constraint = constraint_list.front();
         EXPECT_TRUE(qp_postural_problem.initProblem(postural_task->getA(), -1.0*postural_task->getb(),
@@ -642,7 +642,7 @@ TEST_F(testQPOases_sot, testContructor1Problem)
                         q_min));
     postural_task->setLambda(0.1);
 
-    std::list<OpenSoT::Constraint<Eigen::MatrixXd, Eigen::VectorXd>::ConstraintPtr> bounds_list;
+    std::list<OpenSoT::Constraint::ConstraintPtr> bounds_list;
     bounds_list.push_back(joint_limits);
 
     OpenSoT::constraints::Aggregated::Ptr bounds(
@@ -703,7 +703,7 @@ TEST_F(testQPOasesTask, testCoMTask)
 
     std::list< OpenSoT::Constraint< Eigen::MatrixXd, Eigen::VectorXd>::ConstraintPtr> constraint_list =
             com_task->getConstraints();
-    OpenSoT::Constraint<Eigen::MatrixXd, Eigen::VectorXd>::ConstraintPtr constraint = constraint_list.front();
+    OpenSoT::Constraint::ConstraintPtr constraint = constraint_list.front();
 
     OpenSoT::solvers::QPOasesProblem qp_CoM_problem(com_task->getXSize(), constraint->getAineq().rows(),
                                                     com_task->getHessianAtype());
@@ -836,7 +836,7 @@ TEST_F(testQPOases_sot, testContructor2Problems)
     VelocityLimits::Ptr joint_velocity_limits(
                 new VelocityLimits(0.3, (double)(1.0/t), q.size()));
 
-    std::list<OpenSoT::Constraint<Eigen::MatrixXd, Eigen::VectorXd>::ConstraintPtr> joint_constraints_list;
+    std::list<OpenSoT::Constraint::ConstraintPtr> joint_constraints_list;
     joint_constraints_list.push_back(joint_limits);
     joint_constraints_list.push_back(joint_velocity_limits);
 
@@ -916,7 +916,7 @@ TEST_F(testQPOases_sot, testContructor1ProblemAggregated)
     OpenSoT::tasks::velocity::Postural::Ptr postural_task2(
             new OpenSoT::tasks::velocity::Postural(q2));
     postural_task2->setReference(q_ref2);
-    std::list<OpenSoT::Task<Eigen::MatrixXd, Eigen::VectorXd>::TaskPtr> task_list;
+    std::list<OpenSoT::Task::TaskPtr> task_list;
     task_list.push_back(postural_task2);
     OpenSoT::tasks::Aggregated::Ptr joint_space_task(
                 new OpenSoT::tasks::Aggregated(task_list, q2.size()));
@@ -927,9 +927,9 @@ TEST_F(testQPOases_sot, testContructor1ProblemAggregated)
     OpenSoT::constraints::velocity::VelocityLimits::Ptr joint_vel_limits2(
         new OpenSoT::constraints::velocity::VelocityLimits(0.3, 0.1, q2.size()));
 
-    std::list<OpenSoT::Constraint<Eigen::MatrixXd, Eigen::VectorXd>::ConstraintPtr> bounds_list;
+    std::list<OpenSoT::Constraint::ConstraintPtr> bounds_list;
     bounds_list.push_back(joint_vel_limits);
-    std::list<OpenSoT::Constraint<Eigen::MatrixXd, Eigen::VectorXd>::ConstraintPtr> bounds_list2;
+    std::list<OpenSoT::Constraint::ConstraintPtr> bounds_list2;
     bounds_list2.push_back(joint_vel_limits2);
 
 
@@ -939,7 +939,7 @@ TEST_F(testQPOases_sot, testContructor1ProblemAggregated)
                 new OpenSoT::constraints::Aggregated(bounds_list2, q2.size()));
 
 //1. Here we use postural_task
-    std::vector<OpenSoT::Task<Eigen::MatrixXd, Eigen::VectorXd>::TaskPtr> stack_of_tasks;
+    std::vector<OpenSoT::Task::TaskPtr> stack_of_tasks;
     stack_of_tasks.push_back(postural_task);
     OpenSoT::solvers::QPOases_sot sot(stack_of_tasks, bounds);
 
@@ -960,7 +960,7 @@ TEST_F(testQPOases_sot, testContructor1ProblemAggregated)
 
 
 ////2. Here we use joint_space_task
-    std::vector<OpenSoT::Task<Eigen::MatrixXd, Eigen::VectorXd>::TaskPtr> stack_of_tasks2;
+    std::vector<OpenSoT::Task::TaskPtr> stack_of_tasks2;
     stack_of_tasks2.push_back(joint_space_task);
     OpenSoT::solvers::QPOases_sot sot2(stack_of_tasks2, bounds2);
 
@@ -995,7 +995,7 @@ TEST_F(testQPOases_sot, testMinEffort)
             new OpenSoT::tasks::velocity::MinimumEffort(
                     q, *_model_ptr));
 
-    std::list<OpenSoT::Task<Eigen::MatrixXd, Eigen::VectorXd>::TaskPtr> task_list;
+    std::list<OpenSoT::Task::TaskPtr> task_list;
     task_list.push_back(min_effort_task);
 
     OpenSoT::tasks::Aggregated::Ptr joint_space_task(
@@ -1005,7 +1005,7 @@ TEST_F(testQPOases_sot, testMinEffort)
     OpenSoT::constraints::velocity::VelocityLimits::Ptr joint_vel_limits(
         new OpenSoT::constraints::velocity::VelocityLimits(0.3, 0.1, q.size()));
 
-    std::list<OpenSoT::Constraint<Eigen::MatrixXd, Eigen::VectorXd>::ConstraintPtr> bounds_list;
+    std::list<OpenSoT::Constraint::ConstraintPtr> bounds_list;
     bounds_list.push_back(joint_vel_limits);
 
     OpenSoT::constraints::Aggregated::Ptr bounds(

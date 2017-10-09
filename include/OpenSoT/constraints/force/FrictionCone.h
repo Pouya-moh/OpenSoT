@@ -31,7 +31,7 @@
         namespace force {
 
             
-            class FrictionCone: public Constraint<Eigen::MatrixXd, Eigen::VectorXd> {
+            class FrictionCone: public Constraint {
             public:
                 typedef boost::shared_ptr<FrictionCone> Ptr;
 

@@ -84,7 +84,7 @@ public:
         _joint_velocity_limits = OpenSoT::constraints::velocity::VelocityLimits::Ptr(
                     new OpenSoT::constraints::velocity::VelocityLimits(0.3, (double)(1.0/t), q.size()));
 
-        std::list<OpenSoT::Constraint<Eigen::MatrixXd, Eigen::VectorXd>::ConstraintPtr> joint_constraints_list;
+        std::list<OpenSoT::Constraint::ConstraintPtr> joint_constraints_list;
         joint_constraints_list.push_back(_joint_limits);
         joint_constraints_list.push_back(_joint_velocity_limits);
 
@@ -260,7 +260,7 @@ public:
         _joint_velocity_limits = OpenSoT::constraints::velocity::VelocityLimits::Ptr(
                     new OpenSoT::constraints::velocity::VelocityLimits(0.3, (double)(1.0/t), q.size()));
 
-        std::list<OpenSoT::Constraint<Eigen::MatrixXd, Eigen::VectorXd>::ConstraintPtr> joint_constraints_list;
+        std::list<OpenSoT::Constraint::ConstraintPtr> joint_constraints_list;
         joint_constraints_list.push_back(_joint_limits);
         joint_constraints_list.push_back(_joint_velocity_limits);
 
@@ -458,14 +458,14 @@ public:
         _joint_velocity_limits = OpenSoT::constraints::velocity::VelocityLimits::Ptr(
                     new OpenSoT::constraints::velocity::VelocityLimits(0.3, (double)(1.0/t), q.size()));
 
-        std::list<OpenSoT::Constraint<Eigen::MatrixXd, Eigen::VectorXd>::ConstraintPtr> joint_constraints_list;
+        std::list<OpenSoT::Constraint::ConstraintPtr> joint_constraints_list;
         joint_constraints_list.push_back(_joint_limits);
         joint_constraints_list.push_back(_joint_velocity_limits);
 
         _joint_constraints = OpenSoT::constraints::Aggregated::Ptr(
                     new OpenSoT::constraints::Aggregated(joint_constraints_list, q.size()));
 
-        std::list<OpenSoT::Task<Eigen::MatrixXd, Eigen::VectorXd>::TaskPtr> cartesian_task_list;
+        std::list<OpenSoT::Task::TaskPtr> cartesian_task_list;
         cartesian_task_list.push_back(_cartesian_task_0);
         cartesian_task_list.push_back(_cartesian_task_1);
 

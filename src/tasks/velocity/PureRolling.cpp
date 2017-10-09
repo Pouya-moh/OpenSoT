@@ -3,7 +3,7 @@
 OpenSoT::tasks::velocity::PureRolling::PureRolling(std::string wheel_link_name, 
                                                    double radius, 
                                                    const XBot::ModelInterface& model): 
-    Task<Eigen::MatrixXd, Eigen::VectorXd>("PURE_ROLLING_" + wheel_link_name, model.getJointNum()),
+    Task("PURE_ROLLING_" + wheel_link_name, model.getJointNum()),
     _model(model),
     _radius(radius),
     _wheel_link_name(wheel_link_name),

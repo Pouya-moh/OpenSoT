@@ -295,7 +295,7 @@ namespace
 
     struct ik_problem
     {
-        std::vector<OpenSoT::Task<Eigen::MatrixXd, Eigen::VectorXd>::TaskPtr> stack_of_tasks;
+        std::vector<OpenSoT::Task::TaskPtr> stack_of_tasks;
         OpenSoT::constraints::Aggregated::Ptr bounds;
         double damped_least_square_eps;
     };
@@ -582,7 +582,7 @@ namespace
         cartesianTasks.push_back(task_right_arm);
         cartesianTasks.push_back(task_left_leg);
         cartesianTasks.push_back(task_right_leg);
-        OpenSoT::Task<Eigen::MatrixXd, Eigen::VectorXd>::TaskPtr taskCartesianAggregated = OpenSoT::tasks::Aggregated::TaskPtr(
+        OpenSoT::Task::TaskPtr taskCartesianAggregated = OpenSoT::tasks::Aggregated::TaskPtr(
                     new OpenSoT::tasks::Aggregated(cartesianTasks,this->q.size()));
         //taskCartesianAggregated->getConstraints().push_back(this->sc_constraint);
 

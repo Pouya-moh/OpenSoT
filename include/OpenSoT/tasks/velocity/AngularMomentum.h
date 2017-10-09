@@ -37,7 +37,7 @@ namespace OpenSoT {
         *
         * where \f$ \mathbf{h}_d \f$ is the desired angular momentum at the CoM
         */
-       class AngularMomentum : public Task < Eigen::MatrixXd, Eigen::VectorXd > {
+       class AngularMomentum : public Task {
        public:
            typedef boost::shared_ptr<AngularMomentum> Ptr;
 
@@ -91,14 +91,14 @@ namespace OpenSoT {
             * @param task a pointer to a Task
             * @return true if the task is AngularMomentum
             */
-           static bool isAngularMomentum(OpenSoT::Task<Eigen::MatrixXd, Eigen::VectorXd>::TaskPtr task);
+           static bool isAngularMomentum(OpenSoT::Task::TaskPtr task);
 
            /**
             * @brief asAngularMomentum
             * @param task a pointer to a Task
             * @return a pointer to an AngularMomentum Task
             */
-           static OpenSoT::tasks::velocity::AngularMomentum::Ptr asAngularMomentum(OpenSoT::Task<Eigen::MatrixXd, Eigen::VectorXd>::TaskPtr task);
+           static OpenSoT::tasks::velocity::AngularMomentum::Ptr asAngularMomentum(OpenSoT::Task::TaskPtr task);
        };
     }
    }

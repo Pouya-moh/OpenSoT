@@ -370,7 +370,7 @@ TEST_F(testSelfCollisionAvoidanceConstraint, testCartesianTaskWithoutSC){
     std::list<OpenSoT::tasks::velocity::Cartesian::TaskPtr> cartesianTasks;
     cartesianTasks.push_back(task_left_arm);
     cartesianTasks.push_back(task_right_arm);
-    OpenSoT::Task<Eigen::MatrixXd, Eigen::VectorXd>::TaskPtr taskCartesianAggregated = OpenSoT::tasks::Aggregated::TaskPtr(
+    OpenSoT::Task::TaskPtr taskCartesianAggregated = OpenSoT::tasks::Aggregated::TaskPtr(
        new OpenSoT::tasks::Aggregated(cartesianTasks,this->q.size()));
 
     OpenSoT::tasks::velocity::Postural::Ptr postural_task(
@@ -509,7 +509,7 @@ TEST_F(testSelfCollisionAvoidanceConstraint, testCartesianTaskWithSC){
     std::list<OpenSoT::tasks::velocity::Cartesian::TaskPtr> cartesianTasks;
     cartesianTasks.push_back(task_left_arm);
     cartesianTasks.push_back(task_right_arm);
-    OpenSoT::Task<Eigen::MatrixXd, Eigen::VectorXd>::TaskPtr taskCartesianAggregated = OpenSoT::tasks::Aggregated::TaskPtr(
+    OpenSoT::Task::TaskPtr taskCartesianAggregated = OpenSoT::tasks::Aggregated::TaskPtr(
                 new OpenSoT::tasks::Aggregated(cartesianTasks,this->q.size()));
     taskCartesianAggregated->getConstraints().push_back(this->sc_constraint);
 
@@ -738,7 +738,7 @@ TEST_F(testSelfCollisionAvoidanceConstraint, testMultipleCapsulePairsSC){
     cartesianTasks.push_back(task_right_arm);
     cartesianTasks.push_back(task_left_leg);
     cartesianTasks.push_back(task_right_leg);
-    OpenSoT::Task<Eigen::MatrixXd, Eigen::VectorXd>::TaskPtr taskCartesianAggregated = OpenSoT::tasks::Aggregated::TaskPtr(
+    OpenSoT::Task::TaskPtr taskCartesianAggregated = OpenSoT::tasks::Aggregated::TaskPtr(
                 new OpenSoT::tasks::Aggregated(cartesianTasks,this->q.size()));
     taskCartesianAggregated->getConstraints().push_back(this->sc_constraint);
 
@@ -1000,7 +1000,7 @@ TEST_F(testSelfCollisionAvoidanceConstraint, testChangeWhitelistOnline){
     cartesianTasks.push_back(task_right_arm);
     cartesianTasks.push_back(task_left_leg);
     cartesianTasks.push_back(task_right_leg);
-    OpenSoT::Task<Eigen::MatrixXd, Eigen::VectorXd>::TaskPtr taskCartesianAggregated = OpenSoT::tasks::Aggregated::TaskPtr(
+    OpenSoT::Task::TaskPtr taskCartesianAggregated = OpenSoT::tasks::Aggregated::TaskPtr(
                 new OpenSoT::tasks::Aggregated(cartesianTasks,this->q.size()));
     taskCartesianAggregated->getConstraints().push_back(this->sc_constraint);
 

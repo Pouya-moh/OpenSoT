@@ -40,7 +40,7 @@
          *   lowerBound = max(bLowerBound1, bLowerBound2),
          *   upperBound = min(bUpperBound1,bUpperBound2)
          */
-        class Aggregated: public Constraint<Eigen::MatrixXd, Eigen::VectorXd> {
+        class Aggregated: public Constraint {
         public:
 	    typedef boost::shared_ptr<Aggregated> Ptr;
 

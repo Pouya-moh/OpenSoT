@@ -41,7 +41,7 @@
              * NOTICE It is adviced to apply this constraint only to \emph{Cartesian} tasks that are
              * expressed in the \emph{world} frame of reference, to avoid unexpected behaviors.
              */
-            class CartesianPositionConstraint: public Constraint<Eigen::MatrixXd, Eigen::VectorXd> {
+            class CartesianPositionConstraint: public Constraint {
             public:
                 typedef boost::shared_ptr<CartesianPositionConstraint> Ptr;
             private:

@@ -40,7 +40,7 @@
              *
              * NOTE: in this task is NOT possible to use the active_joint_mask and the SubTask!
              */
-            class CartesianImpedanceCtrl : public Task < Eigen::MatrixXd, Eigen::VectorXd > {
+            class CartesianImpedanceCtrl : public Task {
             public:
                 typedef boost::shared_ptr<CartesianImpedanceCtrl> Ptr;
             protected:
@@ -254,14 +254,14 @@
                  * @param task a general OpenSoT::Task
                  * @return true if OpenSoT::Task is CartesianImpedanceCtrl
                  */
-                static bool isCartesianImpedanceCtrl(OpenSoT::Task<Eigen::MatrixXd, Eigen::VectorXd>::TaskPtr task);
+                static bool isCartesianImpedanceCtrl(OpenSoT::Task::TaskPtr task);
 
                 /**
                  * @brief asCartesianImpedanceCtrl cast a general Task to a Cartesian Impedance one
                  * @param task a general OpenSoT::Task
                  * @return a pointer to a CartesianImpedanceCtrl Task
                  */
-                static OpenSoT::tasks::torque::CartesianImpedanceCtrl::Ptr asCartesianImpedanceCtrl(OpenSoT::Task<Eigen::MatrixXd, Eigen::VectorXd>::TaskPtr task);
+                static OpenSoT::tasks::torque::CartesianImpedanceCtrl::Ptr asCartesianImpedanceCtrl(OpenSoT::Task::TaskPtr task);
 
                 /**
                  * @brief useInertiaMatrix if true, the weight for the task is set to \f$M^{-1}\f$

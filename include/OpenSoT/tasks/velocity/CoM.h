@@ -46,7 +46,7 @@
              * the floating base link set as the support foot.
              * You can see an example in @ref example_com.cpp
              */
-            class CoM : public Task < Eigen::MatrixXd, Eigen::VectorXd > {
+            class CoM : public Task {
             public:
                 typedef boost::shared_ptr<CoM> Ptr;
             private:
@@ -147,9 +147,9 @@
                  */
                 Eigen::Vector3d getError();
 
-                static bool isCoM(OpenSoT::Task<Eigen::MatrixXd, Eigen::VectorXd>::TaskPtr task);
+                static bool isCoM(OpenSoT::Task::TaskPtr task);
 
-                static OpenSoT::tasks::velocity::CoM::Ptr asCoM(OpenSoT::Task<Eigen::MatrixXd, Eigen::VectorXd>::TaskPtr task);
+                static OpenSoT::tasks::velocity::CoM::Ptr asCoM(OpenSoT::Task::TaskPtr task);
             };
         }
     }
