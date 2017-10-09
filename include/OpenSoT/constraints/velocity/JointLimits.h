@@ -29,12 +29,19 @@
              * @brief The JointLimits class implements bounds on joints positions
              */
             class JointLimits: public Constraint {
+                
             public:
+            
                 typedef boost::shared_ptr<JointLimits> Ptr;
+                
             private:
+                
                 double _boundScaling;
                 Eigen::VectorXd _jointLimitsMin;
                 Eigen::VectorXd _jointLimitsMax;
+                
+                Eigen::VectorXd _lowerBound, _upperBound;
+                
             public:
                 /**
                  * @brief JointLimits constructor
