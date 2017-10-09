@@ -30,18 +30,11 @@
              * @brief The JointLimits class implements bounds on joints positions
              */
             class JointLimits: public Constraint {
+                
             public:
+                
                 typedef boost::shared_ptr<JointLimits> Ptr;
-            private:
-                Eigen::VectorXd _jointLimitsMin;
-                Eigen::VectorXd _jointLimitsMax;
-                Eigen::VectorXd _q;
-                Eigen::VectorXd _qdot;
-                const XBot::ModelInterface& _model;
-                Eigen::VectorXd _k, _d;
-
-
-            public:
+                
                 /**
                  * @brief JointLimits constructor
                  * @param q the configuration of the robot when
@@ -58,6 +51,18 @@
                 void setGains(double k, double d);
                 void setGains(const Eigen::VectorXd& k, const Eigen::VectorXd& d);
                 void getGains(Eigen::VectorXd& k, Eigen::VectorXd& d) const;
+                
+            private:
+                
+                Eigen::VectorXd _jointLimitsMin;
+                Eigen::VectorXd _jointLimitsMax;
+                Eigen::VectorXd _q;
+                Eigen::VectorXd _qdot;
+                const XBot::ModelInterface& _model;
+                Eigen::VectorXd _k, _d;
+                
+                Eigen::VectorXd _lowerBound, _upperBound;
+                
 
             };
         }

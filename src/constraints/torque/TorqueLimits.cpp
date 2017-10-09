@@ -21,26 +21,27 @@
 using namespace OpenSoT::constraints::torque;
 
 TorqueLimits::TorqueLimits(const Eigen::VectorXd& torque_max,
-                           const Eigen::VectorXd& torque_mins) :
+                           const Eigen::VectorXd& torque_min) :
     Constraint("torque_limits", torque_max.size()){
 
-    _upperBound = torque_max;
-    _lowerBound = torque_mins;
+    setTorqueLimits(torque_max, torque_min);
 
 }
 
 void TorqueLimits::getTorqueLimits(Eigen::VectorXd& torque_max,
                                    Eigen::VectorXd& torque_min)
 {
-    torque_max = _upperBound;
-    torque_min = _lowerBound;
+    torque_max = getUpperBound();
+    torque_min = getLowerBound();
 }
 
 void TorqueLimits::setTorqueLimits(const Eigen::VectorXd& torque_max,
-                                   const Eigen::VectorXd& torque_mins)
+                                   const Eigen::VectorXd& torque_min)
 {
-    _upperBound = torque_max;
-    _lowerBound = torque_mins;
+    setUpperBound(torque_max);
+    setLowerBound(torque_min);
+    
+    
 }
 
 
