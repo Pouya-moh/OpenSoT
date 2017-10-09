@@ -22,8 +22,7 @@ namespace OpenSoT {
        {
            _Ci.setZero(5,3);
 
-           if(_Aineq.rows() != 5*_n_of_contacts)
-               _Aineq.resize(5*_n_of_contacts, 6*_n_of_contacts);
+            _Aineq.resize(5*_n_of_contacts, 6*_n_of_contacts);
 
            _Aineq.setZero(_Aineq.rows(), _Aineq.cols());
 
@@ -44,7 +43,7 @@ namespace OpenSoT {
 
                 _Ci = _Ci*_wTl.matrix().block(0,0,3,3).transpose();
 
-                _Aineq.block(5*i, 6*i,5,3)<<_Ci;
+                _Aineq.block(5*i, 6*i,5,3) << _Ci;
            }
 
        }
@@ -67,6 +66,10 @@ namespace OpenSoT {
 
                computeAineq();
                computeUpperBound();
+               
+               setUpperBoundIneq(_bUpperBound);
+               setLowerBoundIneq(_bLowerBound);
+               setAineq(_Aineq);
        }
 
        }
