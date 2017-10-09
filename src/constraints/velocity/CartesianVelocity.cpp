@@ -42,6 +42,10 @@ _task(task) {
 void CartesianVelocity::update(const Eigen::VectorXd &x) {
 
     this->generateAineq();
+    
+    setAineq(_Aineq);
+    setUpperBoundIneq(_bUpperBound);
+    setLowerBoundIneq(_bLowerBound);
 
 }
 

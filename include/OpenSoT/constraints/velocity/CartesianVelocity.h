@@ -27,11 +27,18 @@
         namespace velocity {
             class CartesianVelocity: public Constraint {
             public:
+                
                 typedef boost::shared_ptr<CartesianVelocity> Ptr;
+                
             private:
+                
                 OpenSoT::tasks::velocity::Cartesian::Ptr _task;
                 Eigen::VectorXd _velocityLimits;
                 double _dT;
+                
+                Eigen::MatrixXd _Aineq;
+                Eigen::VectorXd _bLowerBound, _bUpperBound;
+                
 
                 void generatebBounds();
                 void generateAineq();
