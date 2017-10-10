@@ -71,6 +71,10 @@
                 std::string base_name;
 
                 Eigen::MatrixXd _J_transform;
+
+                Eigen::MatrixXd _Aineq;
+                Eigen::VectorXd _bUpperBound;
+                Eigen::VectorXd _bLowerBound;
             public:               
                 /**
                  * @brief Skew_symmetric_operator is used to get the transformation matrix which is used to transform

@@ -88,6 +88,10 @@ void SelfCollisionAvoidance::update(const Eigen::VectorXd &x)
         calculate_Aineq_bUpperB (_Aineq, _bUpperBound );
         _bLowerBound = -1.0e20*_bLowerBound.setOnes(_bUpperBound.size());
 
+        setAineq(_Aineq);
+        setLowerBoundIneq(_bLowerBound);
+        setUpperBoundIneq(_bUpperBound);
+
     //}
 //    std::cout << "_Aineq" << _Aineq.toString() << std::endl << std::endl;
     //    std::cout << "_bUpperBound" << _bUpperBound.toString() << std::endl << std::endl;
@@ -98,6 +102,11 @@ bool OpenSoT::constraints::velocity::SelfCollisionAvoidance::setCollisionWhiteLi
     bool ok = computeLinksDistance.setCollisionWhiteList(whiteList);
     this->calculate_Aineq_bUpperB(_Aineq, _bUpperBound);
     _bLowerBound = -1.0e20*_bLowerBound.setOnes(_bUpperBound.size());
+
+    setAineq(_Aineq);
+    setLowerBoundIneq(_bLowerBound);
+    setUpperBoundIneq(_bUpperBound);
+
     return ok;
 }
 
@@ -106,6 +115,11 @@ bool OpenSoT::constraints::velocity::SelfCollisionAvoidance::setCollisionBlackLi
     bool ok = computeLinksDistance.setCollisionBlackList(blackList);
     this->calculate_Aineq_bUpperB(_Aineq, _bUpperBound);
     _bLowerBound = -1.0e20*_bLowerBound.setOnes(_bUpperBound.size());
+
+    setAineq(_Aineq);
+    setLowerBoundIneq(_bLowerBound);
+    setUpperBoundIneq(_bUpperBound);
+
     return ok;
 }
 
