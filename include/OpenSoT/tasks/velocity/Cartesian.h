@@ -76,6 +76,10 @@
 
                 Eigen::Affine3d _tmpMatrix, _tmpMatrix2;
 
+                Eigen::MatrixXd _A;
+                Eigen::VectorXd _b;
+                Eigen::MatrixXd _W;
+
             public:
 
                 Eigen::VectorXd positionError;

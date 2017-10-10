@@ -32,7 +32,8 @@ Cartesian::Cartesian(std::string task_id,
     Task(task_id, x.size()), _robot(robot),
     _distal_link(distal_link), _base_link(base_link),
     _orientationErrorGain(1.0), _is_initialized(false),
-    _error(6)
+    _error(6),
+    _W(6,6), _A(6, getXSize()), _b(6)
 {
     _error.setZero(6);
 
@@ -55,8 +56,9 @@ Cartesian::Cartesian(std::string task_id,
     this->_update(x);
 
     _W.setIdentity(_A.rows(), _A.rows());
+    setWeight(_W);
 
-    _hessianType = HST_SEMIDEF;
+    setHessianType(HST_SEMIDEF);
 }
 
 Cartesian::~Cartesian()
@@ -87,6 +89,9 @@ void Cartesian::_update(const Eigen::VectorXd &x) {
     this->update_b();
 
     this->_desiredTwist.setZero(6);
+
+    setA(_A);
+    setb(_b);
 
     /**********************************************************************/
 }
@@ -217,7 +222,7 @@ const bool OpenSoT::tasks::velocity::Cartesian::baseLinkIsWorld() const
 void OpenSoT::tasks::velocity::Cartesian::setLambda(double lambda)
 {
     if(lambda >= 0.0){
-        this->_lambda = lambda;
+        setLambda(lambda);
         this->update_b();
     }
 }
