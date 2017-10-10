@@ -50,6 +50,9 @@
                 std::vector<KDL::Vector> _ch;
                 std::list<std::string> _links_in_contact;
 
+                Eigen::MatrixXd _Aineq;
+                Eigen::VectorXd _bUpperBound;
+
             public:
                 /**
                  * @brief ConvexHull constructor

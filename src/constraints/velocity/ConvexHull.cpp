@@ -39,7 +39,7 @@ void ConvexHull::update(const Eigen::VectorXd &x) {
 
     /************************ COMPUTING BOUNDS ****************************/
 
-    Eigen::MatrixXd JCoM(3,_x_size);
+    Eigen::MatrixXd JCoM(3,getXSize());
     _robot.getCOMJacobian(JCoM);
 
     if(getConvexHull(_ch))
@@ -55,8 +55,11 @@ void ConvexHull::update(const Eigen::VectorXd &x) {
 
     //assert(JCoM.rows() == _Aineq.cols());
 
-    _Aineq = _Aineq * JCoM.block(0,0,2,_x_size);
+    _Aineq = _Aineq * JCoM.block(0,0,2,getXSize());
     /**********************************************************************/
+
+    setAineq(_Aineq);
+    setUpperBoundIneq(_bUpperBound);
 }
 
 bool ConvexHull::getConvexHull(std::vector<KDL::Vector> &ch)
