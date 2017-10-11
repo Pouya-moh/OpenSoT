@@ -43,10 +43,20 @@
              * You can take a look at an implementation example in @ref example_minimum_effort.cpp
              */
             class MinimumEffort : public Task {
+                
             public:
+                
                 typedef boost::shared_ptr<MinimumEffort> Ptr;
+                
             protected:
+                
                 Eigen::VectorXd _x;
+                
+                Eigen::MatrixXd _A;
+                Eigen::VectorXd _b;
+                Eigen::MatrixXd _W;
+                HessianType _hessianType;
+                double _lambda;
 
                 /**
                  * @brief The ComputeGTauGradient class implements a worker class to computes the effort for a certain configuration.
@@ -56,7 +66,9 @@
                  * in a minimum effort task together with a constraint (or a higher priority task) for the swing foot.
                  */
                 class ComputeGTauGradient : public CostFunction {
+                    
                     public:
+                        
                     XBot::ModelInterface::Ptr _robot;
                     const XBot::ModelInterface& _model;
                     Eigen::MatrixXd _W;
@@ -149,7 +161,7 @@
                 void setLambda(double lambda)
                 {
                     if(lambda >= 0.0){
-                        _lambda = lambda;
+                        setLambda(lambda);
                         this->_update(_x);
                     }
                 }

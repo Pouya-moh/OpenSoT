@@ -25,13 +25,16 @@ using namespace OpenSoT::tasks::velocity;
 MinimumEffort::MinimumEffort(   const Eigen::VectorXd& x, const XBot::ModelInterface& robot_model) :
     Task("min_effort", x.size()), _gTauGradientWorker(x, robot_model), _x(x)
 {
-    _W.resize(_x_size, _x_size);
-    _W.setIdentity(_x_size, _x_size);
+    _W.resize(getXSize(), getXSize());
+    _W.setIdentity(getXSize(), getXSize());
+    setW(_W);
 
     _hessianType = HST_POSDEF;
 
-    _A.resize(_x_size, _x_size);
-    _A.setIdentity(_x_size, _x_size);
+    _A.resize(getXSize(), getXSize());
+    _A.setIdentity(getXSize(), getXSize());
+    
+    setA(_A);
 
     /* first update. Setting desired pose equal to the actual pose */
     this->_update(x);
@@ -48,6 +51,8 @@ void MinimumEffort::_update(const Eigen::VectorXd &x) {
     /************************* COMPUTING TASK *****************************/
 
     _b = -1.0 * _lambda * cartesian_utils::computeGradient(x, _gTauGradientWorker, this->getActiveJointsMask());
+    
+    setb(_b);
 
     /**********************************************************************/
 }
