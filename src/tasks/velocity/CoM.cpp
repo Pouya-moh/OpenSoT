@@ -46,6 +46,8 @@ CoM::CoM(   const Eigen::VectorXd& x,
 
     _W.resize(3,3);
     _W.setIdentity(3,3);
+    
+    setWeight(_W);
 
     _hessianType = HST_SEMIDEF;
 }
@@ -66,6 +68,9 @@ void CoM::_update(const Eigen::VectorXd &x)
     this->update_b();
 
     this->_desiredVelocity.setZero(3);
+    
+    setA(_A);
+    setb(_b);
 
     /**********************************************************************/
 }
@@ -138,13 +143,13 @@ std::string OpenSoT::tasks::velocity::CoM::getDistalLink()
 void CoM::update_b()
 {
     _positionError = _desiredPosition - _actualPosition;
-    _b = _desiredVelocity + _lambda*_positionError;
+    _b = _desiredVelocity + getLambda() * _positionError;
 }
 
 void OpenSoT::tasks::velocity::CoM::setLambda(double lambda)
 {
     if(lambda >= 0.0){
-        this->_lambda = lambda;
+        setLambda(lambda);
         this->update_b();
     }
 }
