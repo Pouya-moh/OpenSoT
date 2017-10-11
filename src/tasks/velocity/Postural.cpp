@@ -26,13 +26,13 @@ Postural::Postural(   const Eigen::VectorXd& x) :
     Task("Postural", x.size()), _x(x),
     _x_desired(x.size()), _xdot_desired(x.size())
 {
-    _x_desired.setZero(_x_size);
-    _xdot_desired.setZero(_x_size);
+    _x_desired.setZero(getXSize());
+    _xdot_desired.setZero(getXSize());
 
-    _W.setIdentity(_x_size, _x_size);
-    _A.setIdentity(_x_size, _x_size);
+    setWeight(Eigen::MatrixXd::Identity(getXSize(), getXSize()));
+    setA(Eigen::MatrixXd::Identity(getXSize(), getXSize()));
 
-    _hessianType = HST_IDENTITY;
+    setHessianType(HST_IDENTITY);
 
     /* first update. Setting desired pose equal to the actual pose */
     this->setReference(x);
@@ -50,16 +50,18 @@ void Postural::_update(const Eigen::VectorXd &x) {
 
     this->update_b();
 
-    _xdot_desired.setZero(_x_size);
+    _xdot_desired.setZero(getXSize());
+    
+    setb(_b);
 
     /**********************************************************************/
 }
 
 void Postural::setReference(const Eigen::VectorXd& x_desired) {
-    if(x_desired.size() == _x_size)
+    if(x_desired.size() == getXSize())
     {
         _x_desired = x_desired;
-        _xdot_desired.setZero(_x_size);
+        _xdot_desired.setZero(getXSize());
         this->update_b();
     }
 }
@@ -67,7 +69,7 @@ void Postural::setReference(const Eigen::VectorXd& x_desired) {
 void OpenSoT::tasks::velocity::Postural::setReference(const Eigen::VectorXd &x_desired,
                                                       const Eigen::VectorXd &xdot_desired)
 {
-    if(x_desired.size() == _x_size && xdot_desired.size() == _x_size)
+    if(x_desired.size() == getXSize() && xdot_desired.size() == getXSize())
     {
         _x_desired = x_desired;
         _xdot_desired = xdot_desired;
@@ -88,13 +90,13 @@ void OpenSoT::tasks::velocity::Postural::getReference(Eigen::VectorXd &x_desired
 }
 
 void Postural::update_b() {
-    _b = _xdot_desired + _lambda*(_x_desired - _x);
+    _b = _xdot_desired + getLambda()*(_x_desired - _x);
 }
 
 void OpenSoT::tasks::velocity::Postural::setLambda(double lambda)
 {
     if(lambda >= 0.0){
-        this->_lambda = lambda;
+        setLambda(lambda);
         this->update_b();
     }
 }
