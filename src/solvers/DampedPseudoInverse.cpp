@@ -9,7 +9,7 @@
 
 using namespace OpenSoT::solvers;
 
-DampedPseudoInverse::DampedPseudoInverse(Stack& stack) : Solver<Eigen::MatrixXd, Eigen::VectorXd>(stack), sigma_min(Eigen::NumTraits<double>::epsilon())
+DampedPseudoInverse::DampedPseudoInverse(Stack& stack) : Solver(stack), sigma_min(Eigen::NumTraits<double>::epsilon())
 {
     if(stack.size() > 0)
     {
