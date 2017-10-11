@@ -40,6 +40,10 @@ void OpenSoT::tasks::velocity::PureRolling::_update(const Eigen::VectorXd& x)
     _b.setZero(4);
     _W.setIdentity(4,4);
     
+    setA(_A);
+    setb(_b);
+    setWeight(_W);
+    
 
     
 }
@@ -48,8 +52,8 @@ void OpenSoT::tasks::velocity::PureRolling::_log(XBot::MatLogger::Ptr logger)
 {
     _model.getJointVelocity(_qdot);
     
-    logger->add(_task_id + "_S", _S);
-    logger->add(_task_id + "_wheel_contact_point", _wheel_contact_point);
-    logger->add(_task_id + "_world_contact_point", _world_T_wheel*_wheel_contact_point);
-    logger->add(_task_id + "_value", _A*_qdot);
+    logger->add(getTaskID() + "_S", _S);
+    logger->add(getTaskID() + "_wheel_contact_point", _wheel_contact_point);
+    logger->add(getTaskID() + "_world_contact_point", _world_T_wheel*_wheel_contact_point);
+    logger->add(getTaskID() + "_value", _A*_qdot);
 }
