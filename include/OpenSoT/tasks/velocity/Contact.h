@@ -27,7 +27,7 @@
 
 namespace OpenSoT { namespace tasks {  namespace velocity {
 
-class Contact : public Task <Eigen::MatrixXd, Eigen::VectorXd> {
+class Contact : public Task {
 
 public:
 
@@ -54,7 +54,7 @@ public:
         */
     const Eigen::VectorXd& getError() const;
 
-protected:
+private:
 
     const XBot::ModelInterface& _model;
 
@@ -71,6 +71,9 @@ protected:
     Eigen::VectorXd _error;
 
     Eigen::MatrixXd _K, _Jtmp;
+    
+    Eigen::MatrixXd _A;
+    Eigen::VectorXd _b;
 
 };
 

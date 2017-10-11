@@ -11,7 +11,7 @@ OpenSoT::tasks::velocity::Contact::Contact(std::string task_id,
     _K(contact_matrix)
 {
     _update(Eigen::VectorXd());
-    _W.setIdentity(getTaskSize(), getTaskSize());
+    setWeight(Eigen::MatrixXd::Identity(getTaskSize(), getTaskSize()));
 }
 
 
@@ -27,6 +27,9 @@ void OpenSoT::tasks::velocity::Contact::_update(const Eigen::VectorXd& x)
 
     /* Update task b vector */
     _b.setZero(getTaskSize());
+    
+    setA(_A);
+    setb(_b);
 }
 
 bool OpenSoT::tasks::velocity::Contact::baseLinkIsWorld() const
