@@ -32,7 +32,7 @@ namespace OpenSoT{
      * "Prioritized Multi-Task Motion Control of Redundant Robots under Hard Joint Constraints"
      * by Fabrizio Flacco, Alessandro De Luca and Oussama Khatib
      */
-    class DampedPseudoInverse : public OpenSoT::Solver<Eigen::MatrixXd, Eigen::VectorXd>
+    class DampedPseudoInverse : public OpenSoT::Solver
     {
         int _x_size;
         std::vector<stack_level> _stack_levels;
