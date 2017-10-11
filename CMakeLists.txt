@@ -120,15 +120,15 @@ set(OPENSOT_TASKS_SOURCES src/tasks/Aggregated.cpp
                     src/tasks/velocity/Contact.cpp
                     src/tasks/velocity/CoM.cpp
                     src/tasks/velocity/AngularMomentum.cpp
-                    src/tasks/velocity/Manipulability.cpp
-                    src/tasks/velocity/MinimizeAcceleration.cpp
+#                     src/tasks/velocity/Manipulability.cpp
+#                     src/tasks/velocity/MinimizeAcceleration.cpp
                     src/tasks/velocity/MinimumEffort.cpp
                     src/tasks/velocity/MinimumVelocity.cpp
                     src/tasks/velocity/Postural.cpp
-                    src/tasks/torque/JointImpedanceCtrl.cpp
-                    src/tasks/torque/CartesianImpedanceCtrl.cpp
-                    src/tasks/force/CoM.cpp
-                    src/tasks/force/Wrench.cpp
+#                     src/tasks/torque/JointImpedanceCtrl.cpp
+#                     src/tasks/torque/CartesianImpedanceCtrl.cpp
+#                     src/tasks/force/CoM.cpp
+#                     src/tasks/force/Wrench.cpp
                     )
 ##SOLVERS
 set(OPENSOT_SOLVERS_SOURCES src/solvers/QPOases.cpp
@@ -137,7 +137,7 @@ set(OPENSOT_SOLVERS_SOURCES src/solvers/QPOases.cpp
 ##UTILS
 set(OPENSOT_UTILS_SOURCES src/utils/AutoStack.cpp
                     src/utils/Indices.cpp
-                    src/utils/VelocityAllocation.cpp
+#                     src/utils/VelocityAllocation.cpp
                     src/utils/cartesian_utils.cpp)
 if(${moveit_core_FOUND})
     if(${fcl_FOUND})
