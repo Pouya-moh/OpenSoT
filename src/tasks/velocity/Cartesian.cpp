@@ -237,7 +237,7 @@ void Cartesian::update_b() {
                                            positionError, orientationError);
 
     _error<<positionError,-_orientationErrorGain*orientationError;
-    _b = _desiredTwist + _lambda*_error;
+    _b = _desiredTwist + getLambda()*_error;
 }
 
 bool Cartesian::setBaseLink(const std::string& base_link)
