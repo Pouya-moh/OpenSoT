@@ -75,6 +75,12 @@ namespace OpenSoT { namespace tasks { namespace velocity {
         
         Eigen::VectorXd _qdot;
         
+        Eigen::MatrixXd _A;
+        Eigen::VectorXd _b;
+        Eigen::MatrixXd _W;
+        HessianType _hessianType;
+        double _lambda;
+        
     };
     
 } } }

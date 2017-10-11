@@ -16,8 +16,8 @@ OpenSoT::tasks::velocity::RigidRotation::RigidRotation(std::string wheel_link_na
     _dt(dt)
 {
     
-    _lambda = .1;
-    _W.setIdentity(3,3);
+    setLambda(.1);
+    setWeight(_W.setIdentity(3,3));
     
     Eigen::Affine3d world_T_wheel;
     Eigen::Affine3d world_T_waist;
@@ -102,7 +102,7 @@ void OpenSoT::tasks::velocity::RigidRotation::_update(const Eigen::VectorXd& x)
     _wheel_relative_vel_ref.setZero();
     
     /* Relative vel ref is used to shape the support polygon (NOT USED) */
-    _wheel_relative_vel_ref.head<2>() = _lambda * .0 * (_cart_wheel_pos_ref - _cart_wheel_pos).head<2>() / _dt; // NOTE ignore relative motion
+    _wheel_relative_vel_ref.head<2>() = getLambda() * .0 * (_cart_wheel_pos_ref - _cart_wheel_pos).head<2>() / _dt; // NOTE ignore relative motion
     
     /* Wheel velocity referece (cart frame) */
     _wheel_vel_ref.head<2>() = _cart_vref.head<2>();
@@ -142,6 +142,9 @@ void OpenSoT::tasks::velocity::RigidRotation::_update(const Eigen::VectorXd& x)
     _b.setZero(3);
     _b << 0, 0, _world_contact_plane_normal.transpose() * _cart_omega_ref;
     
+    setA(_A);
+    setb(_b);
+    
     
 }
 
@@ -149,19 +152,19 @@ void OpenSoT::tasks::velocity::RigidRotation::_log(XBot::MatLogger::Ptr logger)
 {
     _model.getJointVelocity(_qdot);
     
-    logger->add(_task_id + "_S", _S);
+    logger->add(getTaskID() + "_S", _S);
     
-    logger->add(_task_id + "_Jrel", _Jrel);
-    logger->add(_task_id + "_Jwaist", _Jwaist);
-    logger->add(_task_id + "_value", _A*_qdot - _b);
-    logger->add(_task_id + "_wheel_forward_axis_ref", _wheel_forward_axis_ref);
-    logger->add(_task_id + "_wheel_forward_axis", _wheel_forward_axis);
-    logger->add(_task_id + "_wheel_vel_ref", _wheel_vel_ref);
-    logger->add(_task_id + "_wheel_relative_vel_ref", _wheel_relative_vel_ref);
-    logger->add(_task_id + "_cart_omega_ref", _cart_omega_ref);
-    logger->add(_task_id + "_cart_vref", _cart_vref);
-    logger->add(_task_id + "_cart_wheel_pos", _cart_wheel_pos);
-    logger->add(_task_id + "_world_R_cart", _world_R_cart);
+    logger->add(getTaskID() + "_Jrel", _Jrel);
+    logger->add(getTaskID() + "_Jwaist", _Jwaist);
+    logger->add(getTaskID() + "_value", _A*_qdot - _b);
+    logger->add(getTaskID() + "_wheel_forward_axis_ref", _wheel_forward_axis_ref);
+    logger->add(getTaskID() + "_wheel_forward_axis", _wheel_forward_axis);
+    logger->add(getTaskID() + "_wheel_vel_ref", _wheel_vel_ref);
+    logger->add(getTaskID() + "_wheel_relative_vel_ref", _wheel_relative_vel_ref);
+    logger->add(getTaskID() + "_cart_omega_ref", _cart_omega_ref);
+    logger->add(getTaskID() + "_cart_vref", _cart_vref);
+    logger->add(getTaskID() + "_cart_wheel_pos", _cart_wheel_pos);
+    logger->add(getTaskID() + "_world_R_cart", _world_R_cart);
     
 }
 
