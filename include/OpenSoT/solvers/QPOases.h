@@ -41,7 +41,7 @@ namespace OpenSoT{
     /**
      * @brief The QPOases_sot class implement a solver that accept a Stack of Tasks with Bounds and Constraints
      */
-    class QPOases_sot: public Solver<Eigen::MatrixXd, Eigen::VectorXd>
+    class QPOases_sot: public Solver
     {
     public:
 	typedef boost::shared_ptr<QPOases_sot> Ptr;
