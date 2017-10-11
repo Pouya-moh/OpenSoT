@@ -9,6 +9,7 @@
 #include <cmath>
 #include<ModelInterfaceIDYNUTILS/ModelInterfaceIDYNUTILS.h>
 #include <advr_humanoids_common_utils/conversion_utils_YARP.h>
+#include <OpenSoT/constraints/Aggregated.h>
 #define  s                1.0
 #define  dT               0.001* s
 #define  m_s              1.0
@@ -401,6 +402,57 @@ TEST_F(testConvexHull, BoundsAreCorrect) {
 //        EXPECT_DOUBLE_EQ(ch[i].y(), chReconstructed[i].y()) << "ch.y and chReconstructed.y"
 //                                                            << " should be equal!" << std::endl;
 //    }
+}
+
+TEST_F(testConvexHull, UnilateralToBilateralWorks) {
+
+     XBot::ModelInterface::Ptr _model_ptr;
+     _model_ptr = XBot::ModelInterface::getModel(_path_to_cfg);
+
+     if(_model_ptr)
+         std::cout<<"pointer address: "<<_model_ptr.get()<<std::endl;
+     else
+         std::cout<<"pointer is NULL "<<_model_ptr.get()<<std::endl;
+
+
+     Eigen::VectorXd q;
+     q.setZero(_model_ptr->getJointNum());
+
+     std::list<std::string> _links_in_contact;
+     _links_in_contact.push_back("l_foot_lower_left_link");
+     _links_in_contact.push_back("l_foot_lower_right_link");
+     _links_in_contact.push_back("l_foot_upper_left_link");
+     _links_in_contact.push_back("l_foot_upper_right_link");
+     _links_in_contact.push_back("r_foot_lower_left_link");
+     _links_in_contact.push_back("r_foot_lower_right_link");
+     _links_in_contact.push_back("r_foot_upper_left_link");
+     _links_in_contact.push_back("r_foot_upper_right_link");
+
+     OpenSoT::Constraint<Eigen::MatrixXd, Eigen::VectorXd>::ConstraintPtr convexHull(
+                 new OpenSoT::constraints::velocity::ConvexHull(q,*(_model_ptr.get()), _links_in_contact));
+
+     std::list<OpenSoT::Constraint<Eigen::MatrixXd, Eigen::VectorXd>::ConstraintPtr> constraints;
+
+     constraints.push_back(convexHull);
+
+     OpenSoT::Constraint<Eigen::MatrixXd, Eigen::VectorXd>::ConstraintPtr aggregated(
+                 new OpenSoT::constraints::Aggregated(constraints,
+                                                      _model_ptr->getJointNum()));
+
+     EXPECT_TRUE(aggregated->getbLowerBound().rows() == aggregated->getbUpperBound().rows()) <<
+                 "bLowerBound:" << aggregated->getbLowerBound() << std::endl <<
+                 "bUpperBound " << aggregated->getbUpperBound();
+
+     std::cout<<"bUpperBound CH:" << convexHull->getbUpperBound()<<std::endl;
+     std::cout<<"bUpperBound aggregated:" << aggregated->getbUpperBound()<<std::endl;
+
+     EXPECT_TRUE(convexHull->getbUpperBound() == aggregated->getbUpperBound());
+
+     std::cout<<"bLowerBound CH:" << convexHull->getbLowerBound()<<std::endl;
+     std::cout<<"bLowerBound aggregated:" << aggregated->getbLowerBound()<<std::endl;
+
+     EXPECT_TRUE(aggregated->getAineq().rows() == aggregated->getbLowerBound().rows());
+
 }
 
 }  // namespace

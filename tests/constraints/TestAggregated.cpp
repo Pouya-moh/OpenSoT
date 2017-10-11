@@ -3,7 +3,7 @@
 #include <OpenSoT/constraints/velocity/VelocityLimits.h>
 #include <OpenSoT/constraints/BilateralConstraint.h>
 #include <OpenSoT/constraints/velocity/JointLimits.h>
-#include <OpenSoT/constraints/velocity/ConvexHull.h>
+#include <OpenSoT/constraints/velocity/CartesianPositionConstraint.h>
 #include <string>
 #include <XBotInterface/ModelInterface.h>
 
@@ -134,43 +134,54 @@ TEST_F(testAggregated, AggregatedWorks) {
 
 TEST_F(testAggregated, UnilateralToBilateralWorks) {
 
-//     XBot::ModelInterface::Ptr _model_ptr;
-//     _model_ptr = XBot::ModelInterface::getModel(_path_to_cfg);
-// 
-//     if(_model_ptr)
-//         std::cout<<"pointer address: "<<_model_ptr.get()<<std::endl;
-//     else
-//         std::cout<<"pointer is NULL "<<_model_ptr.get()<<std::endl;
-// 
-// 
-//     Eigen::VectorXd q;
-//     q.setZero(_model_ptr->getJointNum());
-// 
-//     std::list<std::string> _links_in_contact;
-//     _links_in_contact.push_back("l_foot_lower_left_link");
-//     _links_in_contact.push_back("l_foot_lower_right_link");
-//     _links_in_contact.push_back("l_foot_upper_left_link");
-//     _links_in_contact.push_back("l_foot_upper_right_link");
-//     _links_in_contact.push_back("r_foot_lower_left_link");
-//     _links_in_contact.push_back("r_foot_lower_right_link");
-//     _links_in_contact.push_back("r_foot_upper_left_link");
-//     _links_in_contact.push_back("r_foot_upper_right_link");
-// 
-//     OpenSoT::Constraint<Eigen::MatrixXd, Eigen::VectorXd>::ConstraintPtr convexHull(
-//                 new OpenSoT::constraints::velocity::ConvexHull(q,*(_model_ptr.get()), _links_in_contact));
-//     
-//     std::list<OpenSoT::Constraint<Eigen::MatrixXd, Eigen::VectorXd>::ConstraintPtr> constraints;
-//     
-//     constraints.push_back(convexHull);
-//     
-//     OpenSoT::Constraint<Eigen::MatrixXd, Eigen::VectorXd>::ConstraintPtr aggregated(
-//                 new OpenSoT::constraints::Aggregated(constraints,
-//                                                      _model_ptr->getJointNum()));
-// 
-//     EXPECT_TRUE(aggregated->getbLowerBound().rows() == aggregated->getbUpperBound().rows()) <<
-//                 "bLowerBound:" << aggregated->getbLowerBound() << std::endl <<
-//                 "bUpperBound " << aggregated->getbUpperBound();
-//     EXPECT_TRUE(aggregated->getAineq().rows() == aggregated->getbLowerBound().rows());
+     XBot::ModelInterface::Ptr _model_ptr;
+     _model_ptr = XBot::ModelInterface::getModel(_path_to_cfg);
+
+     if(_model_ptr)
+         std::cout<<"pointer address: "<<_model_ptr.get()<<std::endl;
+     else
+         std::cout<<"pointer is NULL "<<_model_ptr.get()<<std::endl;
+
+
+     Eigen::VectorXd q;
+     q.setZero(_model_ptr->getJointNum());
+
+     OpenSoT::tasks::velocity::CoM::Ptr com;
+     com.reset(new OpenSoT::tasks::velocity::CoM(q, *_model_ptr));
+
+     std::cout<<"com pose: ["<<com->getActualPosition()<<"]"<<std::endl;
+
+     Eigen::MatrixXd A_Cartesian(2,3);
+     A_Cartesian<<0, 0,  1,
+                  0, 0, -1;
+     Eigen::VectorXd b_Cartesian(2);
+     b_Cartesian<<0.1,0.1;
+     OpenSoT::constraints::velocity::CartesianPositionConstraint::Ptr com_constr;
+     com_constr.reset(new OpenSoT::constraints::velocity::CartesianPositionConstraint(
+                          q, com, A_Cartesian, b_Cartesian));
+
+
+     std::list<OpenSoT::Constraint<Eigen::MatrixXd, Eigen::VectorXd>::ConstraintPtr> constraints;
+
+     constraints.push_back(com_constr);
+
+     OpenSoT::Constraint<Eigen::MatrixXd, Eigen::VectorXd>::ConstraintPtr aggregated(
+                 new OpenSoT::constraints::Aggregated(constraints,
+                                                      _model_ptr->getJointNum()));
+
+     EXPECT_TRUE(aggregated->getbLowerBound().rows() == aggregated->getbUpperBound().rows()) <<
+                 "bLowerBound:" << aggregated->getbLowerBound() << std::endl <<
+                 "bUpperBound " << aggregated->getbUpperBound();
+
+     std::cout<<"bUpperBound com_constr:" << com_constr->getbUpperBound()<<std::endl;
+     std::cout<<"bUpperBound aggregated:" << aggregated->getbUpperBound()<<std::endl;
+
+     EXPECT_TRUE(com_constr->getbUpperBound() == aggregated->getbUpperBound());
+
+     std::cout<<"bLowerBound com_constr:" << com_constr->getbLowerBound()<<std::endl;
+     std::cout<<"bLowerBound aggregated:" << aggregated->getbLowerBound()<<std::endl;
+
+     EXPECT_TRUE(aggregated->getAineq().rows() == aggregated->getbLowerBound().rows());
 
 }
 
