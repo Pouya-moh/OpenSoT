@@ -24,16 +24,21 @@ using namespace OpenSoT::tasks::velocity;
 MinimumVelocity::MinimumVelocity(const int& x_size) :
     Task("MinimumVelocity", x_size)
 {
-    _W.resize(_x_size, _x_size);
-    _W.setIdentity(_x_size, _x_size);
+    _W.resize(getXSize(), getXSize());
+    _W.setIdentity(getXSize(), getXSize());
 
-    _A.resize(_x_size, _x_size);
-    _A.setIdentity(_x_size, _x_size);
+    _A.resize(getXSize(), getXSize());
+    _A.setIdentity(getXSize(), getXSize());
 
-    _b.resize(_x_size);
-    _b.setZero(_x_size);
+    _b.resize(getXSize());
+    _b.setZero(getXSize());
 
     _hessianType = HST_IDENTITY;
+    
+    setHessianType(_hessianType);
+    setA(_A);
+    setb(_b);
+    setWeight(_W);
 }
 
 MinimumVelocity::~MinimumVelocity()

@@ -30,6 +30,7 @@
  namespace OpenSoT {
     namespace tasks {
         namespace velocity {
+            
             /**
              * @brief The MinimumVelocity class implements a task that tries to minimize joints velocities.
              * Notice that you can implement task space minimum velocity tasks by setting lambda to 0 in the corresponding tasks, i.e.:
@@ -37,10 +38,20 @@
                 MinimumCartesianVelocity
              * You can see an example of it in @ref example_MinimumVelocity.cpp
              */
+            
             class MinimumVelocity : public Task {
+                
             public:
+                
                 typedef boost::shared_ptr<MinimumVelocity> Ptr;
-            protected:
+                
+            private:
+                
+                Eigen::MatrixXd _A;
+                Eigen::VectorXd _b;
+                Eigen::MatrixXd _W;
+                HessianType _hessianType;
+                double _lambda;
 
             public:
 
