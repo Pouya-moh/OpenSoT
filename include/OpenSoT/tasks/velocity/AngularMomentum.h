@@ -38,17 +38,26 @@ namespace OpenSoT {
         * where \f$ \mathbf{h}_d \f$ is the desired angular momentum at the CoM
         */
        class AngularMomentum : public Task {
+           
        public:
+           
            typedef boost::shared_ptr<AngularMomentum> Ptr;
 
        private:
-           XBot::ModelInterface& _robot;
+           
+            XBot::ModelInterface& _robot;
 
-           Eigen::Vector3d _desiredAngularMomentum;
+            Eigen::Vector3d _desiredAngularMomentum;
 
-           Eigen::MatrixXd _Momentum;
+            Eigen::MatrixXd _Momentum;
 
-           void _update(const Eigen::VectorXd& x);
+            void _update(const Eigen::VectorXd& x);
+            
+            Eigen::MatrixXd _A;
+            Eigen::VectorXd _b;
+            Eigen::MatrixXd _W;
+            HessianType _hessianType;
+            double _lambda;
 
         public:
            /**

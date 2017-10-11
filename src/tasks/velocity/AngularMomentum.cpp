@@ -23,16 +23,18 @@ AngularMomentum::AngularMomentum(const Eigen::VectorXd& x, XBot::ModelInterface&
     Task("AngularMomentum", x.size()), _robot(robot)
 {
     _desiredAngularMomentum.setZero();
-    this->_update(x);
+    
 
     _W.resize(3,3);
-    _W.setIdentity(3,3);
+    setWeight(_W.setIdentity(3,3));
 
     _hessianType = HST_SEMIDEF;
 
-    _Momentum.resize(6, _x_size);
-    _A.resize(3, _x_size);
+    _Momentum.resize(6, getXSize());
+    _A.resize(3, getXSize());
     _b = _desiredAngularMomentum;
+    
+    this->_update(x);
 }
 
 AngularMomentum::~AngularMomentum()
@@ -43,8 +45,11 @@ AngularMomentum::~AngularMomentum()
 void AngularMomentum::_update(const Eigen::VectorXd& x)
 {
     _robot.getCentroidalMomentumMatrix(_Momentum);
-    _A = _Momentum.block(3,0,3,_x_size);
+    _A = _Momentum.block(3,0,3,getXSize());
     _b = _desiredAngularMomentum;
+    
+    setA(_A);
+    setb(_b);
 }
 
 void AngularMomentum::setReference(const Eigen::Vector3d& desiredAngularMomentum)
