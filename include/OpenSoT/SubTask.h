@@ -47,25 +47,6 @@
 
         typedef boost::shared_ptr<OpenSoT::SubTask> Ptr;
 
-    protected:
-        TaskPtr _taskPtr;
-        Indices _subTaskMap;
-
-        inline void pile(Eigen::MatrixXd& A, const Eigen::MatrixXd& B)
-        {
-            A.conservativeResize(A.rows()+B.rows(), A.cols());
-            A.block(A.rows()-B.rows(),0,B.rows(),A.cols())<<B;
-        }
-
-        inline void pile(Eigen::VectorXd &a, const Eigen::VectorXd &b)
-        {
-            a.conservativeResize(a.rows()+b.rows());
-            a.segment(a.rows()-b.rows(),b.rows())<<b;
-        }
-
-        virtual void _log(XBot::MatLogger::Ptr logger);
-
-    public:
         /**
          * @brief SubTask create a SubTask object by specifying the father Task through a pointer,
          * and a list of row indices. Notice the row indices start from 0 (c style)
@@ -126,6 +107,32 @@
          * @return true if success
          */
         virtual bool setActiveJointsMask(const std::vector<bool>& active_joints_mask);
+        
+    private:
+        
+        
+        TaskPtr _taskPtr;
+        Indices _subTaskMap;
+
+        inline void pile(Eigen::MatrixXd& A, const Eigen::MatrixXd& B)
+        {
+            A.conservativeResize(A.rows()+B.rows(), A.cols());
+            A.block(A.rows()-B.rows(),0,B.rows(),A.cols())<<B;
+        }
+
+        inline void pile(Eigen::VectorXd &a, const Eigen::VectorXd &b)
+        {
+            a.conservativeResize(a.rows()+b.rows());
+            a.segment(a.rows()-b.rows(),b.rows())<<b;
+        }
+        
+        Eigen::MatrixXd _A;
+        Eigen::VectorXd _b;
+        Eigen::MatrixXd _W;
+        HessianType _hessianType;
+        double _lambda;
+
+        virtual void _log(XBot::MatLogger::Ptr logger);
     };
 
 

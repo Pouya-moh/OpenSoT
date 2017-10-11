@@ -24,7 +24,7 @@ void OpenSoT::SubTask::generateA()
             pile(this->_A,
                 //_taskPtr->getA().submatrix(i->front(),i->back(),0, _x_size-1));
                 _taskPtr->getA().block(i->front(),0,
-                                       i->back()-i->front()+1, _x_size));
+                                       i->back()-i->front()+1, getXSize()));
     }
 }
 
@@ -109,6 +109,11 @@ void OpenSoT::SubTask::_update(const Eigen::VectorXd &x)
     this->generateb();
     this->generateHessianAtype();
     this->generateWeight();
+    
+    setA(_A);
+    setb(_b);
+    setWeight(_W);
+    setHessianType(_hessianType);
 }
 
 std::vector<bool> OpenSoT::SubTask::getActiveJointsMask()
