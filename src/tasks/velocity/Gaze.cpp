@@ -96,6 +96,11 @@ void Gaze::_update(const Eigen::VectorXd &x)
     this->_b = _subtask->getb();
     this->_hessianType = _subtask->getHessianAtype();
     this->_W = _subtask->getWeight();
+    
+    setA(_A);
+    setb(_b);
+    setHessianType(_hessianType);
+    setWeight(_W);
 }
 
 std::vector<bool> Gaze::getActiveJointsMask()

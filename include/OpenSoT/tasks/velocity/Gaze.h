@@ -109,6 +109,8 @@ public:
     std::string getDistalLink(){ return _distal_link;}
 
 private:
+    
+    
     std::string _distal_link;
     Cartesian::Ptr _cartesian_task;
     SubTask::Ptr   _subtask;
@@ -122,6 +124,12 @@ private:
     KDL::Frame _gaze_goal;
     Eigen::MatrixXd _tmpEigenM;
     Eigen::MatrixXd _tmpEigenM2;
+    
+    Eigen::MatrixXd _A;
+    Eigen::VectorXd _b;
+    Eigen::MatrixXd _W;
+    HessianType _hessianType;
+    double _lambda;
 
 
 
