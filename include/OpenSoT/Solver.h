@@ -25,14 +25,15 @@
 using namespace std;
 
  namespace OpenSoT {
-    template < class Matrix_type, class Vector_type >
+     
     class Solver {
+        
     public:
-        typedef Task< Matrix_type, Vector_type > TaskType;
+        typedef Task TaskType;
         typedef boost::shared_ptr<TaskType> TaskPtr;
-        typedef Constraint< Matrix_type, Vector_type > ConstraintType;
+        typedef Constraint ConstraintType;
         typedef boost::shared_ptr<ConstraintType> ConstraintPtr;
-        typedef Solver< Matrix_type, Vector_type > SolverType;
+        typedef Solver SolverType;
         typedef boost::shared_ptr<SolverType> SolverPtr;
         typedef vector <TaskPtr> Stack;
 
@@ -83,7 +84,7 @@ using namespace std;
          * @param solution the solution
          * @return  true if solved/solvable
          */
-        virtual bool solve(Vector_type& solution) = 0;
+        virtual bool solve(Eigen::VectorXd& solution) = 0;
 
         /**
          * @brief log logs data related to the solver
