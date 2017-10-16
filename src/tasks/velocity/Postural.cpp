@@ -29,8 +29,10 @@ Postural::Postural(   const Eigen::VectorXd& x) :
     _x_desired.setZero(getXSize());
     _xdot_desired.setZero(getXSize());
 
-    setWeight(Eigen::MatrixXd::Identity(getXSize(), getXSize()));
     setA(Eigen::MatrixXd::Identity(getXSize(), getXSize()));
+
+
+    setW(Eigen::MatrixXd::Identity(getXSize(), getXSize()));
 
     setHessianType(HST_IDENTITY);
 
@@ -96,7 +98,7 @@ void Postural::update_b() {
 void OpenSoT::tasks::velocity::Postural::setLambda(double lambda)
 {
     if(lambda >= 0.0){
-        setLambda(lambda);
+        Task::setLambda(lambda);
         this->update_b();
     }
 }

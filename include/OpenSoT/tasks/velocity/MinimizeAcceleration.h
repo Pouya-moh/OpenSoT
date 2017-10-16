@@ -33,13 +33,15 @@
             protected:
                 Eigen::VectorXd _x_before;
 
+                Eigen::MatrixXd _A;
+                Eigen::MatrixXd _W;
+                Eigen::VectorXd _b;
+
             public:
 
                 MinimizeAcceleration(const Eigen::VectorXd& x);
 
                 ~MinimizeAcceleration();
-
-                void setLambda(double lambda);
 
                 void _update(const Eigen::VectorXd& x);
             };

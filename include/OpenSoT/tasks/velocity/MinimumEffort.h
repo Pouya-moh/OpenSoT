@@ -161,7 +161,7 @@
                 void setLambda(double lambda)
                 {
                     if(lambda >= 0.0){
-                        setLambda(lambda);
+                        Task::setLambda(lambda);
                         this->_update(_x);
                     }
                 }

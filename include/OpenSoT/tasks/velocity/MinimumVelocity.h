@@ -51,7 +51,7 @@
                 Eigen::VectorXd _b;
                 Eigen::MatrixXd _W;
                 HessianType _hessianType;
-                double _lambda;
+
 
             public:
 

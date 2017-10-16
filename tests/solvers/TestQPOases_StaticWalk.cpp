@@ -232,7 +232,7 @@ namespace{
     class theWalkingStack
     {
     public:
-        void printAb(OpenSoT::Task<Eigen::MatrixXd,Eigen::VectorXd>& task)
+        void printAb(OpenSoT::Task& task)
         {
             std::cout<<"Task: "<<task.getTaskID()<<std::endl;
             std::cout<<"A: "<<task.getA()<<std::endl;

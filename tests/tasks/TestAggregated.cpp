@@ -102,7 +102,7 @@ TEST_F(testAggregatedTask, testAggregatedTask_)
     OpenSoT::tasks::velocity::Postural::Ptr postural_in_aggregated(
             new OpenSoT::tasks::velocity::Postural(conversion_utils_YARP::toEigen(q)));
     postural_in_aggregated->setReference(conversion_utils_YARP::toEigen(q_ref));
-    std::list<OpenSoT::Task<Eigen::MatrixXd,Eigen::VectorXd>::TaskPtr> task_list;
+    std::list<OpenSoT::Task::TaskPtr> task_list;
     task_list.push_back(postural_in_aggregated);
     OpenSoT::tasks::Aggregated::Ptr aggregated_task(
                 new OpenSoT::tasks::Aggregated(task_list, q.size()));

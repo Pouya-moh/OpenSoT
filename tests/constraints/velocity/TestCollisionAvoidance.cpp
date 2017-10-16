@@ -394,7 +394,7 @@ TEST_F(testSelfCollisionAvoidanceConstraint, testCartesianTaskWithoutSC){
     OpenSoT::constraints::Aggregated::Ptr bounds = OpenSoT::constraints::Aggregated::Ptr(
                 new OpenSoT::constraints::Aggregated(joint_limits, joint_velocity_limits, this->q.size()));
 
-    OpenSoT::Solver<Eigen::MatrixXd, Eigen::VectorXd>::SolverPtr sot = OpenSoT::solvers::QPOases_sot::Ptr(
+    OpenSoT::Solver::SolverPtr sot = OpenSoT::solvers::QPOases_sot::Ptr(
         new OpenSoT::solvers::QPOases_sot(stack_of_tasks, bounds));
 
     yarp::sig::Vector dq(this->q.size(), 0.0);
@@ -536,7 +536,7 @@ TEST_F(testSelfCollisionAvoidanceConstraint, testCartesianTaskWithSC){
     OpenSoT::constraints::Aggregated::Ptr bounds = OpenSoT::constraints::Aggregated::Ptr(
                 new OpenSoT::constraints::Aggregated(joint_limits, joint_velocity_limits, this->q.size()));
 
-    OpenSoT::Solver<Eigen::MatrixXd, Eigen::VectorXd>::SolverPtr sot = OpenSoT::solvers::QPOases_sot::Ptr(
+    OpenSoT::Solver::SolverPtr sot = OpenSoT::solvers::QPOases_sot::Ptr(
                 new OpenSoT::solvers::QPOases_sot(stack_of_tasks, bounds));
 
     yarp::sig::Vector dq(this->q.size(), 0.0);
@@ -763,7 +763,7 @@ TEST_F(testSelfCollisionAvoidanceConstraint, testMultipleCapsulePairsSC){
     OpenSoT::constraints::Aggregated::Ptr bounds = OpenSoT::constraints::Aggregated::Ptr(
                 new OpenSoT::constraints::Aggregated(joint_limits, joint_velocity_limits, this->q.size()));
 
-    OpenSoT::Solver<Eigen::MatrixXd, Eigen::VectorXd>::SolverPtr sot = OpenSoT::solvers::QPOases_sot::Ptr(
+    OpenSoT::Solver::SolverPtr sot = OpenSoT::solvers::QPOases_sot::Ptr(
                 new OpenSoT::solvers::QPOases_sot(stack_of_tasks, bounds));
 
     yarp::sig::Vector dq(this->q.size(), 0.0);
@@ -1025,7 +1025,7 @@ TEST_F(testSelfCollisionAvoidanceConstraint, testChangeWhitelistOnline){
     OpenSoT::constraints::Aggregated::Ptr bounds = OpenSoT::constraints::Aggregated::Ptr(
                 new OpenSoT::constraints::Aggregated(joint_limits, joint_velocity_limits, this->q.size()));
 
-    OpenSoT::Solver<Eigen::MatrixXd, Eigen::VectorXd>::SolverPtr sot = OpenSoT::solvers::QPOases_sot::Ptr(
+    OpenSoT::Solver::SolverPtr sot = OpenSoT::solvers::QPOases_sot::Ptr(
                 new OpenSoT::solvers::QPOases_sot(stack_of_tasks, bounds));
 
     yarp::sig::Vector dq(this->q.size(), 0.0);

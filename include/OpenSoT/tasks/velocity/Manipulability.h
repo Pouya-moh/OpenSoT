@@ -78,7 +78,7 @@ namespace OpenSoT {
                 void setLambda(double lambda)
                 {
                     if(lambda >= 0.0){
-                        this->setLambda(lambda);
+                        Task::setLambda(lambda);
                         this->_update(_x);
                     }
                 }

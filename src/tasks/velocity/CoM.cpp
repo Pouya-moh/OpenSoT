@@ -43,13 +43,13 @@ CoM::CoM(   const Eigen::VectorXd& x,
     _desiredPosition = _actualPosition;
     _b.setZero(3);
     _positionError = _b;
+    setb(_b);
 
     _W.resize(3,3);
     _W.setIdentity(3,3);
     
-    setWeight(_W);
-
-    _hessianType = HST_SEMIDEF;
+    setW(_W);
+    setHessianType(HST_SEMIDEF);
 }
 
 CoM::~CoM()
@@ -149,7 +149,7 @@ void CoM::update_b()
 void OpenSoT::tasks::velocity::CoM::setLambda(double lambda)
 {
     if(lambda >= 0.0){
-        setLambda(lambda);
+        Task::setLambda(lambda);
         this->update_b();
     }
 }

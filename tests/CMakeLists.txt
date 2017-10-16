@@ -121,7 +121,7 @@ if(${trajectory_utils_FOUND} AND ${test_utils_FOUND})
     set(OPENSOT_TESTS ${OPENSOT_TESTS}
                   testQPOases_StaticWalk_FloatingBase
                   testEigenSVD_StaticWalk_FloatingBase
-                  testFrictionConeForceConstraint
+                  #testFrictionConeForceConstraint
     )
 endif()
 
@@ -136,7 +136,7 @@ if(${YARP_FOUND})
                     testQPOases_StaticWalk
                     testAggregatedTask
                     testCartesianVelocityTask
-                    testCoMForceTask
+  #                  testCoMForceTask
                     testCoMVelocityTask
                     testBasicAlgebra
                     testMinimumEffortVelocityTask
@@ -206,10 +206,10 @@ if(${trajectory_utils_FOUND} AND ${test_utils_FOUND})
     add_dependencies(testEigenSVD_StaticWalk_FloatingBase GTest-ext OpenSoT)
     add_test(NAME OpenSoT_solvers_EigenSVD_StaticWalk_FloatingBase COMMAND testEigenSVD_StaticWalk_FloatingBase)
 
-    ADD_EXECUTABLE(testFrictionConeForceConstraint constraints/force/TestFrictionCones.cpp)
-    TARGET_LINK_LIBRARIES(testFrictionConeForceConstraint ${TestLibs})
-    add_dependencies(testFrictionConeForceConstraint GTest-ext OpenSoT)
-    add_test(NAME OpenSoT_constraint_force_FrictionCones COMMAND testFrictionConeForceConstraint)
+#    ADD_EXECUTABLE(testFrictionConeForceConstraint constraints/force/TestFrictionCones.cpp)
+#    TARGET_LINK_LIBRARIES(testFrictionConeForceConstraint ${TestLibs})
+#    add_dependencies(testFrictionConeForceConstraint GTest-ext OpenSoT)
+#    add_test(NAME OpenSoT_constraint_force_FrictionCones COMMAND testFrictionConeForceConstraint)
 endif()
 
 ADD_EXECUTABLE(testManipulabilityTask tasks/velocity/TestManipulability.cpp)
@@ -350,10 +350,10 @@ if(${YARP_FOUND})
     add_dependencies(testCartesianVelocityTask GTest-ext OpenSoT)
     add_test(NAME OpenSoT_task_velocity_Cartesian COMMAND testCartesianVelocityTask)
 
-    ADD_EXECUTABLE(testCoMForceTask tasks/force/TestCoM.cpp)
-    TARGET_LINK_LIBRARIES(testCoMForceTask ${TestLibs})
-    add_dependencies(testCoMForceTask GTest-ext OpenSoT)
-    add_test(NAME OpenSoT_task_force_CoM COMMAND testCoMForceTask)
+ #   ADD_EXECUTABLE(testCoMForceTask tasks/force/TestCoM.cpp)
+ #   TARGET_LINK_LIBRARIES(testCoMForceTask ${TestLibs})
+ #   add_dependencies(testCoMForceTask GTest-ext OpenSoT)
+ #   add_test(NAME OpenSoT_task_force_CoM COMMAND testCoMForceTask)
 
     ADD_EXECUTABLE(testCoMVelocityTask tasks/velocity/TestCoM.cpp)
     TARGET_LINK_LIBRARIES(testCoMVelocityTask ${TestLibs})

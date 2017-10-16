@@ -266,9 +266,32 @@
         
     protected:
         
-        bool setA(const Eigen::MatrixXd& A);
-        bool setb(const Eigen::VectorXd& b);
-        void setHessianType(HessianType hessian_type);
+        bool setA(const Eigen::MatrixXd& A)
+        {
+            if(A.cols() != __x_size)
+                return false;
+            __A = A;
+            return true;
+        }
+
+        bool setb(const Eigen::VectorXd& b)
+        {
+            __b = b;
+            return true;
+        }
+
+        void setHessianType(HessianType hessian_type)
+        {
+            __hessianType = hessian_type;
+        }
+
+        bool setW(const Eigen::MatrixXd& W)
+        {
+            __W = W;
+            return true;
+        }
+
+
         
         
     private:

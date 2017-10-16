@@ -136,19 +136,55 @@
         
     protected:
         
-        bool setLowerBound(const Eigen::VectorXd& lb);
+        bool setLowerBound(const Eigen::VectorXd& lb)
+        {
+            if(lb.size() != __x_size)
+                return false;
+            __lowerBound = lb;
+            return true;
+        }
         
-        bool setUpperBound(const Eigen::VectorXd& ub);
+        bool setUpperBound(const Eigen::VectorXd& ub)
+        {
+            if(ub.size() != __x_size)
+                return false;
+            __upperBound = ub;
+            return true;
+        }
         
-        bool setAineq(const Eigen::MatrixXd& Aineq);
+        bool setAineq(const Eigen::MatrixXd& Aineq)
+        {
+            if(Aineq.cols() != __x_size)
+                return false;
+            __Aineq = Aineq;
+            return true;
+        }
         
-        bool setLowerBoundIneq(const Eigen::VectorXd& lb);
+        bool setLowerBoundIneq(const Eigen::VectorXd& lb)
+        {
+            __bLowerBound = lb;
+            return true;
+        }
         
-        bool setUpperBoundIneq(const Eigen::VectorXd& ub);
+        bool setUpperBoundIneq(const Eigen::VectorXd& ub)
+        {
+            __bUpperBound = ub;
+            return true;
+        }
         
-        bool setAeq(const Eigen::MatrixXd& Aeq);
+        bool setAeq(const Eigen::MatrixXd& Aeq)
+        {
+            if(Aeq.cols() != __x_size)
+                return false;
+            __Aeq = Aeq;
+            return true;
+        }
         
-        bool setbeq(const Eigen::VectorXd& beq);
+        bool setbeq(const Eigen::VectorXd& beq)
+        {
+            __beq = beq;
+            return true;
+        }
         
     private:
 

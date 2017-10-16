@@ -537,7 +537,7 @@ TEST_F(testQPOasesTask, testProblemWithConstraint)
                                                              postural_task->getHessianAtype());
         std::list< OpenSoT::Constraint::ConstraintPtr> constraint_list =
                 postural_task->getConstraints();
-        OpenSoT::Constraint< Eigen::MatrixXd, Eigen::VectorXd>::ConstraintPtr constraint = constraint_list.front();
+        OpenSoT::Constraint::ConstraintPtr constraint = constraint_list.front();
         EXPECT_TRUE(qp_postural_problem.initProblem(postural_task->getA(), -1.0*postural_task->getb(),
                                                     Eigen::MatrixXd(), Eigen::VectorXd(), Eigen::VectorXd(),
                                                     constraint->getLowerBound(), constraint->getUpperBound()));
@@ -703,7 +703,7 @@ TEST_F(testQPOasesTask, testCoMTask)
                     tmp,1.0,q,*_model_ptr));
     com_task->getConstraints().push_back(com_vel_constr);
 
-    std::list< OpenSoT::Constraint< Eigen::MatrixXd, Eigen::VectorXd>::ConstraintPtr> constraint_list =
+    std::list< OpenSoT::Constraint::ConstraintPtr> constraint_list =
             com_task->getConstraints();
     OpenSoT::Constraint::ConstraintPtr constraint = constraint_list.front();
 

@@ -56,7 +56,7 @@ Cartesian::Cartesian(std::string task_id,
     this->_update(x);
 
     _W.setIdentity(_A.rows(), _A.rows());
-    setWeight(_W);
+    setW(_W);
 
     setHessianType(HST_SEMIDEF);
 }
@@ -83,6 +83,7 @@ void Cartesian::_update(const Eigen::VectorXd &x) {
         /* initializing to zero error */
         _desiredPose = _actualPose;
         _b.setZero(_A.rows());
+        setb(_b);
         _is_initialized = true;
     }
 
@@ -222,7 +223,7 @@ const bool OpenSoT::tasks::velocity::Cartesian::baseLinkIsWorld() const
 void OpenSoT::tasks::velocity::Cartesian::setLambda(double lambda)
 {
     if(lambda >= 0.0){
-        setLambda(lambda);
+        Task::setLambda(lambda);
         this->update_b();
     }
 }

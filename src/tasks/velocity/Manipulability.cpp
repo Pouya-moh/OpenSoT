@@ -36,7 +36,7 @@ Manipulability::Manipulability(const Eigen::VectorXd& x, const XBot::ModelInterf
     double _x_size = this->getXSize();
     _W.resize(_x_size, _x_size);
     _W.setIdentity(_x_size, _x_size);
-    this->setW(_W);
+    Task::setW(_W);
 
     this->setHessianType(HST_POSDEF);
 
