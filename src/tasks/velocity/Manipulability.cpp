@@ -10,13 +10,17 @@ Manipulability::Manipulability(const Eigen::VectorXd& x, const XBot::ModelInterf
     _manipulabilityIndexGradientWorker(x, robot_model, CartesianTask),
     _x(x)
 {
+    double _x_size = this->getXSize();
+
     _W.resize(_x_size, _x_size);
     _W.setIdentity(_x_size, _x_size);
+    this->setW(_W);
 
-    _hessianType = HST_POSDEF;
+    this->setHessianType(HST_POSDEF);
 
     _A.resize(_x_size, _x_size);
     _A.setIdentity(_x_size, _x_size);
+    this->setA(_A);
 
     /* first update. Setting desired pose equal to the actual pose */
     this->_update(x);
@@ -29,13 +33,16 @@ Manipulability::Manipulability(const Eigen::VectorXd& x, const XBot::ModelInterf
     _manipulabilityIndexGradientWorker(x, robot_model,CartesianTask),
     _x(x)
 {
+    double _x_size = this->getXSize();
     _W.resize(_x_size, _x_size);
     _W.setIdentity(_x_size, _x_size);
+    this->setW(_W);
 
-    _hessianType = HST_POSDEF;
+    this->setHessianType(HST_POSDEF);
 
     _A.resize(_x_size, _x_size);
     _A.setIdentity(_x_size, _x_size);
+    this->setA(_A);
 
 
     /* first update. Setting desired pose equal to the actual pose */
@@ -52,8 +59,8 @@ void Manipulability::_update(const Eigen::VectorXd &x) {
     _x = x;
     /************************* COMPUTING TASK *****************************/
 
-    _b = _lambda*cartesian_utils::computeGradient(x, _manipulabilityIndexGradientWorker, this->getActiveJointsMask());
-
+    _b = this->getLambda()*cartesian_utils::computeGradient(x, _manipulabilityIndexGradientWorker, this->getActiveJointsMask());
+    this->setb(_b);
     /**********************************************************************/
 }
 

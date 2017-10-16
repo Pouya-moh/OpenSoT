@@ -14,7 +14,6 @@ find_package(trajectory_utils QUIET)
 find_package(rviz_visual_tools QUIET)
 find_package(ModelInterfaceIDYNUTILS QUIET)
 
-
 if(${YARP_FOUND})
     set(TEST_INCLUDES ${TEST_INCLUDES} ${YARP_INCLUDE_DIRS} )
 endif()

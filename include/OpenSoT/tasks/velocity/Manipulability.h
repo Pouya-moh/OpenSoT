@@ -38,6 +38,12 @@ namespace OpenSoT {
              * W is a CONSTANT weight matrix.
              */
             class Manipulability : public Task {
+            private:
+                Eigen::MatrixXd _W;
+                Eigen::MatrixXd _A;
+
+                Eigen::VectorXd _b;
+
             public:
                 typedef boost::shared_ptr<Manipulability> Ptr;
 
@@ -72,7 +78,7 @@ namespace OpenSoT {
                 void setLambda(double lambda)
                 {
                     if(lambda >= 0.0){
-                        _lambda = lambda;
+                        this->setLambda(lambda);
                         this->_update(_x);
                     }
                 }
