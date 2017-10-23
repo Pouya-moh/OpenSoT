@@ -54,10 +54,15 @@
                  */
                 UNILATERAL_TO_BILATERAL = 0x100
             };
+        private:
+            Eigen::VectorXd _upperBound, _lowerBound, _bUpperBound, _bLowerBound, _beq;
+            Eigen::MatrixXd _Aineq, _Aeq;
+
 
         protected:
 
             std::list< ConstraintPtr > _bounds;
+            unsigned int _number_of_bounds;
             unsigned int _aggregationPolicy;
 
             void checkSizes();
