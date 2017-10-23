@@ -74,6 +74,8 @@ void VelocityLimits::generateBounds(const double qDotLimit)
         _upperBound<<_upperBound.setOnes(getXSize())*1.0*_qDotLimit*_dT;
 
     /**********************************************************************/
+        setLowerBound(_lowerBound);
+        setUpperBound(_upperBound);
 }
 
 void VelocityLimits::generateBounds(const Eigen::VectorXd& qDotLimit)
