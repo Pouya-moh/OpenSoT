@@ -10,6 +10,11 @@ OpenSoT::SubTask::SubTask(OpenSoT::SubTask::TaskPtr taskPtr, const std::list<uns
     this->generateb();
     this->generateHessianAtype();
     this->generateWeight();
+
+    setA(_A);
+    setb(_b);
+    setW(_W);
+    setHessianType(_hessianType);
 }
 
 void OpenSoT::SubTask::generateA()

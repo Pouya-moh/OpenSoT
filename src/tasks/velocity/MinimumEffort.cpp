@@ -28,8 +28,11 @@ MinimumEffort::MinimumEffort(   const Eigen::VectorXd& x, const XBot::ModelInter
     _W.resize(getXSize(), getXSize());
     _W.setIdentity(getXSize(), getXSize());
     setW(_W);
+    Task::setW(_W);
+
 
     _hessianType = HST_POSDEF;
+    setHessianType(_hessianType);
 
     _A.resize(getXSize(), getXSize());
     _A.setIdentity(getXSize(), getXSize());
