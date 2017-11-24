@@ -259,7 +259,8 @@ TEST_F(testAutoStack, testOperatorRedirection)
     EXPECT_TRUE(auto1->getBoundsList().size() == 1);
 
     auto1 << DHS->comVelocity << DHS->jointLimits;
-    EXPECT_TRUE(auto1->getBoundsList().size() == 3);
+    EXPECT_TRUE(auto1->getBoundsList().size() == 2);
+    EXPECT_TRUE(auto1->getConstraintsList().size() == 1);
 
     AutoStack::Ptr auto2 =
     (leftArm + (DHS->rightArm << DHS->comVelocity))
@@ -271,6 +272,12 @@ TEST_F(testAutoStack, testOperatorRedirection)
     EXPECT_EQ(boost::dynamic_pointer_cast<tasks::Aggregated>(auto2->getStack()[0])->getTaskList().back()->getConstraints().size(), 1);
     EXPECT_EQ(boost::dynamic_pointer_cast<tasks::Aggregated>(auto2->getStack()[1])->getTaskList().size(), 2);
     EXPECT_EQ(boost::dynamic_pointer_cast<tasks::Aggregated>(auto2->getStack()[1])->getTaskList().front()->getConstraints().size(), 0);
+
+    AutoStack::Ptr auto3 = (DHS->leftArm)/
+                           (DHS->postural)<<DHS->jointLimits<<DHS->comVelocity;
+    EXPECT_TRUE(auto3->getBoundsList().size() == 1);
+    EXPECT_TRUE(auto3->getConstraintsList().size() == 1);
+
 }
 
 TEST_F(testAutoStack, testTaskConstructor)

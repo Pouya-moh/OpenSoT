@@ -202,11 +202,22 @@ OpenSoT::AutoStack::Ptr operator<<( OpenSoT::AutoStack::Ptr autoStack,
     // check both pointers are valid
     assert(autoStack && bound);
 
-    if((autoStack->getBoundsList().size() == 0) ||
-       (std::find(autoStack->getBoundsList().begin(),
-                 autoStack->getBoundsList().end(),
-                 bound) == autoStack->getBoundsList().end()))
-        autoStack->getBoundsList().push_back(bound);
+    if(bound->isBound())
+    {
+        if((autoStack->getBoundsList().size() == 0) ||
+           (std::find(autoStack->getBoundsList().begin(),
+                      autoStack->getBoundsList().end(),
+                     bound) == autoStack->getBoundsList().end()))
+            autoStack->getBoundsList().push_back(bound);
+    }
+    else //is constraint
+    {
+        if((autoStack->getConstraintsList().size() == 0) ||
+           (std::find(autoStack->getConstraintsList().begin(),
+                      autoStack->getConstraintsList().end(),
+                      bound) == autoStack->getConstraintsList().end()))
+            autoStack->getConstraintsList().push_back(bound);
+    }
 
     return autoStack;
 }
@@ -216,13 +227,21 @@ OpenSoT::AutoStack::AutoStack(const double x_size) :
     _boundsAggregated(
         new OpenSoT::constraints::Aggregated(
             std::list<OpenSoT::constraints::Aggregated::ConstraintPtr>(),
-            x_size))
+            x_size)),
+    _constraintsAggregated(
+      new OpenSoT::constraints::Aggregated(
+          std::list<OpenSoT::constraints::Aggregated::ConstraintPtr>(),
+          x_size))
 {
 
 }
 
 OpenSoT::AutoStack::AutoStack(OpenSoT::tasks::Aggregated::TaskPtr task):
     _boundsAggregated(
+        new OpenSoT::constraints::Aggregated(
+            std::list<OpenSoT::constraints::Aggregated::ConstraintPtr>(),
+            task->getXSize())),
+    _constraintsAggregated(
         new OpenSoT::constraints::Aggregated(
             std::list<OpenSoT::constraints::Aggregated::ConstraintPtr>(),
             task->getXSize()))
@@ -235,7 +254,11 @@ OpenSoT::AutoStack::AutoStack(OpenSoT::solvers::QPOases_sot::Stack stack) :
     _boundsAggregated(
         new OpenSoT::constraints::Aggregated(
             std::list<OpenSoT::constraints::Aggregated::ConstraintPtr>(),
-            stack.front()->getXSize()))
+            stack.front()->getXSize())),
+    _constraintsAggregated(
+      new OpenSoT::constraints::Aggregated(
+          std::list<OpenSoT::constraints::Aggregated::ConstraintPtr>(),
+          stack.front()->getXSize()))
 {
 
 }
@@ -243,17 +266,34 @@ OpenSoT::AutoStack::AutoStack(OpenSoT::solvers::QPOases_sot::Stack stack) :
 OpenSoT::AutoStack::AutoStack(OpenSoT::solvers::QPOases_sot::Stack stack,
                               std::list<OpenSoT::solvers::QPOases_sot::ConstraintPtr> bounds) :
     _stack(stack),
+//    _boundsAggregated(
+//        new OpenSoT::constraints::Aggregated(
+//            bounds,
+//            bounds.front()->getXSize()))
     _boundsAggregated(
         new OpenSoT::constraints::Aggregated(
-            bounds,
-            bounds.front()->getXSize()))
-{
+            std::list<OpenSoT::constraints::Aggregated::ConstraintPtr>(),
+            stack.front()->getXSize())),
+    _constraintsAggregated(
+      new OpenSoT::constraints::Aggregated(
+          std::list<OpenSoT::constraints::Aggregated::ConstraintPtr>(),
+          stack.front()->getXSize()))
 
+{
+    std::list<OpenSoT::solvers::QPOases_sot::ConstraintPtr>::iterator it = bounds.begin();
+    for(it; it != bounds.end(); it++)
+    {
+        if(it->get()->isBound())
+            _boundsAggregated->getConstraintsList().push_back(*it);
+        else
+            _constraintsAggregated->getConstraintsList().push_back(*it);
+    }
 }
 
 void OpenSoT::AutoStack::update(const Eigen::VectorXd &state)
 {
     _boundsAggregated->update(state);
+    _constraintsAggregated->update(state);
     typedef std::vector<OpenSoT::tasks::Aggregated::TaskPtr>::iterator it_t;
     for(it_t task = _stack.begin();
         task != _stack.end();
@@ -266,6 +306,11 @@ std::list<OpenSoT::constraints::Aggregated::ConstraintPtr>& OpenSoT::AutoStack::
     return _boundsAggregated->getConstraintsList();
 }
 
+std::list<OpenSoT::constraints::Aggregated::ConstraintPtr>& OpenSoT::AutoStack::getConstraintsList()
+{
+    return _constraintsAggregated->getConstraintsList();
+}
+
 void OpenSoT::AutoStack::setBoundsAggregationPolicy(const unsigned int aggregationPolicy)
 {
     std::list<OpenSoT::constraints::Aggregated::ConstraintPtr>
@@ -276,10 +321,26 @@ void OpenSoT::AutoStack::setBoundsAggregationPolicy(const unsigned int aggregati
             bounds.front()->getXSize()));
 }
 
+void OpenSoT::AutoStack::setConstraintsAggregationPolicy(const unsigned int aggregationPolicy)
+{
+    std::list<OpenSoT::constraints::Aggregated::ConstraintPtr>
+        constraints = _constraintsAggregated->getConstraintsList();
+    _constraintsAggregated.reset(
+        new OpenSoT::constraints::Aggregated(
+            constraints,
+            constraints.front()->getXSize()));
+}
+
 OpenSoT::constraints::Aggregated::ConstraintPtr OpenSoT::AutoStack::getBounds()
 {
     _boundsAggregated->generateAll();
     return _boundsAggregated;
+}
+
+OpenSoT::constraints::Aggregated::ConstraintPtr OpenSoT::AutoStack::getConstraints()
+{
+    _constraintsAggregated->generateAll();
+    return _constraintsAggregated;
 }
 
 OpenSoT::solvers::QPOases_sot::Stack& OpenSoT::AutoStack::getStack()
@@ -375,6 +436,8 @@ void OpenSoT::AutoStack::log(XBot::MatLogger::Ptr logger)
         task->log(logger);
     if(_boundsAggregated)
         _boundsAggregated->log(logger);
+    if(_constraintsAggregated)
+        _constraintsAggregated->log(logger);
 }
 
 

@@ -52,6 +52,7 @@ namespace OpenSoT {
         OpenSoT::solvers::QPOases_sot::Stack _stack;
 
         OpenSoT::constraints::Aggregated::Ptr _boundsAggregated;
+        OpenSoT::constraints::Aggregated::Ptr _constraintsAggregated;
 
         std::vector<OpenSoT::solvers::QPOases_sot::TaskPtr> flattenTask(
                 OpenSoT::solvers::QPOases_sot::TaskPtr task);
@@ -77,6 +78,7 @@ namespace OpenSoT {
             OpenSoT::solvers::QPOases_sot::Stack& getStack();
 
             std::list<OpenSoT::constraints::Aggregated::ConstraintPtr>& getBoundsList();
+            std::list<OpenSoT::constraints::Aggregated::ConstraintPtr>& getConstraintsList();
 
             /**
              * @brief setBoundsAggregationPolicy changes the aggregation policy of the bounds as
@@ -91,7 +93,12 @@ namespace OpenSoT {
                 OpenSoT::constraints::Aggregated::EQUALITIES_TO_INEQUALITIES |
                 OpenSoT::constraints::Aggregated::UNILATERAL_TO_BILATERAL);
 
+            void setConstraintsAggregationPolicy(const unsigned int aggregationPolicy =
+                OpenSoT::constraints::Aggregated::EQUALITIES_TO_INEQUALITIES |
+                OpenSoT::constraints::Aggregated::UNILATERAL_TO_BILATERAL);
+
             OpenSoT::constraints::Aggregated::ConstraintPtr getBounds();
+            OpenSoT::constraints::Aggregated::ConstraintPtr getConstraints();
 
             OpenSoT::solvers::QPOases_sot::TaskPtr getOperationalSpaceTask(const std::string& base_link, const std::string& distal_link);
             OpenSoT::solvers::QPOases_sot::TaskPtr getOperationalSpaceTask(const std::string& task_id);
