@@ -33,6 +33,7 @@ if (CMAKE_BUILD_TYPE STREQUAL "Debug")
 endif(CMAKE_BUILD_TYPE STREQUAL "Debug")
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/")
+include(MacroYCMInstallLibrary)
 
 find_package(YCM REQUIRED)
 FIND_PACKAGE(Boost COMPONENTS system REQUIRED)
@@ -65,6 +66,8 @@ INCLUDE_DIRECTORIES(include ${eigen_conversions_INCLUDE_DIRS}
                             )
 
 ADD_DEFINITIONS(${PCL_DEFINITIONS})
+ADD_DEFINITIONS(-DEIGEN_USE_BLAS) 
+
 
 # Find package qpOASES or build it using ExternalProject
 find_package(qpOASES QUIET)
@@ -162,7 +165,6 @@ set(OPENSOT_VARIABLES_SOURCES src/variables/Torque.cpp)
 ADD_LIBRARY(OpenSoT SHARED
                     ${OPENSOT_CONSTRAINTS_SOURCES}
                     ${OPENSOT_TASKS_SOURCES}
-                    ${OPENSOT_SOLVERS_SOURCES}
                     ${OPENSOT_UTILS_SOURCES}
                     ${OPENSOT_VARIABLES_SOURCES}
 #                    src/constraints/velocity/Dynamics.cpp
@@ -173,28 +175,36 @@ ADD_LIBRARY(OpenSoT SHARED
                     #src/utils/PreviewerUtils.cpp
                     ${sot_INCLUDES})
                     
-add_definitions(-DEIGEN_STACK_ALLOCATION_LIMIT=300000)
+ 
 
+add_library(OpenSoTSolvers SHARED ${OPENSOT_SOLVERS_SOURCES})
+                    
 # we must wait for qpOASES-ext to be ready before building OpenSoT
 if(TARGET qpOASES-ext)
     add_dependencies(OpenSoT qpOASES-ext)
 endif()
 
+target_link_libraries(OpenSoTSolvers PRIVATE  ${qpOASES_LIBRARIES})
 
 TARGET_LINK_LIBRARIES(OpenSoT PUBLIC
                               ${srdfdom_advr_LIBRARIES}
                               ${eigen_conversions_LIBRARIES}
                               PRIVATE
-                              ${qpOASES_LIBRARIES}
+#                               OpenSoTSolvers
                               ${PCL_LIBRARIES}
                               ${XBotInterface_LIBRARIES}
                               ${fcl_LIBRARIES}
                               ${moveit_core_LIBRARIES}
+                              "/usr/lib/libblas.so"
                               )
+                              
+
 
 ########################################################################
 # use YCM to export OpenSoT so taht it can be found using find_package #
 ########################################################################
+
+ycm_library_install(OpenSoTSolvers 1 0 0)
 
 set(VARS_PREFIX "OPENSOT")
 

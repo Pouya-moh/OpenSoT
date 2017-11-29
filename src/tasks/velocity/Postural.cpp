@@ -88,7 +88,7 @@ void OpenSoT::tasks::velocity::Postural::getReference(Eigen::VectorXd &x_desired
 }
 
 void Postural::update_b() {
-    _b = _xdot_desired + _lambda*(_x_desired - _x);
+    _b.noalias() = _xdot_desired + _lambda*(_x_desired - _x);
 }
 
 void OpenSoT::tasks::velocity::Postural::setLambda(double lambda)
