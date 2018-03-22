@@ -37,6 +37,25 @@ OpenSoT::SubTask::Ptr operator%(const OpenSoT::tasks::Aggregated::TaskPtr task,
     return sub_task;
 }
 
+OpenSoT::tasks::Aggregated::Ptr operator-(  const OpenSoT::tasks::Aggregated::TaskPtr refTask,
+                                            const OpenSoT::tasks::feedback::FeedbackTask::Ptr fbTask)
+{
+    return OpenSoT::tasks::Aggregated::Ptr(
+        new OpenSoT::tasks::Aggregated( fbTask->checkRefTask(refTask),
+                                        fbTask->getModifiedTask(),
+                                        refTask->getXSize()));
+}
+
+// OpenSoT::tasks::Aggregated::Ptr operator-(  const OpenSoT::tasks::Aggregated::Ptr refTask,
+//                                             const OpenSoT::tasks::feedback::FeedbackTask::Ptr fbTask)
+// {
+//   
+//     return OpenSoT::tasks::Aggregated::Ptr(
+//         new OpenSoT::tasks::Aggregated( fbTask,
+//                                         fbTask->getModifiedAggregatedTask(),
+//                                         refTask->getXSize()));
+// }
+
 OpenSoT::tasks::Aggregated::Ptr operator+(  const OpenSoT::tasks::Aggregated::TaskPtr task1,
                                             const OpenSoT::tasks::Aggregated::TaskPtr task2)
 {

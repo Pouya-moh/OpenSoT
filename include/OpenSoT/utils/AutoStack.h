@@ -21,6 +21,7 @@
 #include <OpenSoT/tasks/Aggregated.h>
 #include <OpenSoT/constraints/Aggregated.h>
 #include <OpenSoT/solvers/QPOases.h>
+#include <OpenSoT/tasks/feedback/FeedbackTask.h>
 #include <OpenSoT/tasks/velocity/Cartesian.h>
 #include <OpenSoT/tasks/velocity/CoM.h>
 #include <XBotInterface/Logger.hpp>
@@ -141,6 +142,11 @@ OpenSoT::tasks::Aggregated::Ptr operator*(const double w,
 OpenSoT::SubTask::Ptr operator%(const OpenSoT::tasks::Aggregated::TaskPtr task,
                                 const std::list<unsigned int> rowIndices);
 
+OpenSoT::tasks::Aggregated::Ptr operator-(  const OpenSoT::tasks::Aggregated::TaskPtr refTask,
+                                            const OpenSoT::tasks::feedback::FeedbackTask::Ptr fbTask);
+
+// OpenSoT::tasks::Aggregated::Ptr operator-(  const OpenSoT::tasks::Aggregated::Ptr aggregated,
+//                                             const OpenSoT::tasks::feedback::FeedbackTask::Ptr fbTask);
 /**
  * @brief operator + takes two tasks, generates a new Aggregated task
  * @param task1 a task pointer

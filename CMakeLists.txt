@@ -151,6 +151,8 @@ set(OPENSOT_TASKS_SOURCES src/tasks/Aggregated.cpp
                     src/tasks/force/Wrench.cpp
                     src/tasks/floating_base/Contact.cpp
                     src/tasks/floating_base/IMU.cpp
+
+                    src/tasks/feedback/Stabilizer.cpp
                     )
 ##SOLVERS
 set(OPENSOT_SOLVERS_SOURCES src/solvers/QPOases.cpp
