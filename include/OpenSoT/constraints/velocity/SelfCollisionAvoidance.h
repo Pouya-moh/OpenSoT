@@ -106,7 +106,7 @@
                  */
                 SelfCollisionAvoidance(const Eigen::VectorXd& x,
                                        XBot::ModelInterface &robot,
-                                       std::string& base_link,
+                                       const std::string& base_link,
                                        double detection_threshold = std::numeric_limits<double>::infinity(),
                                        double linkPair_threshold = 0.0,
                                        const double boundScaling = 1.0);
