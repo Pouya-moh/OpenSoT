@@ -47,13 +47,8 @@ SelfCollisionAvoidance::SelfCollisionAvoidance(const Eigen::VectorXd& x,
     _boundScaling(boundScaling),
     base_name(base_link)
 {
-
     _J_transform.setZero(3,6);
-
     update(x);
-
-
-
 }
 
 double SelfCollisionAvoidance::getLinkPairThreshold()
@@ -84,9 +79,9 @@ void SelfCollisionAvoidance::update(const Eigen::VectorXd &x)
 {
     // we update _Aineq and _bupperBound only if x has changed
     //if(!(x == _x_cache)) {
-        _x_cache = x;
-        calculate_Aineq_bUpperB (_Aineq, _bUpperBound );
-        _bLowerBound = -1.0e20*_bLowerBound.setOnes(_bUpperBound.size());
+    robot_col.getJointPosition(_x_cache);
+    calculate_Aineq_bUpperB (_Aineq, _bUpperBound );
+    _bLowerBound = -1.0e20*_bLowerBound.setOnes(_bUpperBound.size());
 
     //}
 //    std::cout << "_Aineq" << _Aineq.toString() << std::endl << std::endl;

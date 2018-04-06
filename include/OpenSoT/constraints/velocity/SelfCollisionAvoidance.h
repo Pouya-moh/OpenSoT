@@ -33,7 +33,7 @@
         namespace velocity {
 
             /**
-             * @brief The SelfCollisionAvoidance class implements a constraint of full-body Self-Collision Avoidance for Walkman
+             * @brief The SelfCollisionAvoidance class implements a constraint of full-body Self-Collision Avoidance
              *  This constraint is implemented by inequality: Aineq * x <= bUpperBound
              *  where the dimension of Aineq is n * m, n is the number of Link pairs to be constrained, and m is total DOFs of the robot to be controlled;
              *  the x is infinitesimal increament of the joint variable vector which is the optimization variable, and its dimension is m * 1; 
@@ -70,6 +70,9 @@
                  */
                 std::string base_name;
 
+                /**
+                 * @brief _J_transform
+                 */
                 Eigen::MatrixXd _J_transform;
             public:               
                 /**
@@ -96,8 +99,7 @@
                  * @param robot the robot model reference
                  * @param base_link all the calculation and expression is described in
                  * this frame
-                 * @param Detection_threshold all the link pairs whose minimum distance are smaller than this Detection_threshold
-                 * would be dealt with further
+                 * @param detection_threshold all the link pairs whose minimum distance are bigger than detection_threshold are skipped
                  * @param linkPair_threshold the minimum distance between each Link pair
                  * @param boundScaling the bound scaling for the capsule distance (a lower number means we will approach
                  *        the linkPair_threshold more slowly)

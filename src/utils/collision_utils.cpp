@@ -190,8 +190,7 @@ bool ComputeLinksDistance::updateCollisionObjects()
 
 //    for(it_type it = collision_objects_.begin();
 //        it != collision_objects_.end(); ++it)
-    for(it_links it = linksToUpdate.begin();
-        it != linksToUpdate.end(); ++it)
+    for(it_links it = linksToUpdate.begin(); it != linksToUpdate.end(); ++it)
     {
 //        std::string link_name = it->first;
         std::string link_name = *it;
