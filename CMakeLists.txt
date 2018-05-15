@@ -61,8 +61,12 @@ FIND_PACKAGE(PCL 1.7 QUIET COMPONENTS    common
 FIND_PACKAGE(catkin REQUIRED)
 FIND_PACKAGE(eigen_conversions REQUIRED)
 FIND_PACKAGE(XBotInterface REQUIRED)
-FIND_PACKAGE(fcl QUIET)
+# FIND_PACKAGE(fcl REQUIRED)
 FIND_PACKAGE(osqp QUIET)
+
+set(fcl_FOUND TRUE)
+set(fcl_INCLUDE_DIRS /usr/include/fcl)
+set(fcl_LIBRARIES fcl)
 
 # compilation flags
 option(OPENSOT_COMPILE_EXAMPLES "Compile OpenSoT examples" TRUE)

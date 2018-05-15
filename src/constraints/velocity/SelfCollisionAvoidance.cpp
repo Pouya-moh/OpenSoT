@@ -34,7 +34,7 @@ using namespace Eigen;
 
 SelfCollisionAvoidance::SelfCollisionAvoidance(const Eigen::VectorXd& x,
                                                XBot::ModelInterface &robot,
-                                               std::string& base_link,
+                                               const std::string& base_link,
                                                double detection_threshold,
                                                double linkPair_threshold,
                                                const double boundScaling):
