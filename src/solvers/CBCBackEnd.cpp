@@ -5,11 +5,28 @@ using namespace OpenSoT::solvers;
 CBCBackEnd::CBCBackEnd(const int number_of_variables, const int number_of_constraints, const double eps_regularisation): 
     BackEnd(number_of_variables, number_of_constraints)
 {
-    _solver.reset(new OsiCbcSolverInterface());
+    _solver = new OsiCbcSolverInterface;
     
     __generate_data_struct(number_of_variables, number_of_constraints);
     
 }
+bool CBCBackEnd::solve()
+{
+    _solver->loadProblem(_ACP, _l.data(), _u.data(), _g.data(), _lA.data(), _uA.data());
+    
+    _model->assignSolver(_solver, true);
+    _model->branchAndBound();
+    
+    if(!_model->isProvenInfeasible())
+        _solution = Eigen::Map<Eigen::VectorXd>(_model->bestSolution(), getNumVariables());
+    else
+    {
+        XBot::Logger::error("CbcModel return unfeasible solution in solve!");
+        return false;
+    }
+    return true;
+}
+
 
 bool CBCBackEnd::initProblem(const Eigen::MatrixXd& H, const Eigen::VectorXd& g, 
                              const Eigen::MatrixXd& A, const Eigen::VectorXd& lA, const Eigen::VectorXd& uA, 
@@ -35,13 +52,24 @@ bool CBCBackEnd::initProblem(const Eigen::MatrixXd& H, const Eigen::VectorXd& g,
         
     _ACP.copyOf(true, _A.rows(), _A.cols(), _AS.nonZeros(), _A.data(), _AS.innerIndexPtr(), _AS.outerIndexPtr(), _AS.innerNonZeroPtr());
     
-    _solver->loadProblem(_ACP, l.data(), u.data(), g.data(), lA.data(), uA.data());
+    _solver->loadProblem(_ACP, _l.data(), _u.data(), _g.data(), _lA.data(), _uA.data());
+    _solver->initialSolve();
+    
+
     
     _model.reset(new CbcModel(*_solver));
-    _model.branchAndBound(); 
+    _model->setLogLevel(1);
+    _model->branchAndBound(); 
     
-    _solution = Eigen::Map<Eigen::VectorXd>(_model->bestSolution(), getNumVariables());
     
+    if(!_model->isProvenInfeasible())
+        _solution = Eigen::Map<Eigen::VectorXd>(_model->bestSolution(), getNumVariables());
+    else
+    {
+        XBot::Logger::error("CbcModel return unfeasible solution in initProblem!");
+        return false;
+    }
+    return true;
 }
 
 boost::any CBCBackEnd::getOptions()
@@ -60,7 +88,7 @@ void CBCBackEnd::setOptions(const boost::any& options)
     else
     {
         if(_opt.integer_ind.size() <= getNumVariables())
-            _solver->setInteger(_opt.integer_ind.data, _opt.integer_ind.size());
+            _solver->setInteger(_opt.integer_ind.data(), _opt.integer_ind.size());
         else
              XBot::Logger::error("Size of integer variable greater than number of variables! Options will not be applied!");
     }
@@ -80,10 +108,10 @@ void CBCBackEnd::__generate_data_struct(const int number_of_variables,
     _AS.makeCompressed();
 
    
-    _ACP.copyOf(true, AS.rows(), AS.cols(), AS.nonZeros(), AS.valuePtr(), AS.innerIndexPtr(), AS.outerIndexPtr(), AS.innerNonZeroPtr());
+    _ACP.copyOf(true, _AS.rows(), _AS.cols(), _AS.nonZeros(), _AS.valuePtr(), _AS.innerIndexPtr(), _AS.outerIndexPtr(), _AS.innerNonZeroPtr());
 }
 
-bool OSQPBackEnd::updateConstraints(const Eigen::Ref<const Eigen::MatrixXd>& A, 
+bool CBCBackEnd::updateConstraints(const Eigen::Ref<const Eigen::MatrixXd>& A, 
                                 const Eigen::Ref<const Eigen::VectorXd>& lA, 
                                 const Eigen::Ref<const Eigen::VectorXd>& uA)
 {    
@@ -104,9 +132,13 @@ bool OSQPBackEnd::updateConstraints(const Eigen::Ref<const Eigen::MatrixXd>& A,
     return true;
 }
 
-
-
 CBCBackEnd::~CBCBackEnd()
 {
-    
+
 }
+
+double CBCBackEnd::getObjective()
+{
+   return _model->getObjValue();
+}
+    

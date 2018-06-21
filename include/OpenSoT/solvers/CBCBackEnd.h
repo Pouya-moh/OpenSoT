@@ -33,6 +33,13 @@ namespace solvers{
             
             virtual void setOptions(const boost::any& options);
             boost::any getOptions();
+            bool solve();
+            
+            double getObjective();
+            
+            bool updateConstraints(const Eigen::Ref<const Eigen::MatrixXd>& A, 
+                                const Eigen::Ref<const Eigen::VectorXd>& lA, 
+                                const Eigen::Ref<const Eigen::VectorXd>& uA);
             
             struct CBCBackEndOptions
             {
@@ -41,13 +48,15 @@ namespace solvers{
             
         private:
             
-            boost::shared_ptr<OsiCbcSolverInterface> _solver;
+            OsiSolverInterface* _solver; ///CHECK Destruction!
             boost::shared_ptr<CbcModel> _model;
             
             CoinPackedMatrix _ACP;
             Eigen::SparseMatrix<double> _AS;
             
             CBCBackEndOptions _opt;
+            
+            void __generate_data_struct(const int number_of_variables, const int number_of_constraints);
             
     };
     
