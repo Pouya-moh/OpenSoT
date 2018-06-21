@@ -63,6 +63,9 @@ FIND_PACKAGE(eigen_conversions REQUIRED)
 FIND_PACKAGE(XBotInterface REQUIRED)
 FIND_PACKAGE(fcl QUIET)
 FIND_PACKAGE(osqp QUIET)
+find_package(PkgConfig)
+pkg_check_modules(CBC QUIET cbc)
+pkg_check_modules(OSICBC QUIET osi-cbc)
 
 # compilation flags
 option(OPENSOT_COMPILE_EXAMPLES "Compile OpenSoT examples" TRUE)
@@ -164,6 +167,9 @@ set(OPENSOT_SOLVERS_SOURCES src/solvers/BackEnd.cpp
                             src/solvers/eHQP.cpp)
 if(${osqp_FOUND})
     set(OPENSOT_SOLVERS_SOURCES ${OPENSOT_SOLVERS_SOURCES} src/solvers/OSQPBackEnd.cpp)
+endif()
+if(${CBC_FOUND} AND ${OSICBC_FOUND})
+    set(OPENSOT_SOLVERS_SOURCES ${OPENSOT_SOLVERS_SOURCES} src/solvers/CBCBackEnd.cpp)
 endif()
 ##UTILS
 set(OPENSOT_UTILS_SOURCES src/utils/AutoStack.cpp
