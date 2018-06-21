@@ -168,6 +168,7 @@ set(OPENSOT_SOLVERS_SOURCES src/solvers/BackEnd.cpp
 if(${osqp_FOUND})
     set(OPENSOT_SOLVERS_SOURCES ${OPENSOT_SOLVERS_SOURCES} src/solvers/OSQPBackEnd.cpp)
 endif()
+
 if(${CBC_FOUND} AND ${OSICBC_FOUND})
     set(OPENSOT_SOLVERS_SOURCES ${OPENSOT_SOLVERS_SOURCES} src/solvers/CBCBackEnd.cpp)
 endif()
@@ -225,6 +226,8 @@ TARGET_LINK_LIBRARIES(OpenSoT PUBLIC
                               ${fcl_LIBRARIES}
                               ${moveit_core_LIBRARIES}
                               osqp
+                              ${CBC_LIBRARIES}
+                              ${OSICBC_LIBRARIES}
                               )
 
 
