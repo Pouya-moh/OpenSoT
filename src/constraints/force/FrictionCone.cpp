@@ -91,7 +91,7 @@ namespace OpenSoT {
                 _Ci(3,0) = 0.; _Ci(3,1) = -1.; _Ci(3,2) = -__mu;
                 _Ci(4,0) = 0.; _Ci(4,1) = 0.; _Ci(4,2) = -1.;
 
-                _Ci = _Ci*_wTl[i].linear().transpose();
+//                 _Ci = _Ci*_wTl[i].linear().transpose();
 
                 _A.block<5,3>(5*i, 6*i) = _Ci;
            }

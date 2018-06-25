@@ -76,7 +76,7 @@ void iHQP::computeOptimalityConstraint(  const TaskPtr& task, BackEnd::Ptr& prob
 }
 
 bool iHQP::prepareSoT(const solver_back_ends be_solver)
-{
+{   
     XBot::Logger::info("#USING BACK-END: %s\n", getBackEndName().c_str());
     for(unsigned int i = 0; i < _tasks.size(); ++i)
     {
@@ -147,6 +147,14 @@ bool iHQP::prepareSoT(const solver_back_ends be_solver)
 
         constraints_task.push_back(constraints_task_i);
     }
+    
+    /** HACK 1**/
+    _user_g.setZero(H.rows());
+    
+    /** HACK 2**/
+     for(unsigned int i = 0; i < _tasks.size(); ++i)
+    _solve_qp.push_back(true);
+    
     return true;
 }
 
@@ -157,6 +165,11 @@ bool iHQP::solve(Eigen::VectorXd &solution)
         if(_active_stacks[i])
         {
             computeCostFunction(_tasks[i], H, g);
+            
+            /** HACK 1 **/
+            if(i == 0)
+                externalUserUpdateG(g);
+            
             if(!_qp_stack_of_tasks[i]->updateTask(H, g))
                 return false;
 
@@ -197,9 +210,14 @@ bool iHQP::solve(Eigen::VectorXd &solution)
                 if(!_qp_stack_of_tasks[i]->updateBounds(constraints_task_i.getLowerBound(), constraints_task_i.getUpperBound()))
                     return false;
             }
-
+            
+            
+            /** HACK 2 **/
+            if(_solve_qp[i])
+            {
             if(!_qp_stack_of_tasks[i]->solve())
                 return false;
+            }
 
             solution = _qp_stack_of_tasks[i]->getSolution();
         }
@@ -263,4 +281,12 @@ void iHQP::_log(XBot::MatLogger::Ptr logger)
 std::string iHQP::getBackEndName()
 {
     return OpenSoT::solvers::whichBackEnd(_be_solver);
+}
+
+BackEnd::Ptr iHQP::getBackEnd(const unsigned int i)
+{
+    if(i > _qp_stack_of_tasks.size())
+        throw std::runtime_error("in getBackEnd(), %i level does not exists!");
+    else
+        return _qp_stack_of_tasks[i];
 }

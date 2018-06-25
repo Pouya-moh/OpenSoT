@@ -123,6 +123,13 @@ namespace OpenSoT{
          * @param flag true or flase
          */
         void setActiveStack(const unsigned int i, const bool flag);
+        
+        /**
+         * @brief getBackEnd return i-th BackEnd
+         * @param i level
+         * @return a BackEnd pointer
+         */ 
+        BackEnd::Ptr getBackEnd(const unsigned int i);
 
         /**
          * @brief activateAllStacks activate all stacks
@@ -130,6 +137,16 @@ namespace OpenSoT{
         void activateAllStacks();
 
         std::string getBackEndName();
+        
+        void setUserG(const Eigen::VectorXd& user_g)
+        {
+                _user_g = user_g;
+        }
+        
+        void setUserSolveFlag(const unsigned int i, const bool flag)
+        {
+                _solve_qp[i] = flag;
+        }
 
     protected:
         virtual void _log(XBot::MatLogger::Ptr logger);
@@ -175,11 +192,19 @@ namespace OpenSoT{
         void computeOptimalityConstraint(const TaskPtr& task, BackEnd::Ptr& problem,
                                          Eigen::MatrixXd& A,
                                          Eigen::VectorXd& lA, Eigen::VectorXd& uA);
+        
+        void externalUserUpdateG(Eigen::VectorXd& g)
+        {
+                g += _user_g;
+                
+        }
 
 
 
         Eigen::MatrixXd H;
         Eigen::VectorXd g;
+        
+        Eigen::VectorXd _user_g;
 
         MatrixPiler A;
         VectorPiler lA;
@@ -191,6 +216,8 @@ namespace OpenSoT{
         std::vector<Eigen::MatrixXd> tmp_A;
         std::vector<Eigen::VectorXd> tmp_lA;
         std::vector<Eigen::VectorXd> tmp_uA;
+        std::vector<bool> _solve_qp; // TBD INITIALIZE TO TRUE
+        
 
 
         solver_back_ends _be_solver;
