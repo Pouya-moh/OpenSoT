@@ -47,11 +47,11 @@ using namespace Eigen;
 CollisionAvoidance::CollisionAvoidance ( const Eigen::VectorXd& x,
         XBot::ModelInterface &robot,
         std::string& base_link,
-        const std::list< LinkPairDistance::LinksPair > &interestList,
+        const std::vector<std::string> &interested_links,
+        const std::vector<std::string> &environment_links,
         const double &detection_threshold,
         const double &linkPair_threshold,
         const double &boundScaling ) :
-    _interested_link_pairs ( interestList ),
     Constraint ( "self_collision_avoidance", x.size() ),
     _detection_threshold ( detection_threshold ),
     _linkPair_threshold ( linkPair_threshold ),
@@ -115,11 +115,11 @@ bool CollisionAvoidance::parseCollisionObjects()
 
     linksToUpdate.clear();
     std::vector<boost::shared_ptr<urdf::Link> > links;
-    for (auto &it:_interested_link_pairs) {
-      boost::shared_ptr<urdf::Link> link;
-      linksToUpdate.insert(it.first);
-      robot_urdf.getLink(it.first, link);
-      links.push_back(link);
+    for ( auto &it:_interested_link_pairs ) {
+        boost::shared_ptr<urdf::Link> link;
+        linksToUpdate.insert ( it.first );
+        robot_urdf.getLink ( it.first, link );
+        links.push_back ( link );
     }
     for ( auto &link:links ) {
         if ( link->collision ) {
@@ -228,16 +228,15 @@ bool CollisionAvoidance::parseCollisionObjects()
 
 bool CollisionAvoidance::updateCollisionObjects()
 {
-    for(auto &it:linksToUpdate)
-    {
+    for ( auto &it:linksToUpdate ) {
         std::string link_name = it;
         KDL::Frame w_T_link, w_T_shape;
-        robot_col.getPose(link_name, w_T_link);
+        robot_col.getPose ( link_name, w_T_link );
         w_T_shape = w_T_link * link_T_shape[link_name];
 
-        fcl::Transform3f fcl_w_T_shape = KDL2fcl(w_T_shape);
+        fcl::Transform3f fcl_w_T_shape = KDL2fcl ( w_T_shape );
         fcl::CollisionObject* collObj_shape = collision_objects_[link_name].get();
-        collObj_shape->setTransform(fcl_w_T_shape);
+        collObj_shape->setTransform ( fcl_w_T_shape );
     }
     return true;
 }
@@ -306,7 +305,7 @@ std::list<LinkPairDistance> CollisionAvoidance::getLinkDistances ( const double 
     updateCollisionObjects();
 
 
-    for ( auto &it:_interested_link_pairs) {
+    for ( auto &it:_interested_link_pairs ) {
         std::string linkA = it.first;
         std::string linkB = it.second;
 

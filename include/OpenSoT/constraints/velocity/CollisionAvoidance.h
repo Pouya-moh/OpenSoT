@@ -131,7 +131,8 @@
                 CollisionAvoidance(const Eigen::VectorXd& x,
                                        XBot::ModelInterface &robot,
                                        std::string& base_link,
-                                       const std::list< LinkPairDistance::LinksPair > &interestList,
+                                       const std::vector<std::string> &interested_links,
+                                       const std::vector<std::string> &environment_links,
                                        const double &detection_threshold = std::numeric_limits<double>::infinity(),
                                        const double &linkPair_threshold = 0.0,
                                        const double &boundScaling = 1.0);
