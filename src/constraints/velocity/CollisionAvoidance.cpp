@@ -44,55 +44,13 @@ using namespace OpenSoT::constraints::velocity;
 
 using namespace Eigen;
 
-// construct vector
-KDL::Vector toKdl(urdf::Vector3 v)
-{
-  return KDL::Vector(v.x, v.y, v.z);
-}
-
-// construct rotation
-KDL::Rotation toKdl(urdf::Rotation r)
-{
-  return KDL::Rotation::Quaternion(r.x, r.y, r.z, r.w);
-}
-
-// construct pose
-KDL::Frame toKdl(urdf::Pose p)
-{
-  return KDL::Frame(toKdl(p.rotation), toKdl(p.position));
-}
-
-
-fcl::Transform3f KDL2fcl(const KDL::Frame &in){
-    fcl::Transform3f out;
-    double x,y,z,w;
-    in.M.GetQuaternion(x, y, z, w);
-    fcl::Vec3f t(in.p[0], in.p[1], in.p[2]);
-    fcl::Quaternion3f q(w, x, y, z);
-    out.setQuatRotation(q);
-    out.setTranslation(t);
-    return out;
-}
-
-KDL::Frame fcl2KDL(const fcl::Transform3f &in)
-{
-    fcl::Quaternion3f q = in.getQuatRotation();
-    fcl::Vec3f t = in.getTranslation();
-
-    KDL::Frame f;
-    f.p = KDL::Vector(t[0],t[1],t[2]);
-    f.M = KDL::Rotation::Quaternion(q.getX(), q.getY(), q.getZ(), q.getW());
-
-    return f;
-}
-
 CollisionAvoidance::CollisionAvoidance ( const Eigen::VectorXd& x,
         XBot::ModelInterface &robot,
         std::string& base_link,
         const std::list< LinkPairDistance::LinksPair > &interestList,
-        double detection_threshold,
-        double linkPair_threshold,
-        const double boundScaling ) :
+        const double &detection_threshold,
+        const double &linkPair_threshold,
+        const double &boundScaling ) :
     _interested_link_pairs ( interestList ),
     Constraint ( "self_collision_avoidance", x.size() ),
     _detection_threshold ( detection_threshold ),

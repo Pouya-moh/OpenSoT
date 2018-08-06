@@ -39,7 +39,24 @@
     template <typename T>
     using shared_ptr =  std::shared_ptr<T>;
 #endif
+    
+// construct vector
+inline KDL::Vector toKdl(urdf::Vector3 v)
+{
+  return KDL::Vector(v.x, v.y, v.z);
+}
 
+// construct rotation
+inline KDL::Rotation toKdl(urdf::Rotation r)
+{
+  return KDL::Rotation::Quaternion(r.x, r.y, r.z, r.w);
+}
+
+// construct pose
+inline KDL::Frame toKdl(urdf::Pose p)
+{
+  return KDL::Frame(toKdl(p.rotation), toKdl(p.position));
+}
 
 /**
  * @brief The LinkPairDistance class represents the minimum distance information between two links.

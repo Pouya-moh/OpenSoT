@@ -11,24 +11,6 @@
 #include <boost/make_shared.hpp>
 #include <fcl/config.h>
 
-// construct vector
-KDL::Vector toKdl(urdf::Vector3 v)
-{
-  return KDL::Vector(v.x, v.y, v.z);
-}
-
-// construct rotation
-KDL::Rotation toKdl(urdf::Rotation r)
-{
-  return KDL::Rotation::Quaternion(r.x, r.y, r.z, r.w);
-}
-
-// construct pose
-KDL::Frame toKdl(urdf::Pose p)
-{
-  return KDL::Frame(toKdl(p.rotation), toKdl(p.position));
-}
-
 bool ComputeLinksDistance::globalToLinkCoordinates(const std::string& linkName,
                                                    const fcl::Transform3f &fcl_w_T_f,
                                                    KDL::Frame &link_T_f)
