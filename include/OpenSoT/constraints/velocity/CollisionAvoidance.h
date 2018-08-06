@@ -18,15 +18,13 @@
 #ifndef COLLISIONAVOIDANCE_H
 #define COLLISIONAVOIDANCE_H
 
-
- #include <OpenSoT/Constraint.h>
- #include <OpenSoT/tasks/velocity/Cartesian.h>
- #include <XBotInterface/ModelInterface.h>
- #include <OpenSoT/utils/collision_utils.h>
- #include <kdl/frames.hpp>
-
+#include <OpenSoT/Constraint.h>
+#include <OpenSoT/tasks/velocity/Cartesian.h>
+#include <XBotInterface/ModelInterface.h>
+#include <OpenSoT/utils/collision_utils.h>
+#include <kdl/frames.hpp>
+#include <eigen_conversions/eigen_kdl.h>
 #include <Eigen/Dense>
-
 
  namespace OpenSoT {
     namespace constraints {
@@ -54,8 +52,36 @@
                  */
                 double _detection_threshold;
                 XBot::ModelInterface& robot_col;
-                ComputeLinksDistance computeLinksDistance;
+//                 ComputeLinksDistance computeLinksDistance;
+                
+                /**
+                 * @brief link pairs for collision check, [link belonging to robot, link in the envionment]
+                 * 
+                 */
+                std::list< LinkPairDistance::LinksPair > _interested_link_pairs;
 
+                /**
+                 * @brief linksToUpdate a list of links to update
+                 */
+                std::set<std::string> linksToUpdate;
+    
+                /**
+                 * @brief collision_objects_ a map of collision objects
+                 */
+                std::map<std::string,boost::shared_ptr<fcl::CollisionObject> > collision_objects_;
+                
+                /**
+                 * @brief shapes_ is a map of collision geometries
+                 */
+                std::map<std::string,shared_ptr<fcl::CollisionGeometry> > shapes_;
+    
+                /**
+                 * @brief link_T_shape a map of transforms from link frame to shape frame.
+                 *        Notice how the shape frame is always the center of the shape,
+                 *        except for the capsule, where it lies on one endpoint
+                 */
+                std::map<std::string,KDL::Frame> link_T_shape;
+    
                 /**
                  * @brief _x_cache is a copy of last q vector used to update the constraints.
                  * It is used in order to avoid multiple updated when the constraint is present
@@ -105,9 +131,31 @@
                 CollisionAvoidance(const Eigen::VectorXd& x,
                                        XBot::ModelInterface &robot,
                                        std::string& base_link,
-                                       double detection_threshold = std::numeric_limits<double>::infinity(),
-                                       double linkPair_threshold = 0.0,
-                                       const double boundScaling = 1.0);
+                                       const std::list< LinkPairDistance::LinksPair > &interestList,
+                                       const double &detection_threshold = std::numeric_limits<double>::infinity(),
+                                       const double &linkPair_threshold = 0.0,
+                                       const double &boundScaling = 1.0);
+                /**
+                * @brief parseCollisionObjects
+                * @param robot_urdf_path a string representing the robot urdf with collision information
+                * @param robot_srdf_path a string representing the robot srdf with collision information (i.e. ACM)
+                * @return true on success
+                */
+                bool parseCollisionObjects();
+
+                /**
+                 * @brief updateCollisionObjects updates all collision objects with correct transforms (link_T_shape)
+                 * @return true on success
+                 */
+                 bool updateCollisionObjects();
+    
+                /**
+                * @brief getLinkDistances returns a list of distances between all link pairs which are enabled for checking.
+                *                         If detectionThreshold is not infinity, the list will be clamped to contain only
+                *                         the pairs whose distance is smaller than the detection threshold.
+                * @return a sorted list of linkPairDistances
+                */
+                std::list<LinkPairDistance> getLinkDistances(const double &detectionThreshold);
 
                 /**
                  * @brief getLinkPairThreshold
@@ -125,13 +173,13 @@
                  * @brief setLinkPairThreshold set _LinkPair_threshold
                  * @param linkPair_threshold (always positive)
                  */
-                void setLinkPairThreshold(const double linkPair_threshold);
+                void setLinkPairThreshold(const double &linkPair_threshold);
 
                 /**
                  * @brief setDetectionThreshold set _Detection_threshold
                  * @param detection_threshold (always positive)
                  */
-                void setDetectionThreshold(const double detection_threshold);
+                void setDetectionThreshold(const double &detection_threshold);
 
                 /**
                  * @brief update recomputes Aineq and bUpperBound if x is different than the previously stored value
@@ -143,25 +191,12 @@
                  */
                 void update(const Eigen::VectorXd &x);
 
-
                 /**
-                 * @brief setCollisionWhiteList resets the allowed collision matrix by setting all collision pairs as disabled.
-                 *        It then disables all collision pairs specified in the blackList. Lastly it will disable all collision pairs
-                 *        which are disabled in the SRDF
-                 * @param whiteList a list of links pairs for which to not check collision detection
+                 * @brief set link pairs for collision check, [link belonging to robot, link in the envionment]
+                 * @param interestList a list of links pairs for which to check collision detection
                  * @return true on success
                  */
-                bool setCollisionWhiteList(std::list< LinkPairDistance::LinksPair > whiteList);
-
-                /**
-                 * @brief setCollisionBlackList resets the allowed collision matrix by setting all collision pairs
-                 *        (for which collision geometries are avaiable) as enabled.
-                 *        It then disables all collision pairs specified in the blackList. Lastly it will disable all collision pairs
-                 *        which are disabled in the SRDF
-                 * @param blackList a list of links pairs for which to not check collision detection
-                 * @return true on success
-                 */
-                bool setCollisionBlackList(std::list< LinkPairDistance::LinksPair > blackList);
+                bool setCollisionInterestList(const std::list< LinkPairDistance::LinksPair > &interestList);
 
                 /**
                  * @brief setBoundScaling sets bound scaling for the capsule constraint
@@ -169,12 +204,11 @@
                  *        (e.g. 1./2. means we are looking two steps ahead and will avoid
                  *         collision with the capsule by slowing down)
                  */
-                void setBoundScaling(const double boundScaling);
+                void setBoundScaling(const double &boundScaling);
             };
         }
     }
  }
 
 
-#endif // SELFCOLLISIONAVOIDANCE_H
-
+#endif
