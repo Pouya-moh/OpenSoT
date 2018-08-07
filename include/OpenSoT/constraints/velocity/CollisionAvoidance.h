@@ -59,6 +59,8 @@
                  * 
                  */
                 std::list< LinkPairDistance::LinksPair > _interested_link_pairs;
+                std::vector< std::string > _interested_links;
+                std::vector< std::string > _environment_link;
 
                 /**
                  * @brief linksToUpdate a list of links to update
@@ -131,8 +133,9 @@
                 CollisionAvoidance(const Eigen::VectorXd& x,
                                        XBot::ModelInterface &robot,
                                        std::string& base_link,
-                                       const std::vector<std::string> &interested_links,
-                                       const std::vector<std::string> &environment_links,
+                                       const std::vector<std::string> &interested_robot_links,
+				       const std::map<std::string, Eigen::Affine3d> &envionment_collision_frames,
+//                                        const std::map<std::string, boost::shared_ptr<fcl::CollisionObject>> &envionment_collision_objects,
                                        const double &detection_threshold = std::numeric_limits<double>::infinity(),
                                        const double &linkPair_threshold = 0.0,
                                        const double &boundScaling = 1.0);
@@ -149,7 +152,13 @@
                  * @return true on success
                  */
                  bool updateCollisionObjects();
-    
+
+                /**
+                 * @brief setEnvironmentCollisionObjects updates all environment collision objects with correct transforms (link_T_shape)
+                 * @return true on success
+                 */
+                 bool updateEnvironmentCollisionObjects(const std::map<std::string, KDL::Frame> &envionment_collision_frames);
+		 
                 /**
                 * @brief getLinkDistances returns a list of distances between all link pairs which are enabled for checking.
                 *                         If detectionThreshold is not infinity, the list will be clamped to contain only
@@ -183,6 +192,28 @@
                 void setDetectionThreshold(const double &detection_threshold);
 
                 /**
+                 * @brief globalToLinkCoordinates transforms a fcl::Transform3f frame to a KDL::Frame in the link reference frame
+                 * @param linkName the link name representing a link reference frame
+                 * @param w_T_f fcl::Transform3f representing a frame in a global reference frame
+                 * @param link_T_f a KDL::Frame representing a frame in link reference frame
+                 * @return true on success
+                 */
+                bool globalToLinkCoordinates(const std::string& linkName,
+                                             const fcl::Transform3f& w_T_f,
+                                             KDL::Frame& link_T_f);
+
+                /**
+                 * @brief shapeToLinkCoordinates transforms a fcl::Transform3f frame to a KDL::Frame in the link reference frame
+                 * @param linkName the link name representing a link reference frame
+                 * @param w_T_f fcl::Transform3f representing a frame in the shape reference frame
+                 * @param link_T_f a KDL::Frame representing a frame in link reference frame
+                 * @return true on success
+                 */
+                bool shapeToLinkCoordinates(const std::string &linkName,
+                                const fcl::Transform3f &fcl_shape_T_f,
+                                KDL::Frame &link_T_f);
+    
+                /**
                  * @brief update recomputes Aineq and bUpperBound if x is different than the previously stored value
                  * @param x the state vector. It gets cached so that we won't recompute capsules distances if x didn't change
                  * TODO if the capsules distances are given by a server (i.e. a separate thread updaing capsules at a given rate)
@@ -191,13 +222,6 @@
                  * gets updated only once per stack update)
                  */
                 void update(const Eigen::VectorXd &x);
-
-                /**
-                 * @brief set link pairs for collision check, [link belonging to robot, link in the envionment]
-                 * @param interestList a list of links pairs for which to check collision detection
-                 * @return true on success
-                 */
-                bool setCollisionInterestList(const std::list< LinkPairDistance::LinksPair > &interestList);
 
                 /**
                  * @brief setBoundScaling sets bound scaling for the capsule constraint
