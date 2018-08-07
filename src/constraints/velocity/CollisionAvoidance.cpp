@@ -101,7 +101,7 @@ CollisionAvoidance::CollisionAvoidance ( const Eigen::VectorXd& x,
         const double &detection_threshold,
         const double &linkPair_threshold,
         const double &boundScaling ) :
-    Constraint ( "self_collision_avoidance", x.size() ),
+    Constraint ( "collision_avoidance", x.size() ),
     _detection_threshold ( detection_threshold ),
     _linkPair_threshold ( linkPair_threshold ),
 //     computeLinksDistance ( robot ),
@@ -112,15 +112,11 @@ CollisionAvoidance::CollisionAvoidance ( const Eigen::VectorXd& x,
 {
     _J_transform.setZero ( 3,6 );
 
-    parseCollisionObjects();
-
-    update ( x );
-
     _interested_links = interested_robot_links;
 //     _environment_link = environment_links;
 
     std::map<std::string, boost::shared_ptr<fcl::CollisionObject>> envionment_collision_objects;
-    std::shared_ptr<fcl::CollisionGeometry> shape = std::make_shared<fcl::Capsule> ( 0.05,1 );
+    std::shared_ptr<fcl::CollisionGeometry> shape = std::make_shared<fcl::Capsule> ( 0.5,2 );
 //     boost::shared_ptr<fcl::CollisionObject> collision_object ( new fcl::CollisionObject ( shape ) );
 
     for ( auto &it:envionment_collision_frames ) {
@@ -152,6 +148,9 @@ CollisionAvoidance::CollisionAvoidance ( const Eigen::VectorXd& x,
     for ( auto &it:collision_objects_ ) {
         link_T_shape[it.first] = KDL::Frame();
     }
+
+    parseCollisionObjects();
+    update ( x );
 }
 
 bool CollisionAvoidance::parseCollisionObjects()
@@ -427,7 +426,8 @@ std::list<LinkPairDistance> CollisionAvoidance::getLinkDistances ( const double 
             shapeToLinkCoordinates ( linkA, result.nearest_points[0], linkA_pA );
             shapeToLinkCoordinates ( linkB, result.nearest_points[1], linkB_pB );
         }
-
+std::cout << "min_distance: " << result.min_distance << std::endl;
+std::cout << "detectionThreshold: " << detectionThreshold << std::endl;
         if ( result.min_distance < detectionThreshold )
             results.push_back ( LinkPairDistance ( linkA, linkB,
                                                    linkA_pA, linkB_pB,
@@ -446,7 +446,7 @@ void CollisionAvoidance::calculate_Aineq_bUpperB ( Eigen::MatrixXd & Aineq_fc,
     interested_LinkPairs = getLinkDistances ( _detection_threshold );
 
     /*//////////////////////////////////////////////////////////*/
-
+std::cout << "interested_LinkPairs size: " << interested_LinkPairs.size() << std::endl;
     MatrixXd Aineq_fc_Eigen ( interested_LinkPairs.size(), robot_col.getJointNum() );
     VectorXd bUpperB_fc_Eigen ( interested_LinkPairs.size() );
 
@@ -466,7 +466,9 @@ void CollisionAvoidance::calculate_Aineq_bUpperB ( Eigen::MatrixXd & Aineq_fc,
 
     Affine3d Waist_frame_world_Eigen;
     robot_col.getPose ( base_name, Waist_frame_world_Eigen );
-    Waist_frame_world_Eigen.inverse();
+    KDL::Frame World_T_Waist;
+    tf::transformEigenToKDL ( Waist_frame_world_Eigen, World_T_Waist );
+    Waist_frame_world_Eigen = Waist_frame_world_Eigen.inverse();
     KDL::Frame Waist_T_World;
     tf::transformEigenToKDL ( Waist_frame_world_Eigen, Waist_T_World );
 
@@ -496,7 +498,7 @@ void CollisionAvoidance::calculate_Aineq_bUpperB ( Eigen::MatrixXd & Aineq_fc,
         Waist_T_Link2 = Waist_T_World*World_T_Shape2*Shape2_T_Link2;
 
         std::cout << "Waist_T_Link1: " << Waist_T_Link1.p.x()  << ", " << Waist_T_Link1.p.y() << ", " << Waist_T_Link1.p.z() << std::endl;
-        std::cout << "Waist_T_Link2: " << Waist_T_Link2.p.x()  << ", " << Waist_T_Link2.p.y() << ", " << Waist_T_Link2.p.z() << std::endl;
+	std::cout << "Waist_T_Link2: " << Waist_T_Link2.p.x()  << ", " << Waist_T_Link2.p.y() << ", " << Waist_T_Link2.p.z() << std::endl;
 
         Waist_T_Link1_CP = Waist_T_Link1 * Link1_T_CP;
         Waist_T_Link2_CP = Waist_T_Link2 * Link2_T_CP;
@@ -520,8 +522,8 @@ void CollisionAvoidance::calculate_Aineq_bUpperB ( Eigen::MatrixXd & Aineq_fc,
         skewSymmetricOperator ( Link1_CP - Link1_origin,_J_transform );
         Link1_CP_Jaco = _J_transform * Link1_CP_Jaco;
 
-        robot_col.getRelativeJacobian ( Link2_name, base_name, Link2_CP_Jaco );
 
+//         robot_col.getRelativeJacobian ( Link2_name, base_name, Link2_CP_Jaco );
 //         Link2_CP_Jaco = temp_trans_matrix * Link2_CP_Jaco;
 //         skewSymmetricOperator ( Link2_CP - Link2_origin,_J_transform );
 //         Link2_CP_Jaco = _J_transform * Link2_CP_Jaco;
