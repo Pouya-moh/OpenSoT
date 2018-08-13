@@ -116,7 +116,8 @@ CollisionAvoidance::CollisionAvoidance ( const Eigen::VectorXd& x,
 //     _environment_link = environment_links;
 
     std::map<std::string, boost::shared_ptr<fcl::CollisionObject>> envionment_collision_objects;
-    std::shared_ptr<fcl::CollisionGeometry> shape = std::make_shared<fcl::Capsule> ( 0.5,2 );
+//     std::shared_ptr<fcl::CollisionGeometry> shape = std::make_shared<fcl::Capsule> ( 0.5,2 );
+    std::shared_ptr<fcl::CollisionGeometry> shape = std::make_shared<fcl::Box> ( 1, 1, 4);
 //     boost::shared_ptr<fcl::CollisionObject> collision_object ( new fcl::CollisionObject ( shape ) );
 
     for ( auto &it:envionment_collision_frames ) {
@@ -426,8 +427,9 @@ std::list<LinkPairDistance> CollisionAvoidance::getLinkDistances ( const double 
             shapeToLinkCoordinates ( linkA, result.nearest_points[0], linkA_pA );
             shapeToLinkCoordinates ( linkB, result.nearest_points[1], linkB_pB );
         }
-std::cout << "min_distance: " << result.min_distance << std::endl;
-std::cout << "detectionThreshold: " << detectionThreshold << std::endl;
+        std::cout << "min_distance: " << result.min_distance << std::endl;
+	std::cout << "nearest_points: " << result.nearest_points[1].data[0]  << ", " << result.nearest_points[1].data[1] << ", " << result.nearest_points[1].data[2] << std::endl;
+
         if ( result.min_distance < detectionThreshold )
             results.push_back ( LinkPairDistance ( linkA, linkB,
                                                    linkA_pA, linkB_pB,
@@ -446,7 +448,7 @@ void CollisionAvoidance::calculate_Aineq_bUpperB ( Eigen::MatrixXd & Aineq_fc,
     interested_LinkPairs = getLinkDistances ( _detection_threshold );
 
     /*//////////////////////////////////////////////////////////*/
-std::cout << "interested_LinkPairs size: " << interested_LinkPairs.size() << std::endl;
+// std::cout << "interested_LinkPairs size: " << interested_LinkPairs.size() << std::endl;
     MatrixXd Aineq_fc_Eigen ( interested_LinkPairs.size(), robot_col.getJointNum() );
     VectorXd bUpperB_fc_Eigen ( interested_LinkPairs.size() );
 
@@ -497,8 +499,8 @@ std::cout << "interested_LinkPairs size: " << interested_LinkPairs.size() << std
         KDL::Frame Shape2_T_Link2 = link_T_shape[Link2_name].Inverse();
         Waist_T_Link2 = Waist_T_World*World_T_Shape2*Shape2_T_Link2;
 
-        std::cout << "Waist_T_Link1: " << Waist_T_Link1.p.x()  << ", " << Waist_T_Link1.p.y() << ", " << Waist_T_Link1.p.z() << std::endl;
-	std::cout << "Waist_T_Link2: " << Waist_T_Link2.p.x()  << ", " << Waist_T_Link2.p.y() << ", " << Waist_T_Link2.p.z() << std::endl;
+//         std::cout << "Waist_T_Link1: " << Waist_T_Link1.p.x()  << ", " << Waist_T_Link1.p.y() << ", " << Waist_T_Link1.p.z() << std::endl;
+// 	std::cout << "Waist_T_Link2: " << Waist_T_Link2.p.x()  << ", " << Waist_T_Link2.p.y() << ", " << Waist_T_Link2.p.z() << std::endl;
 
         Waist_T_Link1_CP = Waist_T_Link1 * Link1_T_CP;
         Waist_T_Link2_CP = Waist_T_Link2 * Link2_T_CP;
@@ -515,7 +517,10 @@ std::cout << "interested_LinkPairs size: " << interested_LinkPairs.size() << std
 
         closepoint_dir = Link2_CP - Link1_CP;
         closepoint_dir = closepoint_dir / Dm_LinkPair;
-
+	std::cout << "Link1_CP: " << Link1_CP.transpose() << std::endl;
+	std::cout << "Link2_T_CP: " << Link2_T_CP.p.x()  << ", " << Link2_T_CP.p.y() << ", " << Link2_T_CP.p.z() << std::endl;
+	std::cout << "Link2_CP: " << Link2_CP.transpose() << std::endl;
+        std::cout << "dirction: " << closepoint_dir.transpose() << std::endl;
         robot_col.getRelativeJacobian ( Link1_name, base_name,Link1_CP_Jaco );
 
         Link1_CP_Jaco = temp_trans_matrix * Link1_CP_Jaco;
