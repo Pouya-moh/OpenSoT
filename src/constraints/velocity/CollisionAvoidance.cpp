@@ -16,17 +16,18 @@
 */
 
 #include <OpenSoT/constraints/velocity/CollisionAvoidance.h>
-#include <boost/filesystem.hpp>
-#include <OpenSoT/utils/collision_utils.h>
-#include <kdl_parser/kdl_parser.hpp>
-#include <fcl/config.h>
-#include <fcl/BV/OBBRSS.h>
-#include <fcl/BVH/BVH_model.h>
-#include <fcl/distance.h>
-#include <fcl/shape/geometric_shapes.h>
-#include <geometric_shapes/shapes.h>
-#include <geometric_shapes/shape_operations.h>
-#include <boost/make_shared.hpp>
+// #include <boost/filesystem.hpp>
+// #include <kdl_parser/kdl_parser.hpp>
+// #include <geometric_shapes/shapes.h>
+// #include <geometric_shapes/shape_operations.h>
+// #include <boost/make_shared.hpp>
+
+// #include <OpenSoT/utils/collision_utils.h>
+// #include <fcl/config.h>
+// #include <fcl/BV/OBBRSS.h>
+// #include <fcl/BVH/BVH_model.h>
+// #include <fcl/distance.h>
+// #include <fcl/shape/geometric_shapes.h>
 
 // local version of vectorKDLToEigen since oldest versions are bogous.
 // To use instead of:
@@ -43,61 +44,61 @@ using namespace OpenSoT::constraints::velocity;
 
 using namespace Eigen;
 
-fcl::Transform3f KDL2fcl ( const KDL::Frame &in )
-{
-    fcl::Transform3f out;
-    double x,y,z,w;
-    in.M.GetQuaternion ( x, y, z, w );
-    fcl::Vec3f t ( in.p[0], in.p[1], in.p[2] );
-    fcl::Quaternion3f q ( w, x, y, z );
-    out.setQuatRotation ( q );
-    out.setTranslation ( t );
-    return out;
-}
-
-KDL::Frame fcl2KDL ( const fcl::Transform3f &in )
-{
-    fcl::Quaternion3f q = in.getQuatRotation();
-    fcl::Vec3f t = in.getTranslation();
-
-    KDL::Frame f;
-    f.p = KDL::Vector ( t[0],t[1],t[2] );
-    f.M = KDL::Rotation::Quaternion ( q.getX(), q.getY(), q.getZ(), q.getW() );
-
-    return f;
-}
+// fcl::Transform3f KDL2fcl ( const KDL::Frame &in )
+// {
+//     fcl::Transform3f out;
+//     double x,y,z,w;
+//     in.M.GetQuaternion ( x, y, z, w );
+//     fcl::Vec3f t ( in.p[0], in.p[1], in.p[2] );
+//     fcl::Quaternion3f q ( w, x, y, z );
+//     out.setQuatRotation ( q );
+//     out.setTranslation ( t );
+//     return out;
+// }
+// 
+// KDL::Frame fcl2KDL ( const fcl::Transform3f &in )
+// {
+//     fcl::Quaternion3f q = in.getQuatRotation();
+//     fcl::Vec3f t = in.getTranslation();
+// 
+//     KDL::Frame f;
+//     f.p = KDL::Vector ( t[0],t[1],t[2] );
+//     f.M = KDL::Rotation::Quaternion ( q.getX(), q.getY(), q.getZ(), q.getW() );
+// 
+//     return f;
+// }
 
 bool CollisionAvoidance::globalToLinkCoordinates ( const std::string& linkName,
-        const fcl::Transform3f &fcl_w_T_f,
+        const fcl::Transform3<double> &fcl_w_T_f,
         KDL::Frame &link_T_f )
 {
 
-    fcl::Transform3f fcl_w_T_shape = collision_objects_[linkName]->getTransform();
+    fcl::Transform3d fcl_w_T_shape = collision_objects_[linkName]->getTransform();
 
-    fcl::Transform3f fcl_shape_T_f = fcl_w_T_shape.inverseTimes ( fcl_w_T_f );
+//     fcl::Transform3<double> fcl_shape_T_f = fcl_w_T_shape.inverseTimes(fcl_w_T_f);
+    fcl::Transform3d fcl_shape_T_f = fcl_w_T_shape.inverse() *fcl_w_T_f;
 
-    link_T_f = link_T_shape[linkName] * fcl2KDL ( fcl_shape_T_f );
+    link_T_f = link_T_shape[linkName] * ComputeLinksDistance::fcl2KDL ( fcl_shape_T_f );
 
     return true;
 }
 
 bool CollisionAvoidance::shapeToLinkCoordinates ( const std::string& linkName,
-        const fcl::Transform3f &fcl_shape_T_f,
+        const fcl::Transform3<double> &fcl_shape_T_f,
         KDL::Frame &link_T_f )
 {
 
-    link_T_f = link_T_shape[linkName] * fcl2KDL ( fcl_shape_T_f );
+    link_T_f = link_T_shape[linkName] * ComputeLinksDistance::fcl2KDL ( fcl_shape_T_f );
 
     return true;
 }
-
 
 CollisionAvoidance::CollisionAvoidance ( const Eigen::VectorXd& x,
         XBot::ModelInterface &robot,
         std::string& base_link,
         const std::vector<std::string> &interested_robot_links,
         const std::map<std::string, Eigen::Affine3d> &envionment_collision_frames,
-//         const std::map<std::string, boost::shared_ptr<fcl::CollisionObject>> &envionment_collision_objects,
+//         const std::map<std::string, boost::shared_ptr<fcl::CollisionObjectd>> &envionment_collision_objects,
         const double &detection_threshold,
         const double &linkPair_threshold,
         const double &boundScaling ) :
@@ -115,27 +116,24 @@ CollisionAvoidance::CollisionAvoidance ( const Eigen::VectorXd& x,
     _interested_links = interested_robot_links;
 //     _environment_link = environment_links;
 
-    std::map<std::string, boost::shared_ptr<fcl::CollisionObject>> envionment_collision_objects;
-//     std::shared_ptr<fcl::CollisionGeometry> shape = std::make_shared<fcl::Capsule> ( 0.5,2 );
-    std::shared_ptr<fcl::CollisionGeometry> shape = std::make_shared<fcl::Box> ( 1, 1, 4);
+    std::map<std::string, boost::shared_ptr<fcl::CollisionObjectd>> envionment_collision_objects;
+//     std::shared_ptr<fcl::CollisionGeometryd> shape = std::make_shared<fcl::Capsuled> ( 0.5,2 );
+    std::shared_ptr<fcl::CollisionGeometryd> shape = std::make_shared<fcl::Boxd> ( 1, 1, 4);
 //     boost::shared_ptr<fcl::CollisionObject> collision_object ( new fcl::CollisionObject ( shape ) );
 
     for ( auto &it:envionment_collision_frames ) {
-        boost::shared_ptr<fcl::CollisionObject> collision_object ( new fcl::CollisionObject ( shape ) );
+        boost::shared_ptr<fcl::CollisionObjectd> collision_object ( new fcl::CollisionObjectd ( shape ) );
         envionment_collision_objects[it.first] = collision_object;
-        fcl::Transform3f shape_origin;
-        Eigen::Affine3d pose = it.second;
-        Eigen::Quaterniond quat ( pose.linear() );
-        shape_origin.setQuatRotation ( fcl::Quaternion3f ( quat.w(),quat.x(),quat.y(),quat.z() ) );
-        shape_origin.setTranslation ( fcl::Vec3f(pose.translation()(0), pose.translation()(1), pose.translation()(2)));
+        fcl::Transform3d shape_origin;
+	shape_origin.translation() = it.second.translation();
+	shape_origin.linear() = it.second.linear();
+// 	shape_origin.linear() = it.
+//         Eigen::Affine3d pose = it.second;
+//         Eigen::Quaterniond quat ( pose.linear() );
+//         shape_origin.setQuatRotation ( fcl::Quaternion3f ( quat.w(),quat.x(),quat.y(),quat.z() ) );
+//         shape_origin.setTranslation ( fcl::Vec3f(pose.translation()(0), pose.translation()(1), pose.translation()(2)));
         envionment_collision_objects[it.first]->setTransform ( shape_origin );
     }
-
-//     envionment_collision_objects["env"] = boost::shared_ptr<fcl::CollisionObject> ( shape ); // collision_object;
-//     fcl::Transform3f shape_origin;
-//     shape_origin.setQuatRotation ( fcl::Quaternion3f(1,0,0,0) );
-//     shape_origin.setTranslation ( fcl::Vec3f(2, 0, 0) );
-//     envionment_collision_objects["env"]->setTransform(shape_origin);
 
     for ( auto &it1:_interested_links ) {
         for ( auto &it2:envionment_collision_objects ) {
@@ -221,7 +219,7 @@ bool CollisionAvoidance::parseCollisionObjects()
                     link->collision->geometry->type == urdf::Geometry::BOX      ||
                     link->collision->geometry->type == urdf::Geometry::MESH ) {
 
-                shared_ptr<fcl::CollisionGeometry> shape;
+                std::shared_ptr<fcl::CollisionGeometryd> shape;
                 KDL::Frame shape_origin;
 
                 if ( link->collision->geometry->type == urdf::Geometry::CYLINDER ) {
@@ -231,7 +229,7 @@ bool CollisionAvoidance::parseCollisionObjects()
                         boost::dynamic_pointer_cast<urdf::Cylinder> (
                             link->collision->geometry );
 
-                    shape.reset ( new fcl::Capsule ( collisionGeometry->radius,
+                    shape.reset ( new fcl::Capsuled ( collisionGeometry->radius,
                                                      collisionGeometry->length ) );
 
                     shape_origin = toKdl ( link->collision->origin );
@@ -244,7 +242,7 @@ bool CollisionAvoidance::parseCollisionObjects()
                         boost::dynamic_pointer_cast<urdf::Sphere> (
                             link->collision->geometry );
 
-                    shape.reset ( new fcl::Sphere ( collisionGeometry->radius ) );
+                    shape.reset ( new fcl::Sphered ( collisionGeometry->radius ) );
                     shape_origin = toKdl ( link->collision->origin );
                 } else if ( link->collision->geometry->type == urdf::Geometry::BOX ) {
                     std::cout << "adding box for " << link->name << std::endl;
@@ -253,7 +251,7 @@ bool CollisionAvoidance::parseCollisionObjects()
                         boost::dynamic_pointer_cast<urdf::Box> (
                             link->collision->geometry );
 
-                    shape.reset ( new fcl::Box ( collisionGeometry->dim.x,
+                    shape.reset ( new fcl::Boxd ( collisionGeometry->dim.x,
                                                  collisionGeometry->dim.y,
                                                  collisionGeometry->dim.z ) );
                     shape_origin = toKdl ( link->collision->origin );
@@ -271,11 +269,11 @@ bool CollisionAvoidance::parseCollisionObjects()
                         continue;
                     }
 
-                    std::vector<fcl::Vec3f> vertices;
+                    std::vector<fcl::Vector3d> vertices;
                     std::vector<fcl::Triangle> triangles;
 
                     for ( unsigned int i=0; i < mesh->vertex_count; ++i ) {
-                        fcl::Vec3f v ( mesh->vertices[3*i]*collisionGeometry->scale.x,
+                        fcl::Vector3d v ( mesh->vertices[3*i]*collisionGeometry->scale.x,
                                        mesh->vertices[3*i + 1]*collisionGeometry->scale.y,
                                        mesh->vertices[3*i + 2]*collisionGeometry->scale.z );
 
@@ -290,8 +288,8 @@ bool CollisionAvoidance::parseCollisionObjects()
                     }
 
                     // add the mesh data into the BVHModel structure
-                    shape.reset ( new fcl::BVHModel<fcl::OBBRSS> );
-                    fcl::BVHModel<fcl::OBBRSS>* bvhModel = ( fcl::BVHModel<fcl::OBBRSS>* ) shape.get();
+                    shape.reset ( new fcl::BVHModel<fcl::OBBRSSd> );
+                    fcl::BVHModel<fcl::OBBRSSd>* bvhModel = ( fcl::BVHModel<fcl::OBBRSSd>* ) shape.get();
                     bvhModel->beginModel();
                     bvhModel->addSubModel ( vertices, triangles );
                     bvhModel->endModel();
@@ -299,9 +297,8 @@ bool CollisionAvoidance::parseCollisionObjects()
                     shape_origin = toKdl ( link->collision->origin );
                 }
 
-                boost::shared_ptr<fcl::CollisionObject> collision_object (
-                    new fcl::CollisionObject ( shape ) );
-
+                boost::shared_ptr<fcl::CollisionObjectd> collision_object (
+                            new fcl::CollisionObjectd ( shape ) );
 
                 collision_objects_[link->name] = collision_object;
                 shapes_[link->name] = shape;
@@ -327,8 +324,8 @@ bool CollisionAvoidance::updateCollisionObjects()
         robot_col.getPose ( link_name, w_T_link );
         w_T_shape = w_T_link * link_T_shape[link_name];
 
-        fcl::Transform3f fcl_w_T_shape = KDL2fcl ( w_T_shape );
-        fcl::CollisionObject* collObj_shape = collision_objects_[link_name].get();
+        fcl::Transform3d fcl_w_T_shape = ComputeLinksDistance::KDL2fcl ( w_T_shape );
+        fcl::CollisionObjectd* collObj_shape = collision_objects_[link_name].get();
         collObj_shape->setTransform ( fcl_w_T_shape );
     }
     return true;
@@ -337,7 +334,7 @@ bool CollisionAvoidance::updateCollisionObjects()
 bool CollisionAvoidance::updateEnvironmentCollisionObjects ( const std::map<std::string, KDL::Frame> &envionment_collision_frames )
 {
     for ( auto &it:envionment_collision_frames ) {
-        fcl::Transform3f fcl_w_T_shape = KDL2fcl ( it.second );
+        fcl::Transform3d fcl_w_T_shape = ComputeLinksDistance::KDL2fcl ( it.second );
         collision_objects_[it.first]->setTransform ( fcl_w_T_shape );
     }
 }
@@ -400,17 +397,17 @@ std::list<LinkPairDistance> CollisionAvoidance::getLinkDistances ( const double 
         std::string linkA = it.first;
         std::string linkB = it.second;
 
-        fcl::CollisionObject* collObj_shapeA = collision_objects_[linkA].get();
-        fcl::CollisionObject* collObj_shapeB = collision_objects_[linkB].get();
+        fcl::CollisionObjectd* collObj_shapeA = collision_objects_[linkA].get();
+        fcl::CollisionObjectd* collObj_shapeB = collision_objects_[linkB].get();
 
-        fcl::DistanceRequest request;
+        fcl::DistanceRequestd request;
 #if FCL_MINOR_VERSION > 2
         request.gjk_solver_type = fcl::GST_INDEP;
 #endif
         request.enable_nearest_points = true;
 
         // result will be returned via the collision result structure
-        fcl::DistanceResult result;
+        fcl::DistanceResultd result;
 
         // perform distance test
         fcl::distance ( collObj_shapeA, collObj_shapeB, request, result );
@@ -419,16 +416,25 @@ std::list<LinkPairDistance> CollisionAvoidance::getLinkDistances ( const double 
         // absolutely computed w.r.t. base-frame
         KDL::Frame linkA_pA, linkB_pB;
 
-        if ( collObj_shapeA->getNodeType() == fcl::GEOM_CAPSULE &&
-                collObj_shapeB->getNodeType() == fcl::GEOM_CAPSULE ) {
-            globalToLinkCoordinates ( linkA, result.nearest_points[0], linkA_pA );
-            globalToLinkCoordinates ( linkB, result.nearest_points[1], linkB_pB );
-        } else {
-            shapeToLinkCoordinates ( linkA, result.nearest_points[0], linkA_pA );
-            shapeToLinkCoordinates ( linkB, result.nearest_points[1], linkB_pB );
-        }
+        fcl::Transform3d world_pA, world_pB;
+        world_pA.linear().setIdentity();
+        world_pA.translation() = result.nearest_points[0];
+        world_pB.linear().setIdentity();
+        world_pB.translation() = result.nearest_points[1];
+
+        globalToLinkCoordinates ( linkA, world_pA, linkA_pA );
+        globalToLinkCoordinates ( linkB, world_pB, linkB_pB );
+	
+//         if ( collObj_shapeA->getNodeType() == fcl::GEOM_CAPSULE &&
+//                 collObj_shapeB->getNodeType() == fcl::GEOM_CAPSULE ) {
+//             globalToLinkCoordinates ( linkA, result.nearest_points[0], linkA_pA );
+//             globalToLinkCoordinates ( linkB, result.nearest_points[1], linkB_pB );
+//         } else {
+//             shapeToLinkCoordinates ( linkA, result.nearest_points[0], linkA_pA );
+//             shapeToLinkCoordinates ( linkB, result.nearest_points[1], linkB_pB );
+//         }
         std::cout << "min_distance: " << result.min_distance << std::endl;
-	std::cout << "nearest_points: " << result.nearest_points[1].data[0]  << ", " << result.nearest_points[1].data[1] << ", " << result.nearest_points[1].data[2] << std::endl;
+	std::cout << "nearest_points: " << result.nearest_points[1][0]  << ", " << result.nearest_points[1][1] << ", " << result.nearest_points[1][2] << std::endl;
 
         if ( result.min_distance < detectionThreshold )
             results.push_back ( LinkPairDistance ( linkA, linkB,
@@ -494,8 +500,8 @@ void CollisionAvoidance::calculate_Aineq_bUpperB ( Eigen::MatrixXd & Aineq_fc,
         robot_col.getPose ( Link1_name, base_name, Waist_T_Link1 );
 //         robot_col.getPose ( Link2_name, base_name, Waist_T_Link2 );
 
-        fcl::Transform3f fcl_w_T_shape2 = collision_objects_[Link2_name]->getTransform();
-        KDL::Frame World_T_Shape2 = fcl2KDL ( fcl_w_T_shape2 );
+        fcl::Transform3d fcl_w_T_shape2 = collision_objects_[Link2_name]->getTransform();
+        KDL::Frame World_T_Shape2 = ComputeLinksDistance::fcl2KDL ( fcl_w_T_shape2 );
         KDL::Frame Shape2_T_Link2 = link_T_shape[Link2_name].Inverse();
         Waist_T_Link2 = Waist_T_World*World_T_Shape2*Shape2_T_Link2;
 

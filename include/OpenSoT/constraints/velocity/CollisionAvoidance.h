@@ -70,12 +70,12 @@
                 /**
                  * @brief collision_objects_ a map of collision objects
                  */
-                std::map<std::string,boost::shared_ptr<fcl::CollisionObject> > collision_objects_;
+                std::map<std::string, boost::shared_ptr<fcl::CollisionObjectd> > collision_objects_;
                 
                 /**
                  * @brief shapes_ is a map of collision geometries
                  */
-                std::map<std::string,shared_ptr<fcl::CollisionGeometry> > shapes_;
+                std::map<std::string, std::shared_ptr<fcl::CollisionGeometryd> > shapes_;
     
                 /**
                  * @brief link_T_shape a map of transforms from link frame to shape frame.
@@ -192,25 +192,25 @@
                 void setDetectionThreshold(const double &detection_threshold);
 
                 /**
-                 * @brief globalToLinkCoordinates transforms a fcl::Transform3f frame to a KDL::Frame in the link reference frame
+                 * @brief globalToLinkCoordinates transforms a fcl::Transform3d frame to a KDL::Frame in the link reference frame
                  * @param linkName the link name representing a link reference frame
-                 * @param w_T_f fcl::Transform3f representing a frame in a global reference frame
+                 * @param w_T_f fcl::Transform3d representing a frame in a global reference frame
                  * @param link_T_f a KDL::Frame representing a frame in link reference frame
                  * @return true on success
                  */
                 bool globalToLinkCoordinates(const std::string& linkName,
-                                             const fcl::Transform3f& w_T_f,
+                                             const fcl::Transform3d& w_T_f,
                                              KDL::Frame& link_T_f);
 
                 /**
-                 * @brief shapeToLinkCoordinates transforms a fcl::Transform3f frame to a KDL::Frame in the link reference frame
+                 * @brief shapeToLinkCoordinates transforms a fcl::Transform3d frame to a KDL::Frame in the link reference frame
                  * @param linkName the link name representing a link reference frame
-                 * @param w_T_f fcl::Transform3f representing a frame in the shape reference frame
+                 * @param w_T_f fcl::Transform3d representing a frame in the shape reference frame
                  * @param link_T_f a KDL::Frame representing a frame in link reference frame
                  * @return true on success
                  */
                 bool shapeToLinkCoordinates(const std::string &linkName,
-                                const fcl::Transform3f &fcl_shape_T_f,
+                                const fcl::Transform3d &fcl_shape_T_f,
                                 KDL::Frame &link_T_f);
     
                 /**

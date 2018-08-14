@@ -27,10 +27,18 @@
 #include <utility>
 #include <XBotInterface/ModelInterface.h>
 #include <srdfdom_advr/model.h>
-#include <fcl/collision_object.h>
+#include <fcl/config.h>
+#include "fcl/narrowphase/distance.h"
+#include "fcl/narrowphase/collision.h"
+#include <fcl/narrowphase/collision_object.h>
 #include <moveit/collision_detection/collision_matrix.h>
 #include <moveit/robot_model/robot_model.h>
 #include <urdf/model.h>
+#include <geometric_shapes/shapes.h>
+#include <geometric_shapes/shape_operations.h>
+#include <boost/make_shared.hpp>
+#include <kdl_parser/kdl_parser.hpp>
+#include <boost/filesystem.hpp>
 
 #if FCL_MINOR_VERSION <= 3
     template <typename T>
@@ -167,8 +175,8 @@ public:
     public:
         std::string linkA;
         std::string linkB;
-        boost::shared_ptr<fcl::CollisionObject> collisionObjectA;
-        boost::shared_ptr<fcl::CollisionObject> collisionObjectB;
+        boost::shared_ptr<fcl::CollisionObject<double>> collisionObjectA;
+        boost::shared_ptr<fcl::CollisionObject<double>> collisionObjectB;
         boost::shared_ptr<ComputeLinksDistance::Capsule> capsuleA;
         boost::shared_ptr<ComputeLinksDistance::Capsule> capsuleB;
 
@@ -210,7 +218,7 @@ private:
     /**
      * @brief shapes_ is a map of collision geometries
      */
-    std::map<std::string,shared_ptr<fcl::CollisionGeometry> > shapes_;
+    std::map<std::string,shared_ptr<fcl::CollisionGeometry<double>> > shapes_;
 
     /**
      * @brief custom_capsules_ is a map of custom capsules specified as endpoints + radius
@@ -220,7 +228,7 @@ private:
     /**
      * @brief collision_objects_ a map of collision objects
      */
-    std::map<std::string,boost::shared_ptr<fcl::CollisionObject> > collision_objects_;
+    std::map<std::string,boost::shared_ptr<fcl::CollisionObject<double>> > collision_objects_;
 
     /**
      * @brief link_T_shape a map of transforms from link frame to shape frame.
@@ -237,9 +245,9 @@ private:
      * @return true on success
      */
     bool globalToLinkCoordinates(const std::string& linkName,
-                                 const fcl::Transform3f& w_T_f,
+                                 const fcl::Transform3<double>& w_T_f,
                                  KDL::Frame& link_T_f);
-
+    
     /**
      * @brief shapeToLinkCoordinates transforms a fcl::Transform3f frame to a KDL::Frame in the link reference frame
      * @param linkName the link name representing a link reference frame
@@ -248,7 +256,7 @@ private:
      * @return true on success
      */
     bool shapeToLinkCoordinates(const std::string &linkName,
-                                const fcl::Transform3f &fcl_shape_T_f,
+                                const fcl::Transform3<double> &fcl_shape_T_f,
                                 KDL::Frame &link_T_f);
 
 
@@ -272,20 +280,6 @@ private:
      * @return true on success
      */
     bool updateCollisionObjects();
-
-    /**
-     * @brief KDL2fcl ceonverts a kdl transform into a fcl transform
-     * @param in a KDL::Frame
-     * @return  fcl::Transform3f
-     */
-    fcl::Transform3f KDL2fcl(const KDL::Frame &in);
-
-    /**
-     * @brief fcl2KDL converts a fcl transform into a kdl transform
-     * @param in a fcl::Transform3f
-     * @return a KDL::Frame
-     */
-    KDL::Frame fcl2KDL(const fcl::Transform3f &in);
 
     /**
      * @brief generateLinksToUpdate generates a list of links for which we query w_T_link
@@ -350,6 +344,20 @@ public:
      * @return
      */
     bool setCollisionBlackList(std::list< LinkPairDistance::LinksPair > blackList);
+    
+    /**
+     * @brief KDL2fcl ceonverts a kdl transform into a fcl transform
+     * @param in a KDL::Frame
+     * @return  fcl::Transform3f
+     */
+    static fcl::Transform3<double> KDL2fcl(const KDL::Frame &in);
+
+    /**
+     * @brief fcl2KDL converts a fcl transform into a kdl transform
+     * @param in a fcl::Transform3f
+     * @return a KDL::Frame
+     */
+    static KDL::Frame fcl2KDL(const fcl::Transform3<double> &in);
 };
 
 #endif
