@@ -60,7 +60,7 @@
                  */
                 std::list< LinkPairDistance::LinksPair > _interested_link_pairs;
                 std::vector< std::string > _interested_links;
-                std::vector< std::string > _environment_link;
+//                 std::vector< std::string > _environment_link;
 
                 /**
                  * @brief linksToUpdate a list of links to update
@@ -75,7 +75,7 @@
                 /**
                  * @brief shapes_ is a map of collision geometries
                  */
-                std::map<std::string, std::shared_ptr<fcl::CollisionGeometryd> > shapes_;
+//                 std::map<std::string, std::shared_ptr<fcl::CollisionGeometryd> > shapes_;
     
                 /**
                  * @brief link_T_shape a map of transforms from link frame to shape frame.
