@@ -119,7 +119,8 @@ CollisionAvoidance::CollisionAvoidance ( const Eigen::VectorXd& x,
 
     std::map<std::string, boost::shared_ptr<fcl::CollisionObjectd>> envionment_collision_objects;
 //     std::shared_ptr<fcl::CollisionGeometryd> shape = std::make_shared<fcl::Capsuled> ( 0.5,2 );
-    std::shared_ptr<fcl::CollisionGeometryd> shape = std::make_shared<fcl::Boxd> ( 1, 1, 1.4);
+//     std::shared_ptr<fcl::CollisionGeometryd> shape = std::make_shared<fcl::Boxd> ( 1, 1, 1.4);
+    std::shared_ptr<fcl::CollisionGeometryd> shape = std::make_shared<fcl::Boxd> ( 0.1, 0.6, 1.4);
 //     boost::shared_ptr<fcl::CollisionObject> collision_object ( new fcl::CollisionObject ( shape ) );
 
     for ( auto &it:envionment_collision_frames ) {
@@ -434,9 +435,9 @@ std::list<LinkPairDistance> CollisionAvoidance::getLinkDistances ( const double 
 //             shapeToLinkCoordinates ( linkA, result.nearest_points[0], linkA_pA );
 //             shapeToLinkCoordinates ( linkB, result.nearest_points[1], linkB_pB );
 //         }
-        std::cout << "min_distance: " << result.min_distance << std::endl;
-	std::cout << "nearest_points1: " << result.nearest_points[0][0]  << ", " << result.nearest_points[0][1] << ", " << result.nearest_points[0][2] << std::endl;
-	std::cout << "nearest_points2: " << result.nearest_points[1][0]  << ", " << result.nearest_points[1][1] << ", " << result.nearest_points[1][2] << std::endl;
+//         std::cout << "min_distance: " << result.min_distance << std::endl;
+// 	std::cout << "nearest_points1: " << result.nearest_points[0][0]  << ", " << result.nearest_points[0][1] << ", " << result.nearest_points[0][2] << std::endl;
+// 	std::cout << "nearest_points2: " << result.nearest_points[1][0]  << ", " << result.nearest_points[1][1] << ", " << result.nearest_points[1][2] << std::endl;
 
         if ( result.min_distance < detectionThreshold )
             results.push_back ( LinkPairDistance ( linkA, linkB,
@@ -525,11 +526,11 @@ void CollisionAvoidance::calculate_Aineq_bUpperB ( Eigen::MatrixXd & Aineq_fc,
 
         closepoint_dir = Link2_CP - Link1_CP;
         closepoint_dir = closepoint_dir / Dm_LinkPair;
-	std::cout << "Link1_CP: " << Link1_CP.transpose() << std::endl;
-	std::cout << "Link2_CP: " << Link2_CP.transpose() << std::endl;
-	std::cout << "Link1_T_CP: " << Link1_T_CP.p.x()  << ", " << Link1_T_CP.p.y() << ", " << Link1_T_CP.p.z() << std::endl;
-	std::cout << "Link2_T_CP: " << Link2_T_CP.p.x()  << ", " << Link2_T_CP.p.y() << ", " << Link2_T_CP.p.z() << std::endl;
-        std::cout << "dirction: " << closepoint_dir.transpose() << std::endl;
+// 	std::cout << "Link1_CP: " << Link1_CP.transpose() << std::endl;
+// 	std::cout << "Link2_CP: " << Link2_CP.transpose() << std::endl;
+// 	std::cout << "Link1_T_CP: " << Link1_T_CP.p.x()  << ", " << Link1_T_CP.p.y() << ", " << Link1_T_CP.p.z() << std::endl;
+// 	std::cout << "Link2_T_CP: " << Link2_T_CP.p.x()  << ", " << Link2_T_CP.p.y() << ", " << Link2_T_CP.p.z() << std::endl;
+//         std::cout << "dirction: " << closepoint_dir.transpose() << std::endl;
         robot_col.getRelativeJacobian ( Link1_name, base_name,Link1_CP_Jaco );
 
         Link1_CP_Jaco = temp_trans_matrix * Link1_CP_Jaco;
