@@ -302,12 +302,15 @@ bool CollisionAvoidance::parseCollisionObjects()
                 boost::shared_ptr<fcl::CollisionObjectd> collision_object (
                             new fcl::CollisionObjectd ( shape ) );
 
+
                 collision_objects_[link->name] = collision_object;
 //                 shapes_[link->name] = shape;
+
 
                 /* Store the transformation of the CollisionShape from URDF
                  * that is, we store link_T_shape for the actual link */
                 link_T_shape[link->name] = shape_origin;
+
             } else {
                 std::cout << "Collision type unknown for link " << link->name << std::endl;
             }
@@ -498,7 +501,6 @@ void CollisionAvoidance::calculate_Aineq_bUpperB ( Eigen::MatrixXd & Aineq_fc,
         Link2_T_CP = linkPair.getLink_T_closestPoint().second;
         Link1_name = linkPair.getLinkNames().first;
         Link2_name = linkPair.getLinkNames().second;
-
 
         robot_col.getPose ( Link1_name, base_name, Waist_T_Link1 );
 //         robot_col.getPose ( Link2_name, base_name, Waist_T_Link2 );

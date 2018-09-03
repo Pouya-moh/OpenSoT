@@ -466,10 +466,12 @@ LinkPairDistance::LinkPairDistance ( const std::string &link1, const std::string
                                      const KDL::Frame &link1_T_closestPoint1,
                                      const KDL::Frame &link2_T_closestPoint2,
                                      const double &distance ) :
-    linksPair ( link1 < link2 ? link1:link2,
-                link1 < link2 ? link2:link1 ),
-    link_T_closestPoint ( link1 < link2 ? link1_T_closestPoint1:link2_T_closestPoint2,
-                          link1 < link2 ? link2_T_closestPoint2 :link1_T_closestPoint1 ),
+//     linksPair ( link1 < link2 ? link1:link2,
+//                 link1 < link2 ? link2:link1 ),
+//     link_T_closestPoint ( link1 < link2 ? link1_T_closestPoint1:link2_T_closestPoint2,
+//                           link1 < link2 ? link2_T_closestPoint2 :link1_T_closestPoint1 ),
+    linksPair ( link1, link2 ),
+    link_T_closestPoint ( link1_T_closestPoint1, link2_T_closestPoint2 ),
     distance ( distance )
 {
 
